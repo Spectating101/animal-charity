@@ -1,0 +1,43 @@
+{
+  "mode": "synthetic_validation",
+  "recipients": [
+    {
+      "id": "rec-shelter-a",
+      "name": "Verified Shelter A",
+      "status": "active",
+      "location": "Synthetic Taoyuan",
+      "storage": ["dry", "refrigerated"],
+      "animalGroups": ["grp-dogs-a"],
+      "evidenceCompliance": 0.94
+    }
+  ],
+  "animalGroups": [
+    {
+      "id": "grp-dogs-a",
+      "recipientId": "rec-shelter-a",
+      "species": "dog",
+      "lifeStage": "adult",
+      "count": 72,
+      "dailyCompleteFeedKg": 25,
+      "approvedDietClasses": ["complete", "complementary", "emergency"],
+      "healthExceptions": []
+    }
+  ],
+  "inventory": [
+    {
+      "id": "inv-kibble-a",
+      "animalGroupId": "grp-dogs-a",
+      "dietClass": "complete",
+      "quantityKg": 62.5,
+      "expiresAt": "2026-12-31T00:00:00.000Z"
+    }
+  ],
+  "batches": [],
+  "matches": [],
+  "tasks": [],
+  "deliveries": [],
+  "feedingRecords": [],
+  "incidents": [],
+  "impactClaims": [],
+  "auditEvents": []
+}

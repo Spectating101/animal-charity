@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Synthetic validation product for safe, traceable animal-feed relief." />
+    <title>Animal Feed Relief Network</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Synthetic validation environment</p>
+        <h1>Animal Feed Relief Network</h1>
+        <p class="lede">Turn verified surplus and operational capacity into safe, traceable feeding support—without allowing an AI system to approve real food.</p>
+      </div>
+      <button id="reset-button" class="secondary">Reset demo</button>
+    </header>
+
+    <main>
+      <section class="warning">
+        <strong>Safety boundary:</strong> This build accepts synthetic scenarios only. Every eligible match still requires manual approval.
+      </section>
+
+      <section id="metrics" class="metrics" aria-label="Dashboard metrics"></section>
+
+      <section class="grid two-column">
+        <article class="panel">
+          <h2>Run a controlled batch</h2>
+          <form id="batch-form">
+            <label>Product name<input name="productName" value="Sealed Adult Dog Complete Feed" /></label>
+            <label>Quantity (kg)<input name="quantityKg" type="number" min="1" value="100" /></label>
+            <label>Source type
+              <select name="sourceType">
+                <option value="commercial_feed">Commercial feed</option>
+                <option value="registered_processor">Registered processor</option>
+                <option value="anonymous_household_leftovers">Anonymous household leftovers (reject)</option>
+              </select>
+            </label>
+            <label>Diet class
+              <select name="dietClass">
+                <option value="complete">Complete</option>
+                <option value="complementary">Complementary</option>
+                <option value="emergency">Emergency</option>
+              </select>
+            </label>
+            <label class="checkbox"><input name="recalled" type="checkbox" /> Mark batch recalled (reject)</label>
+            <button type="submit">Evaluate batch</button>
+          </form>
+          <p id="form-status" class="status" role="status"></p>
+        </article>
+
+        <article class="panel">
+          <h2>Rule trace</h2>
+          <div id="rule-trace" class="empty">Create a batch to see deterministic pass/fail decisions.</div>
+        </article>
+      </section>
+
+      <section class="grid two-column">
+        <article class="panel">
+          <h2>Match queue</h2>
+          <div id="matches" class="stack"></div>
+        </article>
+        <article class="panel">
+          <h2>Tasks and evidence</h2>
+          <div id="tasks" class="stack"></div>
+        </article>
+      </section>
+
+      <section class="grid two-column">
+        <article class="panel">
+          <h2>Impact claims</h2>
+          <div id="impacts" class="stack"></div>
+        </article>
+        <article class="panel">
+          <h2>Audit log</h2>
+          <div id="audit" class="stack compact"></div>
+        </article>
+      </section>
+    </main>
+
+    <template id="empty-template"><p class="empty">Nothing recorded yet.</p></template>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
