@@ -1,4 +1,4 @@
-.PHONY: test smoke landscape-smoke initiative-smoke verify run seed docker-build
+.PHONY: test smoke landscape-smoke initiative-smoke control-smoke verify run seed docker-build
 
 test:
 	python -m unittest discover -s tests -v
@@ -18,7 +18,11 @@ initiative-smoke:
 	@python scripts/plan_initiative.py examples/taoyuan_public_structural_baseline.json | python -c "import json,sys; d=json.load(sys.stdin); assert d['structural_gap_established'] is False; assert d['recommended']['option_type']=='case_level_only'"
 	@python scripts/plan_initiative.py examples/taoyuan_synthetic_structural_cluster.json | python -c "import json,sys; d=json.load(sys.stdin); assert d['structural_gap_established'] is True; assert d['recommended']['option_type']=='weekly_pop_up_hub'; assert d['recommended']['site_id']=='synthetic-yangmei-host-a'"
 
-verify: test smoke landscape-smoke initiative-smoke
+control-smoke:
+	@python scripts/assess_animal_welfare.py examples/zhongli_sanmin_policy_baseline.json | python -c "import json,sys; d=json.load(sys.stdin); assert d['decisions']==[]; assert d['data_gaps']"
+	@python scripts/assess_animal_welfare.py examples/zhongli_sanmin_synthetic_lifecycle.json | python -c "import json,sys; d=json.load(sys.stdin); kinds=[x['intervention_class'] for x in d['decisions']]; assert 'reunification' in kinds; assert 'owner_retention' in kinds; assert kinds.count('source_control')==3; assert 'foster_to_adoption' in kinds; assert 'specialist_referral' in kinds; assert 'rescue_stabilize' in kinds; assert any(x['intervention_class']=='source_control' for x in d['structural_signals'])"
+
+verify: test smoke landscape-smoke initiative-smoke control-smoke
 	python -m compileall -q app scripts tests
 
 run:
