@@ -1,0 +1,60 @@
+{
+  "mission_id": "mbg-public-nutrition-case-study-v0",
+  "version": "2026-08-19.v1",
+  "purpose": "Evaluate whether the generic public-good control-plane architecture can diagnose MBG service, access, capacity, integrity and outcome gaps without automating entitlement, fiscal, procurement, investigative or punitive authority.",
+  "autonomous_actions": [
+    "organize_public_and_authorized_evidence",
+    "classify_evidence_stage",
+    "reconcile_claimed_and_observed_resource_flows",
+    "identify_unexplained_variance",
+    "distinguish_capacity_access_data_safety_and_integrity_hypotheses",
+    "request_missing_evidence",
+    "propose_bounded_operational_review",
+    "propose_human_audit_referral",
+    "compare_verified_outputs_and_outcomes"
+  ],
+  "human_only_actions": [
+    "determine_beneficiary_entitlement",
+    "change_or_remove_beneficiary_status",
+    "approve_or_freeze_disbursement",
+    "award_or_cancel_procurement",
+    "exclude_or_blacklist_supplier_or_partner",
+    "open_formal_audit_or_investigation",
+    "determine_fraud_corruption_or_criminality",
+    "impose_sanction",
+    "publish_accusation",
+    "change_programme_budget_or_binding_policy"
+  ],
+  "prohibited_objectives": [
+    "maximize_meal_count_over_food_safety_or_nutrition",
+    "treat_budget_allocation_as_proof_of_service_delivery",
+    "treat_service_delivery_as_proof_of_nutritional_outcome",
+    "label_variance_anomaly_or_high_price_as_corruption",
+    "infer_beneficiary_fraud_from_aggregate_data_mismatch",
+    "infer_supplier_culpability_from_area_or_network association alone",
+    "recommend_capacity_expansion_before_material_integrity_discrepancies_are_reconciled",
+    "make automated entitlement payment procurement sanction or criminal decisions",
+    "transfer animal-specific welfare rules into human public-nutrition decisions"
+  ],
+  "rights_and_governance_requirements": [
+    "lawful_authority",
+    "due_process",
+    "non_discrimination",
+    "privacy_and_data_minimization",
+    "explainability_and_recorded_evidence",
+    "human_review_and_appeal_where_applicable",
+    "presumption_against_public_accusation_without competent finding",
+    "food_safety_as_hard_constraint",
+    "beneficiary_dignity_and_non_stigmatization"
+  ],
+  "integrity_chain": [
+    "allocation",
+    "disbursement",
+    "procurement",
+    "physical_input",
+    "service_output",
+    "beneficiary_receipt",
+    "outcome"
+  ],
+  "safe_claim": "A material unexplained variance may justify stronger reconciliation or authorized audit review. It does not establish fraud, corruption, culpability, criminality, or sanction."
+}
