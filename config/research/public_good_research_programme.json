@@ -1,0 +1,80 @@
+{
+  "programme_id": "preventive-public-good-systems-v0",
+  "version": "2026-08-19.v1",
+  "testbed": "companion_animal_welfare",
+  "programme_question": "Can an evidence-bounded regional control plane identify preventable welfare deterioration, distinguish resource scarcity from access and coordination failure, route the smallest appropriate intervention, detect recurring structural gaps, and verify durable welfare improvement without optimizing harmful proxy metrics?",
+  "constructs": {
+    "one_welfare": "Animal, human and environmental outcomes can be coupled and should be observed without collapsing them into one score.",
+    "social_determinants": "Income, housing, transport, information, care access and other human/service conditions may shape animal welfare, but area context is not individual causation.",
+    "welfare_desert": "A service may exist yet remain inaccessible through affordability, geography, transport, information or capacity barriers.",
+    "preventable_bad_state_transition": "Intervene before a stable state deteriorates into surrender, unmanaged displacement, new stray recruitment, prolonged unstable care or severe acute harm.",
+    "stable_welfare_integration": "Success is a durable welfare-positive state such as safe reunification, retained home, stable placement, sanctuary, appropriate community management or optional specialist participation.",
+    "capability_based_social_integration": "For stable animals, optional forms of participation should be matched to longitudinal capability, preference and welfare evidence; productivity is never a condition of care."
+  },
+  "hypotheses": [
+    {
+      "id": "H1_access_not_scarcity",
+      "question": "Do a meaningful share of observed welfare failures arise from access or coordination barriers rather than absolute resource absence?",
+      "required_evidence": ["condition observation", "service availability", "access dimensions", "case outcome"],
+      "primary_modules": ["app/welfare_landscape.py", "app/preventive_welfare.py"],
+      "supporting_metrics": ["share of cases by bottleneck", "time to resolution", "existing-service utilization"],
+      "falsification": "Most verified cases remain true resource scarcity after access and coordination evidence is collected."
+    },
+    {
+      "id": "H2_prevention_beats_downstream_rescue",
+      "question": "Can earlier intervention at a bad-state transition reduce downstream shelter/rescue burden while preserving welfare?",
+      "required_evidence": ["pre-transition state", "intervention", "counterfactual note", "follow-up outcome"],
+      "primary_modules": ["app/animal_welfare_control.py", "app/preventive_welfare.py", "app/welfare_outcomes.py"],
+      "supporting_metrics": ["shelter intake avoided", "owner retention", "reunification", "unresolved welfare hours", "relapse rate"],
+      "falsification": "Preventive interventions do not reduce downstream bad-state transitions or create unacceptable welfare/safety tradeoffs."
+    },
+    {
+      "id": "H3_structural_recurrence",
+      "question": "Can repeated case-level failures identify a missing local service whose reversible addition reduces recurrence?",
+      "required_evidence": ["multiple subjects", "multiple dates", "service-gap evidence", "pilot outcome"],
+      "primary_modules": ["app/lifecycle_initiatives.py", "app/structural_initiatives.py"],
+      "supporting_metrics": ["recurring cases", "coverage ratio", "pilot utilization", "cost/burden", "post-pilot recurrence"],
+      "falsification": "New or extended services fail to reduce recurrence, or existing services can resolve the same need more cheaply or safely."
+    },
+    {
+      "id": "H4_coupled_one_welfare",
+      "question": "Do some animal-welfare interventions produce measurable coupled human or environmental effects that materially change intervention choice?",
+      "required_evidence": ["animal outcome", "human/environment context", "separate domain outcomes"],
+      "primary_modules": ["app/preventive_welfare.py", "app/population_metrics.py"],
+      "supporting_metrics": ["animal welfare", "owner retention burden", "public-safety incidents", "wildlife conflict"],
+      "falsification": "Cross-domain effects are negligible or do not change intervention ranking in tested cases."
+    },
+    {
+      "id": "H5_social_integration",
+      "question": "Can longitudinal capability and preference evidence improve stable welfare-positive social integration compared with one-time binary adoptable/working labels?",
+      "required_evidence": ["longitudinal observations", "placement/participation pathway", "animal welfare follow-up", "relapse/withdrawal"],
+      "primary_modules": ["app/animal_welfare_control.py", "app/welfare_outcomes.py"],
+      "supporting_metrics": ["placement stability", "return rate", "voluntary engagement", "welfare stop rate"],
+      "falsification": "Longitudinal capability/preference evidence does not improve stability or welfare beyond simpler routing."
+    },
+    {
+      "id": "H6_public_good_control_plane",
+      "question": "Does the evidence-transition-access-intervention-evaluation architecture remain useful when transferred to another welfare domain without transferring animal-specific policy rules?",
+      "required_evidence": ["separate human-domain constitution", "domain-specific rules", "matched architecture evaluation"],
+      "primary_modules": [],
+      "supporting_metrics": ["diagnostic accuracy", "false intervention rate", "rights/governance violations", "outcome additionality"],
+      "falsification": "The architecture depends materially on animal-specific assumptions and fails under a separately constituted human-welfare domain."
+    }
+  ],
+  "research_order": [
+    "establish literature-backed constructs",
+    "replay synthetic and historical cases",
+    "acquire one real bounded-area partner dataset",
+    "validate diagnosis and access classification",
+    "run reversible supervised intervention pilot",
+    "measure additionality and recurrence",
+    "only then test cross-domain transfer"
+  ],
+  "claims_boundary": [
+    "Do not claim causal determinants from area-level correlations.",
+    "Do not claim a welfare desert because a service is distant without measuring actual access dimensions.",
+    "Do not call a handoff, adoption, sterilization, donation or working-role acceptance a success without follow-up welfare evidence.",
+    "Do not claim novelty of the overall framework until a formal systematic/scoping review is completed.",
+    "Do not transfer animal-specific rules or optimization targets into human poverty or food-security systems."
+  ]
+}
