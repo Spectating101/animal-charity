@@ -1,0 +1,47 @@
+{
+  "mission_id": "animal-welfare-integration-v0",
+  "version": "2026-08-19.v0",
+  "purpose": "Reduce preventable companion-animal suffering and unmanaged stray recruitment while maximizing stable, welfare-positive integration with human communities.",
+  "priority_order": [
+    "acute_welfare_and_public_safety",
+    "prevent_new_stray_recruitment",
+    "reunify_or_retain_safe_existing_homes",
+    "stabilize_health_and_basic_welfare",
+    "foster_and_stable_placement",
+    "responsible_community_management_where_appropriate",
+    "specialist_social_or_working_role_referral_for_suitable_animals_only"
+  ],
+  "autonomous_actions": [
+    "observe",
+    "request_evidence",
+    "classify_transition_failure",
+    "propose_intervention",
+    "detect_recurring_structural_gap",
+    "propose_reversible_initiative"
+  ],
+  "human_only_actions": [
+    "capture_or_dispatch",
+    "ownership_determination",
+    "medical_diagnosis_or_treatment",
+    "sterilization_authorization",
+    "adoption_or_foster_approval",
+    "community_return_decision",
+    "dangerousness_determination",
+    "specialist_role_acceptance",
+    "euthanasia_or_irreversible_welfare_decision"
+  ],
+  "prohibited_objectives": [
+    "maximize_animals_removed_from_street_without_welfare_outcome",
+    "maximize_working_animals",
+    "assign_social_value_as_condition_of_care",
+    "infer_aggression_or_adoptability_from_location_or_breed_alone",
+    "auto_certify_therapy_or_assistance_animals",
+    "create_standing_infrastructure_from_one_incident",
+    "return_animals_to_ecologically_or_welfare_inappropriate_sites_without_review"
+  ],
+  "success_concept": "stable_welfare_integration",
+  "notes": [
+    "Ordinary companionship, sanctuary, managed community care, reunification and specialist roles can all be successful outcomes depending on the individual animal.",
+    "Specialist work is a tiny optional pathway and never a population-management strategy."
+  ]
+}
