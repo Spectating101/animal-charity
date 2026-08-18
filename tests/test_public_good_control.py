@@ -33,6 +33,16 @@ class PublicGoodControlTests(unittest.TestCase):
         self.assertIn("human", result.non_transfer_rule.lower())
         self.assertIn("integrity_assessment", result.domain_result)
 
+    def test_mbg_clean_reconciliation_allows_capacity_problem(self):
+        case = load_public_good_case(ROOT / "examples" / "public_good_mbg_capacity.json")
+        result = assess_public_good_case(case)
+        stages = [x.stage for x in result.normalized_findings]
+        self.assertIn("capacity", stages)
+        self.assertNotIn("integrity", stages)
+        capacity = next(x for x in result.normalized_findings if x.stage == "capacity")
+        self.assertTrue(capacity.structural_candidate)
+        self.assertIn("adjacent SPPG", capacity.recommended_action)
+
     def test_shared_loop_is_shared_but_domain_rules_are_not(self):
         animal = assess_public_good_case(load_public_good_case(ROOT / "examples" / "public_good_animal_owner_retention.json"))
         mbg = assess_public_good_case(load_public_good_case(ROOT / "examples" / "public_good_mbg_integrity.json"))
