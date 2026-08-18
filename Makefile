@@ -1,4 +1,4 @@
-.PHONY: test smoke landscape-smoke initiative-smoke control-smoke lifecycle-initiative-smoke preventive-smoke verify run seed docker-build
+.PHONY: test smoke landscape-smoke initiative-smoke control-smoke lifecycle-initiative-smoke preventive-smoke mbg-smoke verify run seed docker-build
 
 test:
 	python -m unittest discover -s tests -v
@@ -28,7 +28,12 @@ lifecycle-initiative-smoke:
 preventive-smoke:
 	@python scripts/assess_preventive_welfare.py examples/zhongli_sanmin_synthetic_preventive_system.json | python -c "import json,sys; d=json.load(sys.stdin); o=[x for x in d['prevention_opportunities'] if x['intervention_class']=='source_control']; assert len(o)==3; assert all(x['structural_candidate'] for x in o); assert all(x['causal_status']=='hypothesis' for x in o); assert d['access_gaps']; assert 'rights' in d['transfer_boundary']"
 
-verify: test smoke landscape-smoke initiative-smoke control-smoke lifecycle-initiative-smoke preventive-smoke
+mbg-smoke:
+	@python scripts/assess_mbg_case.py examples/mbg_banten_public_context.json | python -c "import json,sys; d=json.load(sys.stdin); assert d['findings']==[]; assert d['data_gaps']; assert 'insufficient' in d['safe_conclusion'].lower()"
+	@python scripts/assess_mbg_case.py examples/mbg_synthetic_integrity_case.json | python -c "import json,sys; d=json.load(sys.stdin); kinds=[x['problem_class'] for x in d['findings']]; assert d['integrity_assessment']['overall_status']=='audit_referral_recommended'; assert kinds[0]=='integrity_uncertainty'; assert 'capacity_gap' not in kinds; assert 'corruption' in d['safe_conclusion'].lower()"
+	@python scripts/assess_mbg_case.py examples/mbg_synthetic_capacity_case.json | python -c "import json,sys; d=json.load(sys.stdin); kinds=[x['problem_class'] for x in d['findings']]; assert d['integrity_assessment']['overall_status']=='normal'; assert 'capacity_gap' in kinds; assert 'integrity_uncertainty' not in kinds"
+
+verify: test smoke landscape-smoke initiative-smoke control-smoke lifecycle-initiative-smoke preventive-smoke mbg-smoke
 	python -m compileall -q app scripts tests
 
 run:
