@@ -1,0 +1,14 @@
+services:
+  relief:
+    build: .
+    ports: ["8080:8080"]
+    environment:
+      AFRN_DB_PATH: /data/relief.db
+      AFRN_RULEPACK: /code/config/rulepacks/tw_dog_cat_pilot.json
+      AFRN_MISSION: /code/config/missions/animal_feed_security.json
+      AFRN_OPERATOR_TOKEN: ${AFRN_OPERATOR_TOKEN:-change-me}
+      AFRN_DEMO_MODE: ${AFRN_DEMO_MODE:-0}
+    volumes:
+      - relief-data:/data
+volumes:
+  relief-data:
