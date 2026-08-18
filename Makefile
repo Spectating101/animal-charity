@@ -36,6 +36,7 @@ mbg-smoke:
 public-good-smoke:
 	@python scripts/assess_public_good_case.py examples/public_good_animal_owner_retention.json | python -c "import json,sys; d=json.load(sys.stdin); f=d['normalized_findings'][0]; assert d['domain']=='animal_welfare'; assert f['stage']=='prevent'; assert f['domain_detail']['intervention_class']=='owner_retention'; assert 'veterinary_gap' in f['recommended_action']"
 	@python scripts/assess_public_good_case.py examples/public_good_mbg_integrity.json | python -c "import json,sys; d=json.load(sys.stdin); stages=[x['stage'] for x in d['normalized_findings']]; assert d['domain']=='mbg_public_nutrition'; assert stages[0]=='integrity'; assert 'capacity' not in stages; assert 'audit' in d['normalized_findings'][0]['recommended_action'].lower()"
+	@python scripts/assess_public_good_case.py examples/public_good_mbg_capacity.json | python -c "import json,sys; d=json.load(sys.stdin); stages=[x['stage'] for x in d['normalized_findings']]; assert 'capacity' in stages; assert 'integrity' not in stages; c=next(x for x in d['normalized_findings'] if x['stage']=='capacity'); assert c['structural_candidate']"
 
 verify: test smoke landscape-smoke initiative-smoke control-smoke lifecycle-initiative-smoke preventive-smoke mbg-smoke public-good-smoke
 	python -m compileall -q app scripts tests
