@@ -1,12 +1,16 @@
 from __future__ import annotations
 
 import os
+import sys
 import time
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from app.service import ReliefService
 
-ROOT = Path(__file__).resolve().parents[1]
 service = ReliefService(
     os.getenv("AFRN_DB_PATH", str(ROOT / "data" / "relief.db")),
     os.getenv("AFRN_RULEPACK", str(ROOT / "config" / "rulepacks" / "tw_dog_cat_pilot.json")),
