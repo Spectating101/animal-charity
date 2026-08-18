@@ -1,0 +1,35 @@
+{
+  "version": "2026-08-19.v1",
+  "shared_loop": [
+    "establish condition",
+    "identify bad-state transition",
+    "verify driver/access/integrity bottleneck",
+    "prefer existing capability",
+    "select smallest feasible intervention",
+    "route through domain authority",
+    "verify receipt and outcome",
+    "detect recurrence",
+    "consider reversible structural intervention"
+  ],
+  "domains": {
+    "animal_welfare": {
+      "adapter": "app.animal_welfare_control",
+      "constitution_ref": "config/missions/animal_welfare_integration.json",
+      "unit_of_concern": "individual animal plus regional welfare landscape",
+      "desired_state": "durable welfare-positive integration",
+      "hard_gates": ["acute welfare/safety", "veterinary/professional authority", "ecological/public-safety compatibility"],
+      "structural_examples": ["owner-retention support", "source-control outreach", "foster network", "rescue coverage"],
+      "success_boundary": "handoff or placement is not success without verified stable welfare outcome"
+    },
+    "mbg_public_nutrition": {
+      "adapter": "app.mbg_case_study",
+      "constitution_ref": "config/missions/mbg_public_nutrition_case_study.json",
+      "unit_of_concern": "beneficiary cohort plus SPPG/service catchment",
+      "desired_state": "safe reliable equitable nutrition service with measurable beneficiary outcome",
+      "hard_gates": ["food safety", "resource-flow integrity before scarcity", "human entitlement/procurement/audit authority"],
+      "structural_examples": ["catchment rebalance", "route repair", "supplier QA/aggregation", "reversible capacity extension", "new SPPG only after residual need"],
+      "success_boundary": "meal production or delivery is not nutrition impact without outcome evidence"
+    }
+  },
+  "non_transfer_rule": "Only the evidence-transition-access/integrity-intervention-authority-outcome architecture is shared. Domain-specific rights, welfare rules, eligibility, population-control logic, procurement rules, and irreversible decisions remain inside the selected domain constitution."
+}
