@@ -1,0 +1,66 @@
+{
+  "programme_id": "indonesia-mbg-case-study",
+  "area_id": "id-banten-public-2026-01-30",
+  "area_name": "Banten Province — public MBG context only",
+  "observations": [
+    {
+      "observation_id": "banten-sppg-count",
+      "signal": "sppg_count",
+      "value": 741,
+      "evidence_class": "capability",
+      "source_ref": "https://djpb.kemenkeu.go.id/kanwil/banten/id/data-publikasi/berita-terbaru/9-uncategorised/3066-dashboard-makan-bergizi-gratis.html",
+      "confidence": 1.0,
+      "observed_at": "2026-01-30T00:00:00Z",
+      "synthetic": false,
+      "notes": "Official DJPb Banten dashboard update. Capability/output context only."
+    },
+    {
+      "observation_id": "banten-supplier-count",
+      "signal": "supplier_count",
+      "value": 1291,
+      "evidence_class": "capability",
+      "source_ref": "https://djpb.kemenkeu.go.id/kanwil/banten/id/data-publikasi/berita-terbaru/9-uncategorised/3066-dashboard-makan-bergizi-gratis.html",
+      "confidence": 1.0,
+      "observed_at": "2026-01-30T00:00:00Z",
+      "synthetic": false
+    },
+    {
+      "observation_id": "banten-beneficiary-output",
+      "signal": "reported_beneficiaries",
+      "value": 2134335,
+      "evidence_class": "context",
+      "source_ref": "https://djpb.kemenkeu.go.id/kanwil/banten/id/data-publikasi/berita-terbaru/9-uncategorised/3066-dashboard-makan-bergizi-gratis.html",
+      "confidence": 1.0,
+      "observed_at": "2026-01-30T00:00:00Z",
+      "synthetic": false,
+      "notes": "Aggregate reported programme output; not an independently verified local recipient count for a particular SPPG."
+    },
+    {
+      "observation_id": "banten-beneficiary-target",
+      "signal": "reported_beneficiary_target",
+      "value": 3502386,
+      "evidence_class": "context",
+      "source_ref": "https://djpb.kemenkeu.go.id/kanwil/banten/id/data-publikasi/berita-terbaru/9-uncategorised/3066-dashboard-makan-bergizi-gratis.html",
+      "confidence": 1.0,
+      "observed_at": "2026-01-30T00:00:00Z",
+      "synthetic": false
+    },
+    {
+      "observation_id": "banten-local-egg-quality-context",
+      "signal": "local_supplier_quality_standardization_issue",
+      "value": true,
+      "evidence_class": "context",
+      "source_ref": "https://djpb.kemenkeu.go.id/kanwil/banten/id/data-publikasi/berita-terbaru/9-uncategorised/3066-dashboard-makan-bergizi-gratis.html",
+      "confidence": 1.0,
+      "observed_at": "2026-01-30T00:00:00Z",
+      "synthetic": false,
+      "notes": "Dashboard identifies consistent quality standardization as a constraint for involving local egg cooperatives. This does not establish misconduct or a specific SPPG failure."
+    }
+  ],
+  "recurrence_count": 0,
+  "recurrence_span_days": 0,
+  "metadata": {
+    "warning": "Public aggregate context only. No local SPPG operational failure, fraud, corruption, beneficiary error, supplier culpability or capacity recommendation is asserted.",
+    "source_accessed": "2026-08-19"
+  }
+}
