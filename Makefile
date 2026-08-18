@@ -1,4 +1,4 @@
-.PHONY: test smoke landscape-smoke verify run seed docker-build
+.PHONY: test smoke landscape-smoke initiative-smoke verify run seed docker-build
 
 test:
 	python -m unittest discover -s tests -v
@@ -14,7 +14,11 @@ landscape-smoke:
 	@python scripts/scan_landscape.py examples/taoyuan_public_baseline.json | python -c "import json,sys; d=json.load(sys.stdin); assert d['cases']==[]; assert d['data_gaps']"
 	@python scripts/scan_landscape.py examples/taoyuan_synthetic_incident.json | python -c "import json,sys; d=json.load(sys.stdin); c=d['cases'][0]; assert c['bottleneck']=='last_mile_logistics'; assert c['actuator']=='logistics.dispatch_request'"
 
-verify: test smoke landscape-smoke
+initiative-smoke:
+	@python scripts/plan_initiative.py examples/taoyuan_public_structural_baseline.json | python -c "import json,sys; d=json.load(sys.stdin); assert d['structural_gap_established'] is False; assert d['recommended']['option_type']=='case_level_only'"
+	@python scripts/plan_initiative.py examples/taoyuan_synthetic_structural_cluster.json | python -c "import json,sys; d=json.load(sys.stdin); assert d['structural_gap_established'] is True; assert d['recommended']['option_type']=='weekly_pop_up_hub'; assert d['recommended']['site_id']=='synthetic-yangmei-host-a'"
+
+verify: test smoke landscape-smoke initiative-smoke
 	python -m compileall -q app scripts tests
 
 run:
