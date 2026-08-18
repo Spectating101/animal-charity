@@ -1,4 +1,4 @@
-.PHONY: test smoke landscape-smoke initiative-smoke control-smoke lifecycle-initiative-smoke preventive-smoke mbg-smoke verify run seed docker-build
+.PHONY: test smoke landscape-smoke initiative-smoke control-smoke lifecycle-initiative-smoke preventive-smoke mbg-smoke public-good-smoke verify run seed docker-build
 
 test:
 	python -m unittest discover -s tests -v
@@ -33,7 +33,11 @@ mbg-smoke:
 	@python scripts/assess_mbg_case.py examples/mbg_synthetic_integrity_case.json | python -c "import json,sys; d=json.load(sys.stdin); kinds=[x['problem_class'] for x in d['findings']]; assert d['integrity_assessment']['overall_status']=='audit_referral_recommended'; assert kinds[0]=='integrity_uncertainty'; assert 'capacity_gap' not in kinds; assert 'corruption' in d['safe_conclusion'].lower()"
 	@python scripts/assess_mbg_case.py examples/mbg_synthetic_capacity_case.json | python -c "import json,sys; d=json.load(sys.stdin); kinds=[x['problem_class'] for x in d['findings']]; assert d['integrity_assessment']['overall_status']=='normal'; assert 'capacity_gap' in kinds; assert 'integrity_uncertainty' not in kinds"
 
-verify: test smoke landscape-smoke initiative-smoke control-smoke lifecycle-initiative-smoke preventive-smoke mbg-smoke
+public-good-smoke:
+	@python scripts/assess_public_good_case.py examples/public_good_animal_owner_retention.json | python -c "import json,sys; d=json.load(sys.stdin); f=d['normalized_findings'][0]; assert d['domain']=='animal_welfare'; assert f['stage']=='prevent'; assert f['domain_detail']['intervention_class']=='owner_retention'; assert 'veterinary_gap' in f['recommended_action']"
+	@python scripts/assess_public_good_case.py examples/public_good_mbg_integrity.json | python -c "import json,sys; d=json.load(sys.stdin); stages=[x['stage'] for x in d['normalized_findings']]; assert d['domain']=='mbg_public_nutrition'; assert stages[0]=='integrity'; assert 'capacity' not in stages; assert 'audit' in d['normalized_findings'][0]['recommended_action'].lower()"
+
+verify: test smoke landscape-smoke initiative-smoke control-smoke lifecycle-initiative-smoke preventive-smoke mbg-smoke public-good-smoke
 	python -m compileall -q app scripts tests
 
 run:
