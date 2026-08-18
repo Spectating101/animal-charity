@@ -10,6 +10,7 @@ from fastapi.responses import HTMLResponse
 from app.animal_welfare_control import WelfareLandscape, assess_area
 from app.domain import AnimalGroup, InventoryLot, Recipient, ResolutionEvidence, SupplyBatch
 from app.nocturnal_adapter import event_to_nocturnal_claim
+from app.preventive_welfare import PreventiveWelfareSnapshot, assess_preventive_system
 from app.service import ReliefService
 from app.welfare_outcomes import WelfareOutcome, summarize_outcomes
 
@@ -22,8 +23,8 @@ DEMO_MODE = os.getenv("AFRN_DEMO_MODE", "0") == "1"
 
 app = FastAPI(
     title="Animal Welfare Control Plane / AFRN",
-    version="0.2.0",
-    description="Evidence-bounded regional animal-welfare diagnosis plus safe feed-relief actuation.",
+    version="0.3.0",
+    description="Evidence-bounded preventive regional animal-welfare diagnosis, planning, outcome evaluation and safe feed-relief actuation.",
 )
 service = ReliefService(DB_PATH, RULEPACK, MISSION)
 
@@ -83,6 +84,20 @@ def assess_welfare_landscape(landscape: WelfareLandscape, actor: str = Depends(r
     specialist acceptance or any irreversible welfare decision.
     """
     assessment = assess_area(landscape)
+    return assessment.model_dump(mode="json") | {"assessed_by": actor}
+
+
+@app.post("/v1/welfare/system/assess")
+def assess_preventive_welfare_system(snapshot: PreventiveWelfareSnapshot, actor: str = Depends(require_operator)):
+    """Assess preventable bad-state transitions with determinant/access context.
+
+    Area-level deprivation, policy priority or service scarcity are never promoted
+    to individual causal claims unless the supplied evidence explicitly supports it.
+    """
+    try:
+        assessment = assess_preventive_system(snapshot)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
     return assessment.model_dump(mode="json") | {"assessed_by": actor}
 
 
