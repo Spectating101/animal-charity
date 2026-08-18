@@ -93,12 +93,12 @@ def create_supply(batch: SupplyBatch, actor: str = Depends(require_operator)):
 
 
 @app.get("/v1/cases")
-def cases():
+def cases(actor: str = Depends(require_operator)):
     return service.store.list("case")
 
 
 @app.get("/v1/proposals")
-def proposals():
+def proposals(actor: str = Depends(require_operator)):
     return service.store.list("proposal")
 
 
@@ -136,10 +136,10 @@ def resolve_case(case_id: str, evidence: ResolutionEvidence, actor: str = Depend
 
 
 @app.get("/v1/audit/events")
-def audit_events():
+def audit_events(actor: str = Depends(require_operator)):
     return service.store.events()
 
 
 @app.get("/v1/audit/nocturnal-export")
-def nocturnal_export():
+def nocturnal_export(actor: str = Depends(require_operator)):
     return [event_to_nocturnal_claim(event) for event in service.store.events()]
