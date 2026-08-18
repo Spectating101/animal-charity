@@ -117,7 +117,7 @@ class MatchProposal(BaseModel):
 class ResolutionEvidence(BaseModel):
     case_id: str
     evidence_ref: str
-    actor: str
+    actor: str = "authenticated-operator"
     delivered_kg: float = Field(gt=0)
     confirmed_at: datetime = Field(default_factory=utcnow)
     note: str | None = None
