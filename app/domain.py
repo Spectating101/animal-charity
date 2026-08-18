@@ -29,7 +29,7 @@ class Recipient(BaseModel):
     recipient_id: str = Field(default_factory=lambda: new_id("rec"))
     name: str
     region: str
-    status: Literal["active", "emergency_only", "suspended"] = "active"
+    status: Literal["pending", "active", "emergency_only", "suspended"] = "pending"
     reliability: float = Field(default=0.5, ge=0, le=1)
     storage_classes: list[str] = Field(default_factory=lambda: ["ambient"])
     welfare_review_ref: str | None = None
@@ -62,7 +62,7 @@ class SupplyBatch(BaseModel):
     batch_id: str = Field(default_factory=lambda: new_id("batch"))
     donor_name: str
     product_name: str
-    quantity_kg: float = Field(gt=0)
+    quantity_kg: float = Field(ge=0)
     source_class: Literal["sealed_commercial", "prepared", "ingredient", "unknown"] = "sealed_commercial"
     species: list[Species] = Field(default_factory=lambda: ["dog", "cat"])
     diet_class: str = "complete_commercial"
