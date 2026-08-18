@@ -1,0 +1,154 @@
+{
+  "area_id": "tw-taoyuan-zhongli-sanmin",
+  "area_name": "Zhongli Sanmin Li synthetic preventive-welfare experiment",
+  "landscape": {
+    "area_id": "tw-taoyuan-zhongli-sanmin",
+    "area_name": "Zhongli Sanmin Li synthetic preventive-welfare experiment",
+    "observations": [
+      {
+        "observation_id": "syn-pw-dog-a-state",
+        "area_id": "tw-taoyuan-zhongli-sanmin",
+        "subject_ref": "synthetic-dog-a",
+        "species": "dog",
+        "signal": "welfare_state",
+        "value": "unowned_free_roaming",
+        "source_ref": "synthetic:preventive-fixture:a-state",
+        "source_tier": "synthetic",
+        "confidence": 1.0,
+        "observed_at": "2026-07-01T09:00:00+08:00",
+        "synthetic": true
+      },
+      {
+        "observation_id": "syn-pw-dog-a-repro",
+        "area_id": "tw-taoyuan-zhongli-sanmin",
+        "subject_ref": "synthetic-dog-a",
+        "species": "dog",
+        "signal": "reproductively_active",
+        "value": true,
+        "source_ref": "synthetic:preventive-fixture:a-repro",
+        "source_tier": "synthetic",
+        "confidence": 0.95,
+        "observed_at": "2026-07-01T09:05:00+08:00",
+        "synthetic": true
+      },
+      {
+        "observation_id": "syn-pw-dog-b-state",
+        "area_id": "tw-taoyuan-zhongli-sanmin",
+        "subject_ref": "synthetic-dog-b",
+        "species": "dog",
+        "signal": "welfare_state",
+        "value": "community_cared",
+        "source_ref": "synthetic:preventive-fixture:b-state",
+        "source_tier": "synthetic",
+        "confidence": 1.0,
+        "observed_at": "2026-07-18T10:00:00+08:00",
+        "synthetic": true
+      },
+      {
+        "observation_id": "syn-pw-dog-b-repro",
+        "area_id": "tw-taoyuan-zhongli-sanmin",
+        "subject_ref": "synthetic-dog-b",
+        "species": "dog",
+        "signal": "sterilized",
+        "value": false,
+        "source_ref": "synthetic:preventive-fixture:b-repro",
+        "source_tier": "synthetic",
+        "confidence": 0.9,
+        "observed_at": "2026-07-18T10:05:00+08:00",
+        "synthetic": true
+      },
+      {
+        "observation_id": "syn-pw-dog-c-state",
+        "area_id": "tw-taoyuan-zhongli-sanmin",
+        "subject_ref": "synthetic-dog-c",
+        "species": "dog",
+        "signal": "welfare_state",
+        "value": "unowned_free_roaming",
+        "source_ref": "synthetic:preventive-fixture:c-state",
+        "source_tier": "synthetic",
+        "confidence": 1.0,
+        "observed_at": "2026-08-12T14:00:00+08:00",
+        "synthetic": true
+      },
+      {
+        "observation_id": "syn-pw-dog-c-repro",
+        "area_id": "tw-taoyuan-zhongli-sanmin",
+        "subject_ref": "synthetic-dog-c",
+        "species": "dog",
+        "signal": "reproductively_active",
+        "value": true,
+        "source_ref": "synthetic:preventive-fixture:c-repro",
+        "source_tier": "synthetic",
+        "confidence": 0.92,
+        "observed_at": "2026-08-12T14:05:00+08:00",
+        "synthetic": true
+      }
+    ],
+    "policy_context": {
+      "area_id": "tw-taoyuan-zhongli-sanmin",
+      "area_name": "Zhongli Sanmin Li",
+      "jurisdiction": "Taoyuan City, Taiwan",
+      "policy_flags": ["2026_roaming_dog_priority_area"],
+      "priority_level": 1,
+      "source_refs": ["https://animal.moa.gov.tw/public/upload/News/260316110439227006GR81L.pdf"],
+      "notes": ["Policy context does not establish any individual animal condition."]
+    },
+    "service_capabilities": ["municipal_animal_welfare", "sterilization_programmes"],
+    "metadata": {
+      "fixture": "synthetic",
+      "warning": "No synthetic animal represents a real animal or resident."
+    }
+  },
+  "determinants": [
+    {
+      "observation_id": "syn-det-pop-control",
+      "area_id": "tw-taoyuan-zhongli-sanmin",
+      "determinant": "population_control_access",
+      "value": "repeated appointment/access friction",
+      "source_ref": "synthetic:determinant:population-control-access",
+      "source_tier": "synthetic",
+      "confidence": 0.8,
+      "observed_at": "2026-08-12T15:00:00+08:00",
+      "scope": "area",
+      "relationship": "hypothesis",
+      "synthetic": true,
+      "notes": "Synthetic hypothesis used to test causal discipline."
+    },
+    {
+      "observation_id": "syn-det-transport",
+      "area_id": "tw-taoyuan-zhongli-sanmin",
+      "determinant": "transportation",
+      "value": "animal transport difficult for some caretakers",
+      "source_ref": "synthetic:determinant:transport",
+      "source_tier": "synthetic",
+      "confidence": 0.7,
+      "observed_at": "2026-08-12T15:05:00+08:00",
+      "scope": "area",
+      "relationship": "context",
+      "synthetic": true
+    }
+  ],
+  "service_access": [
+    {
+      "observation_id": "syn-access-sterilization",
+      "area_id": "tw-taoyuan-zhongli-sanmin",
+      "service_kind": "sterilization_registration_outreach",
+      "source_ref": "synthetic:service-access:sterilization",
+      "source_tier": "synthetic",
+      "available": true,
+      "affordable": true,
+      "geographically_accessible": false,
+      "transport_feasible": false,
+      "information_accessible": true,
+      "capacity_available": false,
+      "confidence": 0.85,
+      "observed_at": "2026-08-12T15:10:00+08:00",
+      "synthetic": true,
+      "notes": "Tests welfare-desert/access-barrier reasoning without asserting real Sanmin conditions."
+    }
+  ],
+  "metadata": {
+    "purpose": "Test repeated preventable transition + social/service determinant + service-access reasoning.",
+    "live_claim": false
+  }
+}
