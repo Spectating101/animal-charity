@@ -25,7 +25,8 @@ class MBGCaseStudyTests(unittest.TestCase):
         self.assertEqual(kinds[0], "integrity_uncertainty")
         self.assertNotIn("capacity_gap", kinds)
         self.assertIn("cause_unresolved", kinds)
-        self.assertIn("does not itself establish fraud or corruption", result.findings[0].rationale)
+        rationale = " ".join(result.findings[0].rationale).lower()
+        self.assertIn("does not itself establish fraud or corruption", rationale)
 
     def test_reconciled_chain_allows_genuine_capacity_gap(self):
         snapshot = load_mbg_snapshot(ROOT / "examples" / "mbg_synthetic_capacity_case.json")
