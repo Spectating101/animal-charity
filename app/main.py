@@ -74,7 +74,25 @@ def summary():
 
 @app.post("/v1/recipients")
 def create_recipient(recipient: Recipient, actor: str = Depends(require_operator)):
+    recipient.status = "pending"
+    recipient.welfare_review_ref = None
     return service.save(recipient, actor=actor, event_type="recipient.recorded", source_ref=recipient.source_ref)
+
+
+@app.post("/v1/recipients/{recipient_id}/review")
+def review_recipient(
+    recipient_id: str,
+    approve: bool,
+    review_ref: str,
+    emergency_only: bool = False,
+    actor: str = Depends(require_operator),
+):
+    try:
+        return service.review_recipient(
+            recipient_id, approve=approve, actor=actor, review_ref=review_ref, emergency_only=emergency_only
+        )
+    except KeyError as exc:
+        raise HTTPException(404, str(exc)) from exc
 
 
 @app.post("/v1/groups")
