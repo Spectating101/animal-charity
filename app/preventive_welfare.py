@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from collections import Counter, defaultdict
+from collections import Counter
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
@@ -214,7 +214,6 @@ def _relevant_determinants(
 ) -> list[DeterminantObservation]:
     kinds = INTERVENTION_TO_DEFAULT_DETERMINANTS.get(intervention_class, set())
     rows = [d for d in snapshot.determinants if d.determinant in kinds]
-    # Household/subject evidence should only be attached to the matching subject.
     return [
         d for d in rows
         if d.scope == "area" or d.subject_ref == subject_ref
@@ -231,14 +230,22 @@ def _causal_status(rows: list[DeterminantObservation]) -> Literal["context_only"
 
 def _domains(intervention_class: str, determinants: list[DeterminantObservation]) -> list[OneWelfareDomain]:
     domains = {OneWelfareDomain.animal}
-    if any(d.determinant in {
+    human_or_service_system_determinants = {
         DeterminantKind.income,
         DeterminantKind.housing,
         DeterminantKind.transportation,
-        DeterminantKind.owner_health,
+        DeterminantKind.veterinary_access,
+        DeterminantKind.food_access,
+        DeterminantKind.information_access,
+        DeterminantKind.language_access,
         DeterminantKind.social_support,
+        DeterminantKind.service_capacity,
+        DeterminantKind.foster_capacity,
+        DeterminantKind.population_control_access,
+        DeterminantKind.owner_health,
         DeterminantKind.time_care_capacity,
-    } for d in determinants):
+    }
+    if any(d.determinant in human_or_service_system_determinants for d in determinants):
         domains.add(OneWelfareDomain.human)
     if intervention_class == "source_control" or any(
         d.determinant == DeterminantKind.ecology for d in determinants
