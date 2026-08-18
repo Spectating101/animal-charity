@@ -7,6 +7,7 @@ from pathlib import Path
 from fastapi import Depends, FastAPI, Header, HTTPException, Query
 from fastapi.responses import HTMLResponse
 
+from app.animal_welfare_control import WelfareLandscape, assess_area
 from app.domain import AnimalGroup, InventoryLot, Recipient, ResolutionEvidence, SupplyBatch
 from app.nocturnal_adapter import event_to_nocturnal_claim
 from app.service import ReliefService
@@ -19,9 +20,9 @@ OPERATOR_TOKEN = os.getenv("AFRN_OPERATOR_TOKEN", "")
 DEMO_MODE = os.getenv("AFRN_DEMO_MODE", "0") == "1"
 
 app = FastAPI(
-    title="Animal Feed Relief Network",
-    version="0.1.0",
-    description="Validation-first coordination for safe, traceable animal-feed relief.",
+    title="Animal Welfare Control Plane / AFRN",
+    version="0.2.0",
+    description="Evidence-bounded regional animal-welfare diagnosis plus safe feed-relief actuation.",
 )
 service = ReliefService(DB_PATH, RULEPACK, MISSION)
 
@@ -70,6 +71,18 @@ def summary():
         "human_only_authority": sorted(service.mission.human_only_actions),
         "prohibited_agent_actions": sorted(service.mission.prohibited_actions),
     }
+
+
+@app.post("/v1/welfare/assess")
+def assess_welfare_landscape(landscape: WelfareLandscape, actor: str = Depends(require_operator)):
+    """Run the evidence-bounded lifecycle router.
+
+    This endpoint proposes welfare transitions only. It never authorizes capture,
+    treatment, sterilization, adoption, community return, dangerousness findings,
+    specialist acceptance or any irreversible welfare decision.
+    """
+    assessment = assess_area(landscape)
+    return assessment.model_dump(mode="json") | {"assessed_by": actor}
 
 
 @app.post("/v1/recipients")
