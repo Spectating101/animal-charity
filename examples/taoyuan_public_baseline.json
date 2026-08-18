@@ -1,0 +1,79 @@
+{
+  "area_id": "tw-taoyuan",
+  "area_name": "Taoyuan City, Taiwan",
+  "metadata": {
+    "snapshot_date": "2026-08-18",
+    "mode": "public-capability-baseline",
+    "warning": "This snapshot maps publicly evidenced services/capabilities only. It does not assert any shelter or animal is currently in crisis."
+  },
+  "observations": [],
+  "capabilities": [
+    {
+      "area_id": "tw-taoyuan",
+      "kind": "official_rescue_channel",
+      "provider_ref": "Taoyuan City Animal Protection Office",
+      "source_ref": "https://animal.tycg.gov.tw/",
+      "source_tier": "official",
+      "confidence": 1.0,
+      "details": {
+        "local_contact": "1999",
+        "out_of_area_contact": "03-2189000"
+      }
+    },
+    {
+      "area_id": "tw-taoyuan",
+      "kind": "public_shelter_adoption",
+      "provider_ref": "Taoyuan Animal Protection Education Park",
+      "source_ref": "https://animal.moa.gov.tw/Frontend/PublicShelter/Detail/PS00000011",
+      "source_tier": "official",
+      "confidence": 1.0,
+      "details": {
+        "address": "327 Taoyuan City, Xinwu District, Zaojiao Rd 1668"
+      }
+    },
+    {
+      "area_id": "tw-taoyuan",
+      "kind": "public_donation_channel",
+      "provider_ref": "Taoyuan Animal Protection Donation Account",
+      "source_ref": "https://animal.tycg.gov.tw/cp.aspx?n=8570",
+      "source_tier": "official",
+      "confidence": 1.0,
+      "details": {
+        "uses": ["stray animal protection", "emergency rescue", "shelter care", "medical care", "adoption", "animal welfare"]
+      }
+    },
+    {
+      "area_id": "tw-taoyuan",
+      "kind": "rural_sterilization_support",
+      "provider_ref": "Taoyuan 2026 rural dog/cat sterilization programme",
+      "source_ref": "https://animal.tycg.gov.tw/News_Content.aspx?n=8561&s=1600201&sms=12554",
+      "source_tier": "official",
+      "confidence": 1.0,
+      "details": {}
+    },
+    {
+      "area_id": "tw-taoyuan",
+      "kind": "external_feed_support",
+      "provider_ref": "APATW 2026 Stray Animal Food Bank",
+      "source_ref": "https://www.apatw.org/node?dog-age=All",
+      "source_tier": "professional",
+      "confidence": 1.0,
+      "details": {
+        "application_window": "2026-08-05 to 2026-08-22",
+        "scope": "eligible private animal shelters / rescue operations"
+      }
+    },
+    {
+      "area_id": "tw-taoyuan",
+      "kind": "daily_adoption_open_data",
+      "provider_ref": "Ministry of Agriculture animal adoption open dataset",
+      "source_ref": "https://data.gov.tw/dataset/85903",
+      "source_tier": "official",
+      "confidence": 1.0,
+      "details": {
+        "update_frequency": "daily",
+        "note": "Useful for population/flow context; not evidence of hunger by itself."
+      }
+    }
+  ]
+}
