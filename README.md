@@ -92,12 +92,12 @@ Run one cycle with `AFRN_AGENT_ONCE=1 python scripts/run_agent_loop.py`, or leav
 | `POST /v1/inventory` | record current feed | operator |
 | `POST /v1/supplies` | record candidate supply | operator |
 | `POST /v1/agent/tick` | run bounded welfare cycle | agent/operator |
-| `GET /v1/cases` | unresolved/resolved need | read |
-| `GET /v1/proposals` | pending matches | read |
+| `GET /v1/cases` | unresolved/resolved need | operator read |
+| `GET /v1/proposals` | pending matches | operator read |
 | `POST /v1/proposals/{id}/review` | approve/reject | **human only** |
 | `POST /v1/cases/{id}/resolve` | close with delivery evidence | **human only** |
-| `GET /v1/audit/events` | append-only operational history | read |
-| `GET /v1/audit/nocturnal-export` | map events to Nocturnal-style claims | read |
+| `GET /v1/audit/events` | append-only operational history | operator read |
+| `GET /v1/audit/nocturnal-export` | map events to Nocturnal-style claims | operator read |
 
 ## Launch gate
 
