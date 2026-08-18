@@ -11,6 +11,7 @@ from app.animal_welfare_control import WelfareLandscape, assess_area
 from app.domain import AnimalGroup, InventoryLot, Recipient, ResolutionEvidence, SupplyBatch
 from app.nocturnal_adapter import event_to_nocturnal_claim
 from app.service import ReliefService
+from app.welfare_outcomes import WelfareOutcome, summarize_outcomes
 
 BASE = Path(__file__).resolve().parents[1]
 DB_PATH = os.getenv("AFRN_DB_PATH", str(BASE / "data" / "relief.db"))
@@ -83,6 +84,13 @@ def assess_welfare_landscape(landscape: WelfareLandscape, actor: str = Depends(r
     """
     assessment = assess_area(landscape)
     return assessment.model_dump(mode="json") | {"assessed_by": actor}
+
+
+@app.post("/v1/welfare/outcomes/summarize")
+def summarize_welfare_outcomes(outcomes: list[WelfareOutcome], actor: str = Depends(require_operator)):
+    """Summarize verified welfare outcomes without treating handoff as success."""
+    summary = summarize_outcomes(outcomes)
+    return summary.model_dump(mode="json") | {"assessed_by": actor}
 
 
 @app.post("/v1/recipients")
