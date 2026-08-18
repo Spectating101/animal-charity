@@ -27,7 +27,7 @@ class Store:
 
     @contextmanager
     def conn(self) -> Iterator[sqlite3.Connection]:
-        db = sqlite3.connect(self.path)
+        db = sqlite3.connect(self.path, timeout=30)
         db.row_factory = sqlite3.Row
         try:
             yield db
@@ -66,21 +66,70 @@ class Store:
                 """
             )
 
-    def put(self, kind: str, obj: BaseModel, *, id_field: str) -> None:
+    def _put_on_db(self, db: sqlite3.Connection, kind: str, obj: BaseModel, *, id_field: str) -> None:
         payload = obj.model_dump(mode="json")
         obj_id = str(payload[id_field])
         now = datetime.now(timezone.utc).isoformat()
+        existing = db.execute(
+            "SELECT created_at FROM records WHERE kind=? AND id=?", (kind, obj_id)
+        ).fetchone()
+        created = existing["created_at"] if existing else now
+        db.execute(
+            """INSERT INTO records(kind,id,payload,created_at,updated_at)
+               VALUES(?,?,?,?,?)
+               ON CONFLICT(kind,id) DO UPDATE SET payload=excluded.payload,updated_at=excluded.updated_at""",
+            (kind, obj_id, _json(payload), created, now),
+        )
+
+    def _append_event_on_db(self, db: sqlite3.Connection, event: Event) -> str:
+        body = event.model_dump(mode="json")
+        prev = db.execute("SELECT event_hash FROM events ORDER BY seq DESC LIMIT 1").fetchone()
+        prev_hash = prev["event_hash"] if prev else None
+        digest = hashlib.sha256((prev_hash or "GENESIS").encode() + _json(body).encode()).hexdigest()
+        db.execute(
+            """INSERT INTO events(event_id,event_type,subject_type,subject_id,actor,occurred_at,
+               source_ref,payload,prev_hash,event_hash) VALUES(?,?,?,?,?,?,?,?,?,?)""",
+            (
+                event.event_id,
+                event.event_type,
+                event.subject_type,
+                event.subject_id,
+                event.actor,
+                body["occurred_at"],
+                event.source_ref,
+                _json(event.payload),
+                prev_hash,
+                digest,
+            ),
+        )
+        return digest
+
+    def put(self, kind: str, obj: BaseModel, *, id_field: str) -> None:
         with self.conn() as db:
-            existing = db.execute(
-                "SELECT created_at FROM records WHERE kind=? AND id=?", (kind, obj_id)
-            ).fetchone()
-            created = existing["created_at"] if existing else now
-            db.execute(
-                """INSERT INTO records(kind,id,payload,created_at,updated_at)
-                   VALUES(?,?,?,?,?)
-                   ON CONFLICT(kind,id) DO UPDATE SET payload=excluded.payload,updated_at=excluded.updated_at""",
-                (kind, obj_id, _json(payload), created, now),
-            )
+            db.execute("BEGIN IMMEDIATE")
+            self._put_on_db(db, kind, obj, id_field=id_field)
+
+    def put_with_event(self, kind: str, obj: BaseModel, *, id_field: str, event: Event) -> str:
+        """Atomically persist a materialized record and its authoritative audit event."""
+        with self.conn() as db:
+            db.execute("BEGIN IMMEDIATE")
+            self._put_on_db(db, kind, obj, id_field=id_field)
+            return self._append_event_on_db(db, event)
+
+    def put_many_with_events(
+        self,
+        entries: list[tuple[str, BaseModel, str, Event]],
+        *,
+        extra_events: list[Event] | None = None,
+    ) -> None:
+        """Atomically commit a multi-record state transition and its ordered audit events."""
+        with self.conn() as db:
+            db.execute("BEGIN IMMEDIATE")
+            for kind, obj, id_field, event in entries:
+                self._put_on_db(db, kind, obj, id_field=id_field)
+                self._append_event_on_db(db, event)
+            for event in extra_events or []:
+                self._append_event_on_db(db, event)
 
     def get(self, kind: str, obj_id: str) -> dict[str, Any] | None:
         with self.conn() as db:
@@ -93,28 +142,10 @@ class Store:
         return [json.loads(row["payload"]) for row in rows]
 
     def append_event(self, event: Event) -> str:
-        body = event.model_dump(mode="json")
         with self.conn() as db:
-            prev = db.execute("SELECT event_hash FROM events ORDER BY seq DESC LIMIT 1").fetchone()
-            prev_hash = prev["event_hash"] if prev else None
-            digest = hashlib.sha256((prev_hash or "GENESIS").encode() + _json(body).encode()).hexdigest()
-            db.execute(
-                """INSERT INTO events(event_id,event_type,subject_type,subject_id,actor,occurred_at,
-                   source_ref,payload,prev_hash,event_hash) VALUES(?,?,?,?,?,?,?,?,?,?)""",
-                (
-                    event.event_id,
-                    event.event_type,
-                    event.subject_type,
-                    event.subject_id,
-                    event.actor,
-                    body["occurred_at"],
-                    event.source_ref,
-                    _json(event.payload),
-                    prev_hash,
-                    digest,
-                ),
-            )
-        return digest
+            # Serialize ledger writers so two requests cannot fork from the same tip.
+            db.execute("BEGIN IMMEDIATE")
+            return self._append_event_on_db(db, event)
 
     def events(self, *, subject_type: str | None = None, subject_id: str | None = None) -> list[dict[str, Any]]:
         sql = "SELECT * FROM events"
