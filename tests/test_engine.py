@@ -17,7 +17,7 @@ class ReliefEngineTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.service = ReliefService(str(Path(self.tmp.name) / "test.db"), RULES)
-        self.recipient = self.service.save(Recipient(name="Shelter", region="Taoyuan", reliability=0.8), actor="test", event_type="recipient.recorded")
+        self.recipient = self.service.save(Recipient(name="Shelter", region="Taoyuan", status="active", reliability=0.8, welfare_review_ref="test://review"), actor="test", event_type="recipient.recorded")
         self.group = self.service.save(AnimalGroup(recipient_id=self.recipient.recipient_id, species="dog", count=20, daily_feed_kg=5), actor="test", event_type="animal_group.recorded")
         self.service.save(InventoryLot(recipient_id=self.recipient.recipient_id, group_id=self.group.group_id, product_name="Feed", quantity_kg=5), actor="test", event_type="inventory.observed")
 
@@ -46,6 +46,20 @@ class ReliefEngineTests(unittest.TestCase):
         case = self.service.store.list("case")[0]
         self.assertEqual(case["status"], "proposal_ready")
         self.assertEqual(proposal["batch_id"], batch.batch_id)
+
+    def test_pending_recipient_is_not_auto_matchable(self):
+        rules = RulePack.load(RULES)
+        pending = Recipient(name="Pending", region="Taoyuan")
+        gate = evaluate_match(recipient=pending, group=self.group, batch=self.batch(), rules=rules)
+        self.assertFalse(gate.passed)
+        self.assertIn("recipient_not_active", gate.reasons)
+
+    def test_recipient_activation_is_human_only_and_audited(self):
+        pending = self.service.save(Recipient(name="Pending", region="Taoyuan"), actor="intake", event_type="recipient.recorded")
+        self.assertEqual(pending.status, "pending")
+        reviewed = self.service.review_recipient(pending.recipient_id, approve=True, actor="welfare-reviewer", review_ref="review://1")
+        self.assertEqual(reviewed.status, "active")
+        self.assertEqual(reviewed.welfare_review_ref, "review://1")
 
     def test_prepared_food_is_not_auto_matchable(self):
         rules = RulePack.load(RULES)
@@ -88,6 +102,20 @@ class ReliefEngineTests(unittest.TestCase):
         self.service.agent_tick(actor="agent", target_buffer_days=14)
         proposals = self.service.store.list("proposal")
         self.assertLessEqual(sum(p["proposed_kg"] for p in proposals), 10.0)
+
+    def test_fully_consumed_batch_can_reload_at_zero_balance(self):
+        self.service.save(self.batch(quantity_kg=10), actor="test", event_type="supply.observed")
+        self.service.agent_tick(actor="agent", target_buffer_days=3)
+        case = self.service.store.list("case")[0]
+        proposal = self.service.store.list("proposal")[0]
+        self.service.review_proposal(proposal["proposal_id"], approve=True, actor="vet-reviewer")
+        delivered = proposal["proposed_kg"]
+        self.service.resolve_case(ResolutionEvidence(case_id=case["case_id"], evidence_ref="receipt://full", actor="operator", delivered_kg=delivered))
+        batch_id = proposal["batch_id"]
+        reloaded = self.service.get_model("supply", batch_id, SupplyBatch)
+        self.assertIsNotNone(reloaded)
+        self.assertEqual(delivered, 10)
+        self.assertEqual(reloaded.quantity_kg, 0)
 
     def test_resolution_updates_inventory_and_impact(self):
         self.service.save(self.batch(quantity_kg=50), actor="test", event_type="supply.observed")
