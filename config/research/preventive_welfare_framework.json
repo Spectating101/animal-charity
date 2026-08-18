@@ -1,0 +1,138 @@
+{
+  "framework_id": "preventive-welfare-infrastructure-v0",
+  "version": "2026-08-19.v0",
+  "research_thesis": "Persistent evidence-bounded welfare systems should target preventable bad-state transitions, repair access to existing services before creating new infrastructure, and verify stable welfare integration across animal, human, and environmental domains.",
+  "foundations": [
+    "one_welfare",
+    "social_determinants_of_companion_animal_welfare",
+    "animal_welfare_deserts_and_service_access",
+    "shelter_intake_diversion_and_owner_retention",
+    "dog_population_management_systems",
+    "stable_welfare_integration"
+  ],
+  "common_loop": [
+    "observe",
+    "identify_bad_state_transition",
+    "verify_driver_or_access_barrier",
+    "prefer_existing_service",
+    "select_smallest_feasible_intervention",
+    "route_human_or_professional_authority",
+    "verify_outcome",
+    "detect_recurrence",
+    "propose_reversible_structural_fix",
+    "evaluate_population_landscape"
+  ],
+  "access_dimensions": [
+    "availability",
+    "affordability",
+    "geographic_accessibility",
+    "transport_feasibility",
+    "information_accessibility",
+    "service_capacity"
+  ],
+  "determinant_classes": [
+    "income",
+    "housing",
+    "transportation",
+    "veterinary_access",
+    "food_access",
+    "information_access",
+    "language_access",
+    "social_support",
+    "service_capacity",
+    "foster_capacity",
+    "population_control_access",
+    "public_safety",
+    "ecology",
+    "owner_health",
+    "time_care_capacity"
+  ],
+  "causal_discipline": {
+    "context": "Area-level or correlational evidence may prioritize investigation but must not be represented as the cause of an individual case.",
+    "hypothesis": "A plausible driver is linked to the case but remains subject to verification.",
+    "established": "Subject/household-specific or stronger evidence directly supports using the driver operationally.",
+    "forbidden_shortcuts": [
+      "priority_area_implies_individual_problem",
+      "low_income_area_implies_owner_neglect",
+      "service_exists_implies_access",
+      "adoption_transaction_implies_stable_outcome",
+      "lower_reported_counts_imply_improvement_without_observation_coverage"
+    ]
+  },
+  "prevention_hierarchy": [
+    "prevent_bad_transition",
+    "repair_access_to_existing_service",
+    "resolve_case_with_smallest_feasible_intervention",
+    "extend_existing_institution",
+    "run_reversible_pilot",
+    "create_permanent_infrastructure_after_sustained_evidence",
+    "verify_landscape_improvement"
+  ],
+  "one_welfare_domains": [
+    "animal",
+    "human",
+    "environment"
+  ],
+  "success_concept": "stable_welfare_integration",
+  "research_questions": [
+    "Can the system distinguish absolute scarcity from access, information, transport, capacity, household, and coordination failures?",
+    "Which verified interventions prevent the most welfare deterioration per unit of cost and operating burden?",
+    "When do repeated case-level failures justify a local structural service?",
+    "Which interventions improve coupled animal, human, public-safety, and ecological outcomes?",
+    "Which pathways produce durable welfare-positive social integration?",
+    "Can intervention additionality be supported rather than merely activity counted?"
+  ],
+  "human_transfer_boundary": {
+    "transferable": [
+      "evidence_provenance",
+      "bad_state_transition_model",
+      "access_barrier_decomposition",
+      "intervention_selection_pattern",
+      "authority_gates",
+      "outcome_verification",
+      "recurrence_detection",
+      "anti_gaming_evaluation"
+    ],
+    "not_transferable": [
+      "animal_specific_welfare_rules",
+      "animal_population_management_rules",
+      "animal_ownership_assumptions",
+      "animal_capture_or_placement_logic"
+    ],
+    "human_constitution_required": [
+      "rights_and_legal_entitlements",
+      "autonomy_and_informed_consent",
+      "political_agency",
+      "anti_discrimination",
+      "privacy_and_due_process",
+      "labor_housing_and_benefit_law",
+      "self_determination_and_dignity"
+    ]
+  },
+  "literature": [
+    {
+      "topic": "one_welfare",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12427028/"
+    },
+    {
+      "topic": "social_determinants",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10044303/"
+    },
+    {
+      "topic": "animal_welfare_deserts",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10368398/"
+    },
+    {
+      "topic": "veterinary_access",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10830634/"
+    },
+    {
+      "topic": "shelter_diversion",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10936303/"
+    },
+    {
+      "topic": "dog_population_management_economics",
+      "source": "https://www.frontiersin.org/journals/veterinary-science/articles/10.3389/fvets.2025.1519913/full"
+    }
+  ]
+}
