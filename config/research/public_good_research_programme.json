@@ -1,15 +1,17 @@
 {
   "programme_id": "preventive-public-good-systems-v0",
-  "version": "2026-08-19.v1",
-  "testbed": "companion_animal_welfare",
-  "programme_question": "Can an evidence-bounded regional control plane identify preventable welfare deterioration, distinguish resource scarcity from access and coordination failure, route the smallest appropriate intervention, detect recurring structural gaps, and verify durable welfare improvement without optimizing harmful proxy metrics?",
+  "version": "2026-08-19.v2",
+  "primary_testbed": "companion_animal_welfare",
+  "secondary_testbed": "indonesia_mbg_public_nutrition_case_study",
+  "programme_question": "Can an evidence-bounded control plane identify preventable welfare deterioration, distinguish true scarcity from access, coordination and integrity failure, route the smallest appropriate intervention, detect recurring structural gaps, and verify durable outcomes without optimizing harmful proxy metrics or exceeding domain authority?",
   "constructs": {
     "one_welfare": "Animal, human and environmental outcomes can be coupled and should be observed without collapsing them into one score.",
     "social_determinants": "Income, housing, transport, information, care access and other human/service conditions may shape animal welfare, but area context is not individual causation.",
     "welfare_desert": "A service may exist yet remain inaccessible through affordability, geography, transport, information or capacity barriers.",
     "preventable_bad_state_transition": "Intervene before a stable state deteriorates into surrender, unmanaged displacement, new stray recruitment, prolonged unstable care or severe acute harm.",
     "stable_welfare_integration": "Success is a durable welfare-positive state such as safe reunification, retained home, stable placement, sanctuary, appropriate community management or optional specialist participation.",
-    "capability_based_social_integration": "For stable animals, optional forms of participation should be matched to longitudinal capability, preference and welfare evidence; productivity is never a condition of care."
+    "capability_based_social_integration": "For stable animals, optional forms of participation should be matched to longitudinal capability, preference and welfare evidence; productivity is never a condition of care.",
+    "integrity_chain": "Allocation, disbursement, procurement, physical input, service output, beneficiary receipt and outcome are distinct evidentiary stages. A discrepancy may justify reconciliation or authorized audit review but does not itself establish fraud or corruption."
   },
   "hypotheses": [
     {
@@ -54,27 +56,39 @@
     },
     {
       "id": "H6_public_good_control_plane",
-      "question": "Does the evidence-transition-access-intervention-evaluation architecture remain useful when transferred to another welfare domain without transferring animal-specific policy rules?",
+      "question": "Does the evidence-transition-access-integrity-intervention-evaluation architecture remain useful when transferred to another welfare domain without transferring animal-specific policy rules?",
       "required_evidence": ["separate human-domain constitution", "domain-specific rules", "matched architecture evaluation"],
-      "primary_modules": [],
+      "primary_modules": ["app/integrity_plane.py", "app/mbg_case_study.py"],
       "supporting_metrics": ["diagnostic accuracy", "false intervention rate", "rights/governance violations", "outcome additionality"],
       "falsification": "The architecture depends materially on animal-specific assumptions and fails under a separately constituted human-welfare domain."
+    },
+    {
+      "id": "H7_integrity_before_scarcity",
+      "question": "Can explicit resource-flow reconciliation prevent apparent shortages caused by unexplained allocation/procurement/delivery discrepancies from being misclassified as genuine capacity scarcity?",
+      "required_evidence": ["financial or authorization claim", "physical or service observation", "explicit reconciliation tolerance", "human-reviewed explanation or audit outcome"],
+      "primary_modules": ["app/integrity_plane.py", "app/mbg_case_study.py"],
+      "supporting_metrics": ["diagnosis changed after reconciliation", "false capacity-expansion recommendation rate", "unexplained variance resolution rate", "audit referral precision"],
+      "falsification": "Resource-flow reconciliation rarely changes operational diagnosis or adds no reliable information beyond ordinary capacity/access evidence."
     }
   ],
   "research_order": [
     "establish literature-backed constructs",
-    "replay synthetic and historical cases",
-    "acquire one real bounded-area partner dataset",
+    "replay synthetic and historical animal-welfare cases",
+    "acquire one real bounded-area animal-welfare partner dataset",
     "validate diagnosis and access classification",
-    "run reversible supervised intervention pilot",
+    "run reversible supervised animal-welfare intervention pilot",
     "measure additionality and recurrence",
-    "only then test cross-domain transfer"
+    "run separately constituted MBG/public-nutrition retrospective case replay",
+    "compare architecture-level successes and failures across domains",
+    "only then consider broader poverty or food-security transfer"
   ],
   "claims_boundary": [
     "Do not claim causal determinants from area-level correlations.",
     "Do not claim a welfare desert because a service is distant without measuring actual access dimensions.",
     "Do not call a handoff, adoption, sterilization, donation or working-role acceptance a success without follow-up welfare evidence.",
+    "Do not call an MBG variance, anomaly, high price, mismatch or network relationship fraud or corruption; preserve due process and authorized investigative authority.",
+    "Do not treat budget allocation as service delivery or meal delivery as nutritional outcome.",
     "Do not claim novelty of the overall framework until a formal systematic/scoping review is completed.",
-    "Do not transfer animal-specific rules or optimization targets into human poverty or food-security systems."
+    "Do not transfer animal-specific rules or optimization targets into human poverty, nutrition or food-security systems."
   ]
 }
