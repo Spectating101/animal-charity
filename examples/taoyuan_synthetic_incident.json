@@ -1,0 +1,75 @@
+{
+  "area_id": "tw-taoyuan",
+  "area_name": "Taoyuan City, Taiwan",
+  "metadata": {
+    "snapshot_date": "2026-08-18",
+    "mode": "synthetic-incident-on-real-public-landscape",
+    "warning": "All condition observations in this fixture are synthetic and do not describe a real shelter or organization. Public capabilities are real."
+  },
+  "observations": [
+    {
+      "area_id": "tw-taoyuan",
+      "subject_ref": "synthetic-rescue-A",
+      "signal": "feed_coverage_days",
+      "value": 1.8,
+      "unit": "days",
+      "evidence_class": "condition",
+      "source_ref": "synthetic://verified-inventory",
+      "source_tier": "synthetic",
+      "confidence": 1.0,
+      "synthetic": true
+    },
+    {
+      "area_id": "tw-taoyuan",
+      "subject_ref": "synthetic-rescue-A",
+      "signal": "compatible_supply_kg_nearby",
+      "value": 80,
+      "unit": "kg",
+      "evidence_class": "condition",
+      "source_ref": "synthetic://verified-donor-lot",
+      "source_tier": "synthetic",
+      "confidence": 1.0,
+      "synthetic": true
+    },
+    {
+      "area_id": "tw-taoyuan",
+      "subject_ref": "synthetic-rescue-A",
+      "signal": "transport_available",
+      "value": false,
+      "evidence_class": "condition",
+      "source_ref": "synthetic://operator-logistics-check",
+      "source_tier": "synthetic",
+      "confidence": 1.0,
+      "synthetic": true
+    }
+  ],
+  "capabilities": [
+    {
+      "area_id": "tw-taoyuan",
+      "kind": "official_rescue_channel",
+      "provider_ref": "Taoyuan City Animal Protection Office",
+      "source_ref": "https://animal.tycg.gov.tw/",
+      "source_tier": "official",
+      "confidence": 1.0,
+      "details": {"local_contact": "1999"}
+    },
+    {
+      "area_id": "tw-taoyuan",
+      "kind": "public_shelter_adoption",
+      "provider_ref": "Taoyuan Animal Protection Education Park",
+      "source_ref": "https://animal.moa.gov.tw/Frontend/PublicShelter/Detail/PS00000011",
+      "source_tier": "official",
+      "confidence": 1.0,
+      "details": {}
+    },
+    {
+      "area_id": "tw-taoyuan",
+      "kind": "external_feed_support",
+      "provider_ref": "APATW 2026 Stray Animal Food Bank",
+      "source_ref": "https://www.apatw.org/node?dog-age=All",
+      "source_tier": "professional",
+      "confidence": 1.0,
+      "details": {}
+    }
+  ]
+}
