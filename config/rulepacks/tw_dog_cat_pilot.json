@@ -1,0 +1,14 @@
+{
+  "version": "tw-dog-cat-pilot-2026-08-v0",
+  "jurisdiction": "Taiwan pilot / NON-LEGAL DEMONSTRATION",
+  "allowed_species": ["dog", "cat"],
+  "auto_match_source_classes": ["sealed_commercial"],
+  "require_unopened": true,
+  "minimum_expiry_hours": 48,
+  "allowed_diet_classes": ["complete_commercial"],
+  "notes": [
+    "This rule pack authorizes proposal generation only, never feeding or dispatch.",
+    "Prepared food, ingredients, open packages, exotic wildlife and medical diets require named professional review and are outside the v0 autonomous path.",
+    "Local veterinary, legal, food-handling and insurance review is required before any live pilot."
+  ]
+}
