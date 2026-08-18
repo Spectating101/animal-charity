@@ -1,4 +1,4 @@
-.PHONY: test smoke landscape-smoke initiative-smoke control-smoke verify run seed docker-build
+.PHONY: test smoke landscape-smoke initiative-smoke control-smoke lifecycle-initiative-smoke verify run seed docker-build
 
 test:
 	python -m unittest discover -s tests -v
@@ -22,7 +22,10 @@ control-smoke:
 	@python scripts/assess_animal_welfare.py examples/zhongli_sanmin_policy_baseline.json | python -c "import json,sys; d=json.load(sys.stdin); assert d['decisions']==[]; assert d['data_gaps']"
 	@python scripts/assess_animal_welfare.py examples/zhongli_sanmin_synthetic_lifecycle.json | python -c "import json,sys; d=json.load(sys.stdin); kinds=[x['intervention_class'] for x in d['decisions']]; assert 'reunification' in kinds; assert 'owner_retention' in kinds; assert kinds.count('source_control')==3; assert 'foster_to_adoption' in kinds; assert 'specialist_referral' in kinds; assert 'rescue_stabilize' in kinds; assert any(x['intervention_class']=='source_control' for x in d['structural_signals'])"
 
-verify: test smoke landscape-smoke initiative-smoke control-smoke
+lifecycle-initiative-smoke:
+	@python scripts/plan_lifecycle_initiatives.py examples/zhongli_sanmin_synthetic_source_control_history.json | python -c "import json,sys; d=json.load(sys.stdin); assert len(d)==1; p=d[0]; assert p['structural_gap_established'] is True; assert p['intervention_class']=='source_control'; assert p['recommended']['mode']=='periodic_pop_up'; assert p['recommended']['site_id']=='synthetic-sanmin-community-host'"
+
+verify: test smoke landscape-smoke initiative-smoke control-smoke lifecycle-initiative-smoke
 	python -m compileall -q app scripts tests
 
 run:
