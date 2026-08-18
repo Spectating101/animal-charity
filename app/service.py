@@ -40,18 +40,16 @@ class ReliefService:
 
     def save(self, obj, *, actor: str, event_type: str, source_ref: str | None = None):
         kind, id_field = KINDS[type(obj)]
-        self.store.put(kind, obj, id_field=id_field)
         obj_id = getattr(obj, id_field)
-        self.store.append_event(
-            Event(
-                event_type=event_type,
-                subject_type=kind,
-                subject_id=obj_id,
-                actor=actor,
-                source_ref=source_ref,
-                payload=obj.model_dump(mode="json"),
-            )
+        event = Event(
+            event_type=event_type,
+            subject_type=kind,
+            subject_id=obj_id,
+            actor=actor,
+            source_ref=source_ref,
+            payload=obj.model_dump(mode="json"),
         )
+        self.store.put_with_event(kind, obj, id_field=id_field, event=event)
         return obj
 
     def list_model(self, kind: str, model):
@@ -60,6 +58,28 @@ class ReliefService:
     def get_model(self, kind: str, obj_id: str, model):
         raw = self.store.get(kind, obj_id)
         return model.model_validate(raw) if raw else None
+
+    def review_recipient(
+        self,
+        recipient_id: str,
+        *,
+        approve: bool,
+        actor: str,
+        review_ref: str,
+        emergency_only: bool = False,
+    ) -> Recipient:
+        self.mission.require_human("approve_recipient")
+        recipient = self.get_model("recipient", recipient_id, Recipient)
+        if not recipient:
+            raise KeyError("recipient_not_found")
+        recipient.welfare_review_ref = review_ref
+        if approve:
+            recipient.status = "emergency_only" if emergency_only else "active"
+            event_type = "recipient.emergency_only" if emergency_only else "recipient.approved"
+        else:
+            recipient.status = "suspended"
+            event_type = "recipient.rejected"
+        return self.save(recipient, actor=actor, event_type=event_type, source_ref=review_ref)
 
     def agent_tick(self, *, actor: str = "welfare-agent", horizon_days: float = 7, target_buffer_days: float = 14) -> AgentTickResult:
         """Run one bounded autonomous welfare cycle.
@@ -178,27 +198,38 @@ class ReliefService:
             raise ValueError("delivered_quantity_exceeds_batch_balance")
 
         batch.quantity_kg = round(batch.quantity_kg - evidence.delivered_kg, 6)
-        self.save(batch, actor=evidence.actor, event_type="supply.consumed", source_ref=evidence.evidence_ref)
-        self.save(
-            InventoryLot(
-                recipient_id=case.recipient_id,
-                group_id=case.group_id,
-                product_name=batch.product_name,
-                quantity_kg=evidence.delivered_kg,
-                diet_class=batch.diet_class,
-                expires_at=batch.expires_at,
-                source_ref=evidence.evidence_ref,
-            ),
-            actor=evidence.actor,
-            event_type="inventory.received",
+        received = InventoryLot(
+            recipient_id=case.recipient_id,
+            group_id=case.group_id,
+            product_name=batch.product_name,
+            quantity_kg=evidence.delivered_kg,
+            diet_class=batch.diet_class,
+            expires_at=batch.expires_at,
             source_ref=evidence.evidence_ref,
         )
-
         animal_days = round((evidence.delivered_kg / group.daily_feed_kg) * group.count, 3)
         case.status = "resolved"
-        self.save(case, actor=evidence.actor, event_type="need_case.resolved", source_ref=evidence.evidence_ref)
         payload = evidence.model_dump(mode="json") | {"animal_days_supported": animal_days, "batch_id": batch.batch_id, "proposal_id": proposal.proposal_id}
-        self.store.append_event(Event(event_type="delivery.confirmed", subject_type="case", subject_id=case.case_id, actor=evidence.actor, source_ref=evidence.evidence_ref, payload=payload))
+
+        self.store.put_many_with_events(
+            [
+                (
+                    "supply", batch, "batch_id",
+                    Event(event_type="supply.consumed", subject_type="supply", subject_id=batch.batch_id, actor=evidence.actor, source_ref=evidence.evidence_ref, payload=batch.model_dump(mode="json")),
+                ),
+                (
+                    "inventory", received, "inventory_id",
+                    Event(event_type="inventory.received", subject_type="inventory", subject_id=received.inventory_id, actor=evidence.actor, source_ref=evidence.evidence_ref, payload=received.model_dump(mode="json")),
+                ),
+                (
+                    "case", case, "case_id",
+                    Event(event_type="need_case.resolved", subject_type="case", subject_id=case.case_id, actor=evidence.actor, source_ref=evidence.evidence_ref, payload=case.model_dump(mode="json")),
+                ),
+            ],
+            extra_events=[
+                Event(event_type="delivery.confirmed", subject_type="case", subject_id=case.case_id, actor=evidence.actor, source_ref=evidence.evidence_ref, payload=payload)
+            ],
+        )
         return case
 
     def impact_summary(self) -> dict[str, float | int]:
