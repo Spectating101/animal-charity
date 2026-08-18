@@ -19,7 +19,7 @@ service = ReliefService(
 )
 
 recipient = service.save(
-    Recipient(name="Demo Shelter A", region="Taoyuan", reliability=0.8, source_ref="demo://recipient"),
+    Recipient(name="Demo Shelter A", region="Taoyuan", status="active", reliability=0.8, welfare_review_ref="demo://welfare-review", source_ref="demo://recipient"),
     actor="demo-seed",
     event_type="recipient.recorded",
     source_ref="demo://recipient",
