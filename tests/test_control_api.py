@@ -139,7 +139,7 @@ class ControlPlaneApiTests(unittest.TestCase):
             self.assertEqual(accepted.status_code, 200)
             self.assertEqual(accepted.json()["evidence_manifest"]["status"], "complete")
 
-    def test_registry_analyst_can_assess_but_cannot_operate(self):
+    def test_registry_analyst_can_assess_and_replay_but_cannot_operate(self):
         with tempfile.TemporaryDirectory() as tmp:
             client = self._registry_client(tmp)
             headers = {"X-Actor": "api-analyst", "Authorization": "Bearer analyst-secret"}
@@ -149,9 +149,18 @@ class ControlPlaneApiTests(unittest.TestCase):
             self.assertEqual(assess.status_code, 200)
             self.assertEqual(assess.json()["auth_mode"], "actor_registry")
 
+            replay_payload = json.loads((ROOT / "examples" / "replay_animal_owner_retention.json").read_text(encoding="utf-8"))
+            replay = client.post("/v1/public-good/replay", json=replay_payload, headers=headers)
+            self.assertEqual(replay.status_code, 200)
+            replay_body = replay.json()
+            self.assertTrue(replay_body["reference_hidden"])
+            self.assertNotIn("historical_action", replay_body)
+            self.assertEqual(replay_body["assessment"]["normalized_findings"][0]["stage"], "prevent")
+
             me = client.get("/v1/access/me", headers=headers)
             self.assertEqual(me.status_code, 200)
             self.assertIn("public_good.assess", me.json()["permissions"])
+            self.assertIn("replay.run", me.json()["permissions"])
             self.assertNotIn("operations.write", me.json()["permissions"])
 
             recipient = {
