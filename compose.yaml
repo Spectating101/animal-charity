@@ -6,9 +6,14 @@ services:
       AFRN_DB_PATH: /data/relief.db
       AFRN_RULEPACK: /code/config/rulepacks/tw_dog_cat_pilot.json
       AFRN_MISSION: /code/config/missions/animal_feed_security.json
-      AFRN_OPERATOR_TOKEN: ${AFRN_OPERATOR_TOKEN:?set AFRN_OPERATOR_TOKEN}
+      AFRN_OPERATOR_TOKEN: ${AFRN_OPERATOR_TOKEN:-}
+      AFRN_ACTOR_REGISTRY: ${AFRN_ACTOR_REGISTRY:-}
+      AFRN_TOKEN_ANALYST_1: ${AFRN_TOKEN_ANALYST_1:-}
+      AFRN_TOKEN_OPERATOR_1: ${AFRN_TOKEN_OPERATOR_1:-}
+      AFRN_TOKEN_REVIEWER_1: ${AFRN_TOKEN_REVIEWER_1:-}
       AFRN_DEMO_MODE: ${AFRN_DEMO_MODE:-0}
     volumes:
       - relief-data:/data
+      - ./config:/code/config:ro
 volumes:
   relief-data:
