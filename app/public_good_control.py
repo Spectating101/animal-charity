@@ -6,7 +6,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from app.animal_welfare_control import AreaControlAssessment, WelfareLandscape, assess_area
 from app.mbg_case_study import MBGCaseAssessment, MBGCaseSnapshot, assess_mbg_case
@@ -25,11 +25,29 @@ class PublicGoodDomain(str, Enum):
     mbg_public_nutrition = "mbg_public_nutrition"
 
 
+class EvidenceManifestEntry(BaseModel):
+    source_ref: str
+    source_kind: Literal["official", "partner", "professional", "operator", "public", "transaction", "sensor", "synthetic", "other"] = "other"
+    verification_status: Literal["reported", "corroborated", "verified"] = "reported"
+    sensitivity: Literal["public", "internal", "sensitive", "restricted"] = "internal"
+    observed_at: datetime | None = None
+    content_sha256: str | None = Field(default=None, pattern=r"^[0-9a-fA-F]{64}$")
+    notes: str | None = None
+
+
 class PublicGoodCase(BaseModel):
     case_id: str
     domain: PublicGoodDomain
     payload: dict[str, Any]
+    evidence_manifest: list[EvidenceManifestEntry] = Field(default_factory=list)
     metadata: dict[str, Any] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def manifest_refs_must_be_unique(self) -> "PublicGoodCase":
+        refs = [entry.source_ref for entry in self.evidence_manifest]
+        if len(refs) != len(set(refs)):
+            raise ValueError("evidence_manifest source_ref values must be unique")
+        return self
 
 
 class NormalizedFinding(BaseModel):
@@ -53,6 +71,15 @@ class NormalizedFinding(BaseModel):
     domain_detail: dict[str, Any] = Field(default_factory=dict)
 
 
+class EvidenceManifestSummary(BaseModel):
+    status: Literal["not_supplied", "complete", "incomplete"]
+    cited_ref_count: int = 0
+    registered_ref_count: int = 0
+    missing_refs: list[str] = Field(default_factory=list)
+    verified_ref_count: int = 0
+    sensitive_ref_count: int = 0
+
+
 class PublicGoodAssessment(BaseModel):
     case_id: str
     domain: PublicGoodDomain
@@ -63,6 +90,7 @@ class PublicGoodAssessment(BaseModel):
     shared_loop: list[str]
     hard_gates: list[str]
     normalized_findings: list[NormalizedFinding] = Field(default_factory=list)
+    evidence_manifest: EvidenceManifestSummary
     data_gaps: list[str] = Field(default_factory=list)
     safe_conclusion: str
     non_transfer_rule: str
@@ -138,6 +166,22 @@ def _normalize_mbg(result: MBGCaseAssessment) -> list[NormalizedFinding]:
     ]
 
 
+def _manifest_summary(case: PublicGoodCase, normalized: list[NormalizedFinding]) -> EvidenceManifestSummary:
+    cited = sorted({ref for finding in normalized for ref in finding.evidence_refs if ref})
+    if not case.evidence_manifest:
+        return EvidenceManifestSummary(status="not_supplied", cited_ref_count=len(cited))
+    by_ref = {entry.source_ref: entry for entry in case.evidence_manifest}
+    missing = [ref for ref in cited if ref not in by_ref]
+    return EvidenceManifestSummary(
+        status="incomplete" if missing else "complete",
+        cited_ref_count=len(cited),
+        registered_ref_count=len(by_ref),
+        missing_refs=missing,
+        verified_ref_count=sum(1 for entry in by_ref.values() if entry.verification_status == "verified"),
+        sensitive_ref_count=sum(1 for entry in by_ref.values() if entry.sensitivity in {"sensitive", "restricted"}),
+    )
+
+
 def assess_public_good_case(case: PublicGoodCase) -> PublicGoodAssessment:
     registry = _registry()
     profile = registry["domains"][case.domain.value]
@@ -146,16 +190,23 @@ def assess_public_good_case(case: PublicGoodCase) -> PublicGoodAssessment:
         payload = WelfareLandscape.model_validate(case.payload)
         domain_result = assess_area(payload)
         normalized = _normalize_animal(domain_result)
-        data_gaps = domain_result.data_gaps
+        data_gaps = list(domain_result.data_gaps)
         safe_conclusion = domain_result.safe_conclusion
     elif case.domain == PublicGoodDomain.mbg_public_nutrition:
         payload = MBGCaseSnapshot.model_validate(case.payload)
         domain_result = assess_mbg_case(payload)
         normalized = _normalize_mbg(domain_result)
-        data_gaps = domain_result.data_gaps
+        data_gaps = list(domain_result.data_gaps)
         safe_conclusion = domain_result.safe_conclusion
     else:  # defensive; enum validation should prevent this path.
         raise ValueError(f"unsupported public-good domain: {case.domain}")
+
+    manifest = _manifest_summary(case, normalized)
+    if manifest.status == "incomplete":
+        data_gaps.append(
+            "Evidence manifest does not register all source references cited by the assessment: "
+            + ", ".join(manifest.missing_refs[:10])
+        )
 
     return PublicGoodAssessment(
         case_id=case.case_id,
@@ -166,6 +217,7 @@ def assess_public_good_case(case: PublicGoodCase) -> PublicGoodAssessment:
         shared_loop=registry["shared_loop"],
         hard_gates=profile["hard_gates"],
         normalized_findings=normalized,
+        evidence_manifest=manifest,
         data_gaps=data_gaps,
         safe_conclusion=safe_conclusion,
         non_transfer_rule=registry["non_transfer_rule"],
