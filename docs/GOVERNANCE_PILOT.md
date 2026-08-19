@@ -77,9 +77,9 @@ This is pilot IAM, not a replacement for government SSO/IdP, MFA, device trust, 
 
 ## Audit behavior
 
-A unified public-good assessment appends a `public_good.assessed` event to the hash-chained ledger.
+A unified public-good assessment appends a `public_good.assessed` event to the hash-chained ledger. A service replay appends `public_good.replayed` with the replay cutoff and recommendation summary while keeping the hidden historical reference out of the response and audit payload.
 
-The audit event records:
+The assessment audit event records:
 
 - case id;
 - domain;
@@ -95,6 +95,14 @@ The raw case payload is deliberately not copied into the audit event. Sensitive 
 
 ## Historical replay
 
+Service/API run:
+
+`POST /v1/public-good/replay`
+
+The API requires `replay.run` permission and deliberately performs **non-scoring replay only**. It returns the assessment and audit reference but never reveals the hidden historical reference.
+
+CLI run:
+
 `python scripts/replay_public_good_case.py <packet.json>`
 
 A `ReplayPacket` contains:
@@ -107,7 +115,7 @@ Strict replay requires timestamps on evidence-bearing records and rejects eviden
 
 The normal replay output does not expose the reference.
 
-Only an explicit scoring run reveals it:
+Only an explicit offline scoring run reveals it:
 
 `python scripts/replay_public_good_case.py <packet.json> --score`
 
