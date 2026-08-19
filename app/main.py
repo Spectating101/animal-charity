@@ -15,6 +15,7 @@ from app.domain import AnimalGroup, Event, InventoryLot, Recipient, ResolutionEv
 from app.nocturnal_adapter import event_to_nocturnal_claim
 from app.preventive_welfare import PreventiveWelfareSnapshot, assess_preventive_system
 from app.public_good_control import PublicGoodCase, assess_public_good_case
+from app.replay import ReplayPacket, run_replay
 from app.service import ReliefService
 from app.welfare_outcomes import WelfareOutcome, summarize_outcomes
 
@@ -159,6 +160,42 @@ def assess_public_good(
     )
     event_hash = service.store.append_event(event)
     return assessment.model_dump(mode="json") | {
+        "assessed_by": actor.actor_id,
+        "auth_mode": actor.auth_mode,
+        "audit_event_id": event.event_id,
+        "audit_event_hash": event_hash,
+    }
+
+
+@app.post("/v1/public-good/replay")
+def replay_public_good(
+    packet: ReplayPacket,
+    actor: ActorContext = Depends(require_permission("replay.run")),
+):
+    """Run a hindsight-safe replay without exposing/scoring the hidden reference."""
+    try:
+        replay = run_replay(packet)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+
+    event = Event(
+        event_type="public_good.replayed",
+        subject_type="public_good_replay",
+        subject_id=packet.replay_id,
+        actor=actor.actor_id,
+        source_ref=str(packet.metadata.get("source_ref")) if packet.metadata.get("source_ref") else None,
+        payload={
+            "case_id": packet.case.case_id,
+            "domain": packet.case.domain.value,
+            "decision_cutoff": packet.decision_cutoff.isoformat(),
+            "input_sha256": _case_digest(packet.case),
+            "normalized_stages": [finding.stage for finding in replay.assessment.normalized_findings],
+            "reference_hidden": True,
+            "evidence_timestamp_gate": replay.evidence_timestamp_gate,
+        },
+    )
+    event_hash = service.store.append_event(event)
+    return replay.model_dump(mode="json") | {
         "assessed_by": actor.actor_id,
         "auth_mode": actor.auth_mode,
         "audit_event_id": event.event_id,
