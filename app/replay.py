@@ -27,6 +27,7 @@ class ReplayPacket(BaseModel):
     decision_cutoff: datetime
     case: PublicGoodCase
     reference: ReplayReference | None = None
+    require_evidence_timestamps: bool = True
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 
@@ -36,6 +37,7 @@ class ReplayRun(BaseModel):
     assessed_at: datetime = Field(default_factory=utcnow)
     assessment: PublicGoodAssessment
     hindsight_evidence_rejected: bool = True
+    evidence_timestamp_gate: bool = True
     reference_hidden: bool = True
 
 
@@ -49,6 +51,9 @@ class ReplayScore(BaseModel):
     historical_outcome_summary: str | None = None
     reference_refs: list[str] = Field(default_factory=list)
     notes: list[str] = Field(default_factory=list)
+
+
+_TIME_KEYS = {"observed_at", "occurred_at", "confirmed_at", "measured_at", "recorded_at"}
 
 
 def _parse_time(value: Any) -> datetime | None:
@@ -71,7 +76,7 @@ def _future_evidence(value: Any, cutoff: datetime, path: str = "case.payload") -
     if isinstance(value, dict):
         for key, item in value.items():
             child = f"{path}.{key}"
-            if key in {"observed_at", "occurred_at", "confirmed_at", "measured_at", "recorded_at"}:
+            if key in _TIME_KEYS:
                 dt = _parse_time(item)
                 if dt is not None and dt > cutoff:
                     violations.append(child)
@@ -82,9 +87,31 @@ def _future_evidence(value: Any, cutoff: datetime, path: str = "case.payload") -
     return violations
 
 
+def _untimestamped_evidence(value: Any, path: str = "case.payload") -> list[str]:
+    gaps: list[str] = []
+    if isinstance(value, dict):
+        # Domain observations and flow observations consistently carry source_ref.
+        # In strict replay mode each such evidence-bearing object must state when
+        # it was known so the harness can enforce the historical decision cutoff.
+        if value.get("source_ref") and not any(key in value for key in _TIME_KEYS):
+            gaps.append(path)
+        for key, item in value.items():
+            gaps.extend(_untimestamped_evidence(item, f"{path}.{key}"))
+    elif isinstance(value, list):
+        for index, item in enumerate(value):
+            gaps.extend(_untimestamped_evidence(item, f"{path}[{index}]"))
+    return gaps
+
+
 def run_replay(packet: ReplayPacket) -> ReplayRun:
     if packet.decision_cutoff.tzinfo is None:
         raise ValueError("decision_cutoff must be timezone-aware")
+    if packet.require_evidence_timestamps:
+        missing = _untimestamped_evidence(packet.case.payload)
+        if missing:
+            raise ValueError(
+                "strict replay requires timestamps on evidence-bearing records: " + ", ".join(missing[:10])
+            )
     violations = _future_evidence(packet.case.payload, packet.decision_cutoff)
     if violations:
         raise ValueError(
@@ -95,6 +122,7 @@ def run_replay(packet: ReplayPacket) -> ReplayRun:
         replay_id=packet.replay_id,
         decision_cutoff=packet.decision_cutoff,
         assessment=assessment,
+        evidence_timestamp_gate=packet.require_evidence_timestamps,
     )
 
 
