@@ -111,6 +111,34 @@ class ControlPlaneApiTests(unittest.TestCase):
             self.assertIn("input_sha256", event["payload"])
             self.assertNotIn("payload", event["payload"])
 
+    def test_strict_public_good_evidence_requires_registered_sources(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            client = self._client(tmp)
+            payload = json.loads((ROOT / "examples" / "public_good_animal_owner_retention.json").read_text(encoding="utf-8"))
+            headers = {"X-Actor": "strict-evidence-test"}
+
+            rejected = client.post("/v1/public-good/assess?strict_evidence=true", json=payload, headers=headers)
+            self.assertEqual(rejected.status_code, 422)
+            self.assertEqual(rejected.json()["detail"]["manifest_status"], "not_supplied")
+
+            payload["evidence_manifest"] = [
+                {
+                    "source_ref": "synthetic:owner-interview",
+                    "source_kind": "synthetic",
+                    "verification_status": "corroborated",
+                    "sensitivity": "internal"
+                },
+                {
+                    "source_ref": "synthetic:verified-case-note",
+                    "source_kind": "synthetic",
+                    "verification_status": "verified",
+                    "sensitivity": "internal"
+                }
+            ]
+            accepted = client.post("/v1/public-good/assess?strict_evidence=true", json=payload, headers=headers)
+            self.assertEqual(accepted.status_code, 200)
+            self.assertEqual(accepted.json()["evidence_manifest"]["status"], "complete")
+
     def test_registry_analyst_can_assess_but_cannot_operate(self):
         with tempfile.TemporaryDirectory() as tmp:
             client = self._registry_client(tmp)
