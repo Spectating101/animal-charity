@@ -1,0 +1,33 @@
+{
+  "version": "2026-08-19.v1",
+  "roles": {
+    "observer": ["summary.read", "audit.read"],
+    "analyst": ["summary.read", "public_good.assess", "welfare.assess", "replay.run"],
+    "operator": ["summary.read", "public_good.assess", "welfare.assess", "replay.run", "operations.write"],
+    "reviewer": ["summary.read", "public_good.assess", "welfare.assess", "replay.run", "review.write", "audit.read"],
+    "admin": ["*"]
+  },
+  "actors": {
+    "analyst-1": {
+      "actor_id": "analyst-1",
+      "display_name": "Pilot Analyst",
+      "roles": ["analyst"],
+      "token_env": "AFRN_TOKEN_ANALYST_1",
+      "active": true
+    },
+    "operator-1": {
+      "actor_id": "operator-1",
+      "display_name": "Pilot Operator",
+      "roles": ["operator"],
+      "token_env": "AFRN_TOKEN_OPERATOR_1",
+      "active": true
+    },
+    "reviewer-1": {
+      "actor_id": "reviewer-1",
+      "display_name": "Pilot Reviewer",
+      "roles": ["reviewer"],
+      "token_env": "AFRN_TOKEN_REVIEWER_1",
+      "active": true
+    }
+  }
+}
