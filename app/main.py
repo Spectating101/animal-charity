@@ -37,10 +37,7 @@ app = FastAPI(
 service = ReliefService(DB_PATH, RULEPACK, MISSION)
 
 
-def _auth_context(
-    authorization: str | None,
-    x_actor: str | None,
-) -> ActorContext:
+def _auth_context(authorization: str | None, x_actor: str | None) -> ActorContext:
     try:
         return authenticate_actor(
             authorization=authorization,
@@ -120,14 +117,26 @@ def access_me(actor: ActorContext = Depends(require_permission("summary.read")))
 @app.post("/v1/public-good/assess")
 def assess_public_good(
     case: PublicGoodCase,
+    strict_evidence: bool = Query(default=False),
     actor: ActorContext = Depends(require_permission("public_good.assess")),
 ):
     """Run the selected domain constitution through the shared public-good router.
 
-    The endpoint records an audit event containing the case hash and assessment
-    summary, not the full potentially sensitive case payload.
+    strict_evidence requires every source_ref cited by the recommendation to be
+    registered in the case evidence manifest. The audit event stores only a case
+    hash and decision/provenance summary, not the full potentially sensitive payload.
     """
     assessment = assess_public_good_case(case)
+    if strict_evidence and assessment.evidence_manifest.status != "complete":
+        raise HTTPException(
+            422,
+            {
+                "error": "strict evidence provenance failed",
+                "manifest_status": assessment.evidence_manifest.status,
+                "missing_refs": assessment.evidence_manifest.missing_refs,
+            },
+        )
+
     event = Event(
         event_type="public_good.assessed",
         subject_type="public_good_case",
@@ -142,6 +151,10 @@ def assess_public_good(
             "structural_candidate_count": sum(1 for finding in assessment.normalized_findings if finding.structural_candidate),
             "data_gap_count": len(assessment.data_gaps),
             "constitution_ref": assessment.constitution_ref,
+            "evidence_manifest_status": assessment.evidence_manifest.status,
+            "registered_evidence_refs": assessment.evidence_manifest.registered_ref_count,
+            "cited_evidence_refs": assessment.evidence_manifest.cited_ref_count,
+            "strict_evidence": strict_evidence,
         },
     )
     event_hash = service.store.append_event(event)
