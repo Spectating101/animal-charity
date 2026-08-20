@@ -9,6 +9,8 @@
   "interoperability": {
     "bundle_id": "synthetic-kalimantan-wildfire-interop-001",
     "as_of": "2026-08-20T07:00:00Z",
+    "resource_inventory_scope": "complete_for_scope",
+    "service_registry_scope": "complete_for_scope",
     "records": [
       {
         "record_id": "fire-hotspot-a",
