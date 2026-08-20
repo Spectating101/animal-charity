@@ -4,7 +4,7 @@ import json
 import unittest
 from pathlib import Path
 
-from app.disaster_control import DisasterSnapshot, assess_disaster
+from app.disaster_control import DisasterSnapshot, RecurrenceSignal, assess_disaster
 from app.public_good_control import PublicGoodCase, assess_public_good_case
 
 
@@ -77,14 +77,14 @@ class DisasterControlTests(unittest.TestCase):
         snapshot = self._load("disaster_kalimantan_synthetic.json")
         snapshot.phase = "mitigation"
         snapshot.recurrence_signals = [
-            {
-                "signal_id": "repeat-fire-a",
-                "location_ref": "synthetic-peat-zone-a",
-                "problem_class": "hazard_recurrence",
-                "event_count": 4,
-                "span_days": 365,
-                "source_refs": ["synthetic:history:fire-a"]
-            }
+            RecurrenceSignal(
+                signal_id="repeat-fire-a",
+                location_ref="synthetic-peat-zone-a",
+                problem_class="hazard_recurrence",
+                event_count=4,
+                span_days=365,
+                source_refs=["synthetic:history:fire-a"],
+            )
         ]
         result = assess_disaster(snapshot)
         finding = next(f for f in result.findings if f.need_id == "suppression-a" and f.stage == "route")
