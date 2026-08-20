@@ -17,6 +17,36 @@ This creates two deliberately different behaviors:
 
 The system must be capable of doing both at the same time.
 
+## Condition diagnosis is not capability-scarcity diagnosis
+
+A public or field source can directly establish that a delivery edge is broken without establishing that no suitable resource exists to repair it.
+
+Example:
+
+```text
+landslide blocks road
+        ↓
+ACCESS DISRUPTION ESTABLISHED
+
+but
+
+public report lists no engineering team / helicopter
+        ↓
+CAPABILITY STATE UNKNOWN
+not
+CAPABILITY ABSENT
+```
+
+The controller therefore treats these as separate propositions:
+
+1. **condition proposition:** is access actually constrained or isolated?
+2. **capability proposition:** is there a verified live resource that can restore or bypass access?
+3. **scarcity proposition:** does a complete-enough current inventory establish that no suitable capability is available?
+
+When the condition is established but the capability inventory is partial/unknown, the correct output is an `access` diagnosis plus an `evidence` gap. It is not a capacity diagnosis.
+
+This principle generalizes beyond roads. A service may be inaccessible, a communications link down, a utility distribution edge broken or a delivery route unusable while the wider repair/resource inventory remains unknown.
+
 ## Historical cutoff
 
 Every replay has a `decision_cutoff`.
@@ -128,19 +158,42 @@ What it does not establish:
 
 Expected control behavior: **critical uncertainty triggers rapid verification/escalation without inventing scarcity**.
 
+### East Nusa Tenggara access disruption — 16 August 2026
+
+Decision source: Reuters public report published 03:33:35 UTC / 10:33:35 WIB.
+
+What the cutoff establishes:
+
+- roads were blocked and landslides were present;
+- landslides and aftershocks were impeding rescue;
+- the operational access edge was therefore directly constrained.
+
+What it does not establish:
+
+- an exhaustive engineering/air/off-road capability inventory;
+- that no alternative access resource existed;
+- current dispatch availability;
+- live incident-command authority.
+
+Expected control behavior: **diagnose access disruption while preserving capability uncertainty**.
+
+The hidden later reference reports planes being readied for aid and helicopter aerial monitoring, which is compatible with the distinction: a broken access edge did not imply that alternative access capability was nonexistent.
+
 ## Replay corpus gate
 
-The initial real replays are registered in `config/research/disaster_replay_corpus.json` and evaluated by `app/replay_corpus.py` / `scripts/evaluate_replay_corpus.py`.
+The real replays are registered in `config/research/disaster_replay_corpus.json` and evaluated by `app/replay_corpus.py` / `scripts/evaluate_replay_corpus.py`.
 
 Each corpus case declares a machine-checkable safety contract:
 
 - problem classes that must appear;
 - problem classes that must never appear;
 - stages that must never appear;
+- required authority/data-gap conditions;
+- exact expected inventory scope where relevant;
 - a maximum number of proposed resource reservations;
 - the expected primary replay stage when a hidden reference exists.
 
-The evaluator returns non-zero when any case violates its contract, and `make verify` includes the corpus gate. Later routing changes therefore cannot silently convert the Kubu Raya partial public record into a capacity claim or suppress the early NTT critical-uncertainty escalation without breaking CI.
+The evaluator returns non-zero when any case violates its contract, and `make verify` includes the corpus gate. Later routing changes therefore cannot silently convert partial public evidence into scarcity, imply public reporting is command authority, suppress critical uncertainty escalation, or hide an established access failure behind inventory uncertainty without breaking CI.
 
 The corpus is deliberately small at first. Its value is not the number of cases but the fact that each new historical case can become a permanent falsification/regression test rather than an anecdote.
 
@@ -155,6 +208,7 @@ Useful safety/research metrics include:
 - false deployability promotions;
 - false resolution promotions;
 - critical-uncertainty misses;
+- established-condition misses;
 - unsupported structural-infrastructure proposals;
 - recommendations issued without command/authority context;
 - primary-stage agreement;
@@ -171,4 +225,4 @@ Stage agreement is diagnostic only. It does not prove that following the recomme
 - **R3:** supervised, reversible interventions under competent authority.
 - **R4+:** repeated-area longitudinal evaluation and independent replication.
 
-The disaster domain is currently at R0 plus initial public-source R1 replay. It is not validated for autonomous or live consequential disaster allocation.
+The disaster domain is currently at R0 plus a small public-source R1 corpus. It is not validated for autonomous or live consequential disaster allocation.
