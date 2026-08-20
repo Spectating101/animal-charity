@@ -28,6 +28,12 @@ class ReplayCorpusTests(unittest.TestCase):
         self.assertEqual(ntt.predicted_primary_stage, "safety")
         self.assertEqual(kubu.resource_reservation_count, 0)
         self.assertEqual(ntt.resource_reservation_count, 0)
+        self.assertFalse(kubu.command_context_present)
+        self.assertFalse(ntt.command_context_present)
+        self.assertEqual(kubu.resource_inventory_scope, "partial")
+        self.assertEqual(kubu.service_registry_scope, "unknown")
+        self.assertEqual(ntt.resource_inventory_scope, "unknown")
+        self.assertEqual(ntt.service_registry_scope, "unknown")
 
     def test_corpus_reports_unsafe_contract_violation(self):
         spec = ReplayCorpusSpec(
@@ -39,15 +45,24 @@ class ReplayCorpusTests(unittest.TestCase):
                     evidence_level="R1",
                     required_problem_classes=["nonexistent_required_class"],
                     forbidden_stages=["evidence"],
+                    required_data_gap_substrings=["nonexistent authority gap"],
                     max_resource_reservations=0,
+                    expected_command_context_present=True,
+                    expected_resource_inventory_scope="complete_for_scope",
+                    expected_service_registry_scope="complete_for_scope",
                 )
             ],
         )
         result = evaluate_corpus(spec, ROOT)
         self.assertEqual(result.passed_count, 0)
         self.assertEqual(result.failed_count, 1)
-        self.assertTrue(any("required problem class missing" in v for v in result.results[0].violations))
-        self.assertTrue(any("forbidden stage present" in v for v in result.results[0].violations))
+        violations = result.results[0].violations
+        self.assertTrue(any("required problem class missing" in v for v in violations))
+        self.assertTrue(any("forbidden stage present" in v for v in violations))
+        self.assertTrue(any("required data-gap text missing" in v for v in violations))
+        self.assertTrue(any("command-context expectation mismatch" in v for v in violations))
+        self.assertTrue(any("resource-inventory scope mismatch" in v for v in violations))
+        self.assertTrue(any("service-registry scope mismatch" in v for v in violations))
 
 
 if __name__ == "__main__":
