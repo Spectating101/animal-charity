@@ -52,6 +52,22 @@ class ReplayTests(unittest.TestCase):
         self.assertEqual(run.assessment.domain_result["interoperability"]["service_registry_scope"], "unknown")
         self.assertTrue(score_replay(packet).primary_stage_match)
 
+    def test_real_early_ntt_replay_escalates_critical_uncertainty_without_inventing_scarcity(self):
+        packet = self._packet("replay_disaster_ntt_2026_08_15_0800.json")
+        run = run_replay(packet)
+        self.assertEqual(run.assessment.domain.value, "disaster_response")
+        findings = run.assessment.normalized_findings
+        stages = [finding.stage for finding in findings]
+        classes = [finding.problem_class for finding in findings]
+
+        self.assertEqual(stages[0], "safety")
+        self.assertIn("critical_need_requires_verification_and_escalation", classes)
+        self.assertIn("need_status_not_established", classes)
+        self.assertNotIn("capacity", stages)
+        self.assertEqual(run.assessment.domain_result["proposed_reservations"], [])
+        self.assertEqual(run.assessment.domain_result["interoperability"]["resource_inventory_scope"], "unknown")
+        self.assertTrue(score_replay(packet).primary_stage_match)
+
     def test_future_evidence_is_rejected(self):
         packet = self._packet("replay_animal_owner_retention.json")
         raw = packet.model_dump(mode="json")
