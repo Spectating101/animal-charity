@@ -225,6 +225,10 @@ def _inventory_complete_for_need(packet: ControlPlaneInteropPacket, need: Disast
     return True
 
 
+def _access_disruption_established(need: DisasterNeed) -> bool:
+    return need.category == DisasterNeedCategory.access or need.access_status in {"constrained", "isolated"}
+
+
 def _structural_candidate(snapshot: DisasterSnapshot, need: DisasterNeed) -> bool:
     if snapshot.phase not in {DisasterPhase.recovery, DisasterPhase.mitigation, DisasterPhase.preparedness}:
         return False
@@ -239,6 +243,48 @@ def _structural_candidate(snapshot: DisasterSnapshot, need: DisasterNeed) -> boo
 
 def _evidence_refs(need: DisasterNeed) -> list[str]:
     return [need.source_ref]
+
+
+def _append_access_condition(
+    findings: list[DisasterFinding],
+    need: DisasterNeed,
+    *,
+    structural: bool,
+    capability_absence_established: bool,
+) -> None:
+    if capability_absence_established:
+        problem_class = (
+            "isolated_need_without_verified_access_capability"
+            if need.access_status == "isolated"
+            else "access_disruption_without_verified_access_capability"
+        )
+        rationale = (
+            "The access disruption is established and the supplied inventory is complete enough for this scope, "
+            "with no verified compatible access capability available."
+        )
+    else:
+        problem_class = "confirmed_access_disruption"
+        rationale = (
+            "The physical/service access disruption is established by condition evidence, but the supplied capability inventory "
+            "is not complete enough to conclude that no access resource exists."
+        )
+
+    findings.append(
+        DisasterFinding(
+            need_id=need.need_id,
+            location_ref=need.location_ref,
+            stage="access",
+            problem_class=problem_class,
+            priority=need.priority,
+            recommended_action=(
+                "Treat the access edge as currently broken and route verification/restoration through authorized incident command. "
+                "Use a verified live air/off-road/engineering route if available; do not infer resource scarcity from incomplete inventory."
+            ),
+            evidence_refs=_evidence_refs(need),
+            structural_candidate=structural,
+            rationale=[rationale],
+        )
+    )
 
 
 def assess_disaster(snapshot: DisasterSnapshot) -> DisasterAssessment:
@@ -344,6 +390,7 @@ def assess_disaster(snapshot: DisasterSnapshot) -> DisasterAssessment:
             if resource.record_id not in used_resources and _resource_matches(resource, need)
         ]
         candidates = [resource for resource in packet.resource_candidates_requiring_verification if _resource_matches(resource, need)]
+        access_disrupted = _access_disruption_established(need)
 
         if deployable:
             resource = deployable[0]
@@ -377,6 +424,13 @@ def assess_disaster(snapshot: DisasterSnapshot) -> DisasterAssessment:
             continue
 
         if candidates:
+            if access_disrupted:
+                _append_access_condition(
+                    findings,
+                    need,
+                    structural=structural,
+                    capability_absence_established=False,
+                )
             findings.append(
                 DisasterFinding(
                     need_id=need.need_id,
@@ -395,7 +449,35 @@ def assess_disaster(snapshot: DisasterSnapshot) -> DisasterAssessment:
             )
             continue
 
-        if not _inventory_complete_for_need(packet, need):
+        inventory_complete = _inventory_complete_for_need(packet, need)
+        if access_disrupted:
+            _append_access_condition(
+                findings,
+                need,
+                structural=structural,
+                capability_absence_established=inventory_complete,
+            )
+            if not inventory_complete:
+                findings.append(
+                    DisasterFinding(
+                        need_id=need.need_id,
+                        location_ref=need.location_ref,
+                        stage="evidence",
+                        problem_class="capability_inventory_incomplete",
+                        priority=need.priority,
+                        recommended_action=(
+                            "Obtain a complete-enough current access-capability inventory before concluding that no air/off-road/engineering option exists."
+                        ),
+                        evidence_refs=_evidence_refs(need),
+                        structural_candidate=False,
+                        rationale=[
+                            "The access failure is established, but absence from a partial or unknown capability inventory is not proof of resource scarcity."
+                        ],
+                    )
+                )
+            continue
+
+        if not inventory_complete:
             findings.append(
                 DisasterFinding(
                     need_id=need.need_id,
@@ -404,31 +486,13 @@ def assess_disaster(snapshot: DisasterSnapshot) -> DisasterAssessment:
                     problem_class="capability_inventory_incomplete",
                     priority=need.priority,
                     recommended_action=(
-                        "Obtain a complete-enough current resource/service inventory for this operational scope before declaring an access or capacity shortage."
+                        "Obtain a complete-enough current resource/service inventory for this operational scope before declaring a capacity shortage."
                     ),
                     evidence_refs=_evidence_refs(need),
                     structural_candidate=False,
                     rationale=[
                         "Absence from a partial or unknown inventory is missing evidence, not proof that relevant capability does not exist."
                     ],
-                )
-            )
-            continue
-
-        if need.access_status == "isolated":
-            findings.append(
-                DisasterFinding(
-                    need_id=need.need_id,
-                    location_ref=need.location_ref,
-                    stage="access",
-                    problem_class="isolated_need_without_verified_access_capability",
-                    priority=need.priority,
-                    recommended_action=(
-                        "Establish or verify an alternative access path (air/off-road/engineering) before counting nearby resources as reachable."
-                    ),
-                    evidence_refs=_evidence_refs(need),
-                    structural_candidate=structural,
-                    rationale=["A complete-enough supplied inventory contains no verified compatible way to reach the isolated location."],
                 )
             )
             continue
