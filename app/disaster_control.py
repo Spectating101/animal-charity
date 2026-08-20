@@ -289,6 +289,26 @@ def assess_disaster(snapshot: DisasterSnapshot) -> DisasterAssessment:
                 )
             )
 
+        if need.status == "unknown":
+            findings.append(
+                DisasterFinding(
+                    need_id=need.need_id,
+                    location_ref=need.location_ref,
+                    stage="evidence",
+                    problem_class="need_status_not_established",
+                    priority=need.priority,
+                    recommended_action=(
+                        "Verify whether the reported condition is currently unmet before diagnosing access/capacity or reserving a resource."
+                    ),
+                    evidence_refs=_evidence_refs(need),
+                    structural_candidate=False,
+                    rationale=[
+                        "A hazard, complaint or service report can justify investigation without establishing that a specific relief need remains unmet."
+                    ],
+                )
+            )
+            continue
+
         existing_services = [service for service in packet.services if _service_matches(service, need)]
         if existing_services and need.access_status != "isolated":
             service = existing_services[0]
