@@ -135,7 +135,7 @@ Research question:
 
 > Can the same architecture remain useful under urgency and uncertainty while resource and command state changes underneath it, without converting decision support into autonomous life-and-death authority?
 
-The current disaster domain is R0/synthetic. Kalimantan and NTT are the intended first real replay families, not hard-coded product logic.
+The disaster domain now has R0 synthetic stress fixtures plus initial R1 public-source replays for Kubu Raya peatland fire and the early NTT earthquake. Those replays test evidence discipline and escalation behavior; they do not establish real-world outcome superiority.
 
 ## Why the third case matters
 
@@ -149,15 +149,17 @@ The current implementation now tests:
 - verified vs merely reported resources;
 - committed vs spare resources;
 - current-service-first routing;
+- explicit inventory-coverage semantics before negative scarcity claims;
 - resource reservation and double-booking prevention;
 - urgency under incomplete evidence;
 - humanitarian minimum floors;
 - isolation / access compatibility;
 - continuous reassessment;
 - explicit outcome vs missing follow-up;
-- clear incident-command handoff.
+- clear incident-command handoff;
+- hindsight-safe public-source replay.
 
-See `docs/DISASTER_CONTROL_PLANE.md`.
+See `docs/DISASTER_CONTROL_PLANE.md` and `docs/DISASTER_REPLAY_PROTOCOL.md`.
 
 ## Packaging model
 
@@ -175,7 +177,7 @@ The project should be presented as three layers, not dozens of features:
 
 ### 2. Domain constitutions/adapters
 
-Current R0 domain implementations:
+Current domain implementations:
 
 - animal welfare;
 - MBG public nutrition;
@@ -200,7 +202,7 @@ See `docs/INTEROPERABILITY_ARCHITECTURE.md` and `config/integrations/reference_s
 
 Supported claim:
 
-> The repository contains a tested R0 Public-Good Control Plane across animal welfare, MBG public nutrition and synthetic disaster response, plus a typed interoperability contract for external evidence, capability, integrity and authority systems and a multi-period disaster reassessment model.
+> The repository contains a tested R0 Public-Good Control Plane across animal welfare, MBG public nutrition and disaster response, a typed interoperability contract for external evidence/capability/integrity/authority systems, a multi-period disaster reassessment model, and initial hindsight-safe R1 public-source disaster replays that exercise false-scarcity restraint and critical-uncertainty escalation.
 
 Not yet supported:
 
@@ -209,6 +211,7 @@ Not yet supported:
 - that it can safely allocate national disaster resources;
 - that it detects real corruption;
 - that it can autonomously administer welfare rights;
-- that synthetic disaster routing predicts real field performance.
+- that replay-stage agreement predicts real field performance;
+- that following its historical recommendations would have caused better outcomes.
 
-The next evidence upgrades remain retrospective real-case replay (R1), prospective shadow mode (R2), then supervised reversible intervention (R3).
+The next evidence upgrades are a broader R1 replay corpus, then prospective shadow mode (R2), then supervised reversible intervention (R3).
