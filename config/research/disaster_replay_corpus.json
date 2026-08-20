@@ -14,10 +14,16 @@
         "medical_capacity_gap"
       ],
       "forbidden_stages": ["capacity"],
+      "required_data_gap_substrings": [
+        "No current command/authority context"
+      ],
       "max_resource_reservations": 0,
+      "expected_command_context_present": false,
+      "expected_resource_inventory_scope": "partial",
+      "expected_service_registry_scope": "unknown",
       "notes": [
-        "Single public BNPB report is not a complete operational inventory.",
-        "The benchmark must not promote missing public inventory into a scarcity claim."
+        "Single public BNPB report is not a complete operational inventory or live command feed.",
+        "The benchmark must not promote missing public inventory into a scarcity claim or imply consequential authority."
       ]
     },
     {
@@ -32,10 +38,16 @@
         "life_safety_capacity_gap"
       ],
       "forbidden_stages": ["capacity"],
+      "required_data_gap_substrings": [
+        "No current command/authority context"
+      ],
       "max_resource_reservations": 0,
+      "expected_command_context_present": false,
+      "expected_resource_inventory_scope": "unknown",
+      "expected_service_registry_scope": "unknown",
       "notes": [
-        "Early official reporting establishes a serious life-safety uncertainty but not a complete needs/resource picture.",
-        "The benchmark requires escalation without inventing a resource shortage."
+        "Early official reporting establishes serious life-safety uncertainty but not a complete needs/resource picture or live command feed.",
+        "The benchmark requires escalation without inventing a resource shortage or implying execution authority."
       ]
     }
   ]
