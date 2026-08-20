@@ -35,6 +35,23 @@ class ReplayTests(unittest.TestCase):
         self.assertNotIn("capacity", stages)
         self.assertTrue(score_replay(packet).primary_stage_match)
 
+    def test_real_kubu_raya_public_replay_refuses_false_capacity_claim(self):
+        packet = self._packet("replay_disaster_kubu_raya_2026_08_07.json")
+        run = run_replay(packet)
+        self.assertEqual(run.assessment.domain.value, "disaster_response")
+        findings = run.assessment.normalized_findings
+        stages = [finding.stage for finding in findings]
+        classes = [finding.problem_class for finding in findings]
+
+        self.assertEqual(stages[0], "evidence")
+        self.assertNotIn("capacity", stages)
+        self.assertIn("capability_inventory_incomplete", classes)
+        self.assertIn("need_status_not_established", classes)
+        self.assertEqual(run.assessment.domain_result["proposed_reservations"], [])
+        self.assertEqual(run.assessment.domain_result["interoperability"]["resource_inventory_scope"], "partial")
+        self.assertEqual(run.assessment.domain_result["interoperability"]["service_registry_scope"], "unknown")
+        self.assertTrue(score_replay(packet).primary_stage_match)
+
     def test_future_evidence_is_rejected(self):
         packet = self._packet("replay_animal_owner_retention.json")
         raw = packet.model_dump(mode="json")
