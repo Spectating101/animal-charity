@@ -1,0 +1,42 @@
+{
+  "corpus_id": "disaster-public-r1-v1",
+  "cases": [
+    {
+      "case_id": "kubu-raya-karhutla-2026-08-07-public",
+      "packet_path": "examples/replay_disaster_kubu_raya_2026_08_07.json",
+      "evidence_level": "R1",
+      "required_problem_classes": [
+        "capability_inventory_incomplete",
+        "need_status_not_established"
+      ],
+      "forbidden_problem_classes": [
+        "fire_suppression_capacity_gap",
+        "medical_capacity_gap"
+      ],
+      "forbidden_stages": ["capacity"],
+      "max_resource_reservations": 0,
+      "notes": [
+        "Single public BNPB report is not a complete operational inventory.",
+        "The benchmark must not promote missing public inventory into a scarcity claim."
+      ]
+    },
+    {
+      "case_id": "ntt-earthquake-2026-08-15-early-public",
+      "packet_path": "examples/replay_disaster_ntt_2026_08_15_0800.json",
+      "evidence_level": "R1",
+      "required_problem_classes": [
+        "critical_need_requires_verification_and_escalation",
+        "need_status_not_established"
+      ],
+      "forbidden_problem_classes": [
+        "life_safety_capacity_gap"
+      ],
+      "forbidden_stages": ["capacity"],
+      "max_resource_reservations": 0,
+      "notes": [
+        "Early official reporting establishes a serious life-safety uncertainty but not a complete needs/resource picture.",
+        "The benchmark requires escalation without inventing a resource shortage."
+      ]
+    }
+  ]
+}
