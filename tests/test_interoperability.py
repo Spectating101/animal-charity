@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import unittest
-from datetime import datetime, timezone
+from datetime import datetime
 from pathlib import Path
 
 from pydantic import ValidationError
@@ -36,6 +36,44 @@ class InteroperabilityTests(unittest.TestCase):
         self.assertIn("stale-road-report", packet.stale_record_ids)
         self.assertTrue(any("stale" in warning for warning in packet.warnings))
 
+    def test_stale_hazard_and_command_context_are_not_current_operational_state(self):
+        bundle = InteroperabilityBundle.model_validate(
+            {
+                "bundle_id": "stale-test",
+                "as_of": "2026-08-20T07:00:00Z",
+                "records": [
+                    {
+                        "record_id": "old-hazard",
+                        "system_id": "nasa_firms",
+                        "integration_role": "evidence_source",
+                        "kind": "hazard_observation",
+                        "source_ref": "synthetic:old-hazard",
+                        "source_kind": "sensor",
+                        "observed_at": "2026-08-20T01:00:00Z",
+                        "valid_until": "2026-08-20T03:00:00Z",
+                        "attributes": {"hazard_type": "wildfire", "location_ref": "zone-a"}
+                    },
+                    {
+                        "record_id": "old-command",
+                        "system_id": "nims",
+                        "integration_role": "authority_framework",
+                        "kind": "command_context",
+                        "source_ref": "synthetic:old-command",
+                        "source_kind": "official",
+                        "observed_at": "2026-08-20T01:00:00Z",
+                        "valid_until": "2026-08-20T03:00:00Z",
+                        "attributes": {"incident_id": "incident-a", "authority_ref": "eoc-a"}
+                    }
+                ]
+            }
+        )
+        packet = build_control_plane_packet(bundle)
+        self.assertEqual(packet.hazards, [])
+        self.assertEqual(packet.command_contexts, [])
+        self.assertIn("old-hazard", packet.stale_record_ids)
+        self.assertIn("old-command", packet.stale_record_ids)
+        self.assertTrue(any("No current command/authority context" in warning for warning in packet.warnings))
+
     def test_contracting_process_is_integrity_reference_not_corruption_finding(self):
         bundle = InteroperabilityBundle.model_validate(
             {
@@ -64,7 +102,7 @@ class InteroperabilityTests(unittest.TestCase):
         packet = build_control_plane_packet(bundle)
         self.assertEqual(packet.integrity_processes[0].ocid, "ocds-test-1")
         self.assertTrue(any("cannot by itself establish corruption" in warning for warning in packet.warnings))
-        self.assertTrue(any("No command/authority context" in warning for warning in packet.warnings))
+        self.assertTrue(any("No current command/authority context" in warning for warning in packet.warnings))
 
     def test_authority_framework_cannot_masquerade_as_resource_inventory(self):
         with self.assertRaises(ValidationError):
@@ -86,6 +124,35 @@ class InteroperabilityTests(unittest.TestCase):
         candidate = by_ref["synthetic:mutual-aid:aircraft-a"]
         self.assertEqual(candidate.verification_status, "reported")
         self.assertEqual(candidate.source_kind, "partner")
+
+    def test_duplicate_source_refs_are_deduplicated_in_manifest(self):
+        bundle = InteroperabilityBundle.model_validate(
+            {
+                "bundle_id": "dedupe-test",
+                "as_of": "2026-08-20T07:00:00Z",
+                "records": [
+                    {
+                        "record_id": "outcome-1",
+                        "system_id": "nocturnal",
+                        "integration_role": "memory_archive",
+                        "kind": "outcome_observation",
+                        "source_ref": "synthetic:shared-source",
+                        "observed_at": "2026-08-20T06:00:00Z"
+                    },
+                    {
+                        "record_id": "outcome-2",
+                        "system_id": "nocturnal",
+                        "integration_role": "memory_archive",
+                        "kind": "outcome_observation",
+                        "source_ref": "synthetic:shared-source",
+                        "observed_at": "2026-08-20T06:10:00Z"
+                    }
+                ]
+            }
+        )
+        packet = build_control_plane_packet(bundle)
+        self.assertEqual(len(packet.evidence_manifest), 1)
+        self.assertTrue(any("deduplicated" in warning for warning in packet.warnings))
 
     def test_bundle_requires_timezone_aware_as_of(self):
         bundle = self._load("interop_kalimantan_synthetic.json")
