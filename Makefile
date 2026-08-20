@@ -1,4 +1,4 @@
-.PHONY: test smoke landscape-smoke initiative-smoke control-smoke lifecycle-initiative-smoke preventive-smoke mbg-smoke public-good-smoke replay-smoke interop-smoke disaster-smoke disaster-evolution-smoke verify run seed docker-build
+.PHONY: test smoke landscape-smoke initiative-smoke control-smoke lifecycle-initiative-smoke preventive-smoke mbg-smoke public-good-smoke replay-smoke replay-corpus-smoke interop-smoke disaster-smoke disaster-evolution-smoke verify run seed docker-build
 
 test:
 	python -m unittest discover -s tests -v
@@ -44,6 +44,9 @@ replay-smoke:
 	@python scripts/replay_public_good_case.py examples/replay_disaster_kubu_raya_2026_08_07.json --score | python -c "import json,sys; d=json.load(sys.stdin); assert d['predicted_primary_stage']=='evidence'; assert d['primary_stage_match'] is True"
 	@python scripts/replay_public_good_case.py examples/replay_disaster_ntt_2026_08_15_0800.json --score | python -c "import json,sys; d=json.load(sys.stdin); assert d['predicted_primary_stage']=='safety'; assert d['primary_stage_match'] is True"
 
+replay-corpus-smoke:
+	@python scripts/evaluate_replay_corpus.py config/research/disaster_replay_corpus.json | python -c "import json,sys; d=json.load(sys.stdin); assert d['case_count']==2; assert d['passed_count']==2; assert d['failed_count']==0; assert d['by_evidence_level']=={'R1': 2}"
+
 interop-smoke:
 	@python scripts/build_control_plane_packet.py examples/interop_kalimantan_synthetic.json | python -c "import json,sys; d=json.load(sys.stdin); assert d['hazards'][0]['hazard_type']=='wildfire'; assert len(d['deployable_resources'])==1; assert len(d['resource_candidates_requiring_verification'])==1; assert d['command_contexts']"
 	@python scripts/build_control_plane_packet.py examples/interop_ntt_synthetic.json | python -c "import json,sys; d=json.load(sys.stdin); kinds=[x['resource_type'] for x in d['deployable_resources']]; assert 'urban_search_and_rescue_team' in kinds; assert 'potable_water_tanker' not in kinds; assert 'stale-road-report' in d['stale_record_ids']"
@@ -55,7 +58,7 @@ disaster-smoke:
 disaster-evolution-smoke:
 	@python scripts/compare_disaster_periods.py examples/disaster_ntt_synthetic.json examples/disaster_ntt_synthetic_t1.json | python -c "import json,sys; d=json.load(sys.stdin); assert 'trapped-a' in d['explicitly_resolved_need_ids']; assert 'water-a' in d['missing_followup_need_ids']; assert 'sar-team-a' in d['lost_deployable_resource_ids']; assert 'medevac-air-a' in d['newly_deployable_resource_ids']; assert d['recommendation_stage_changes']['isolated-medical-a']['from']=='access'; assert d['recommendation_stage_changes']['isolated-medical-a']['to']=='route'"
 
-verify: test smoke landscape-smoke initiative-smoke control-smoke lifecycle-initiative-smoke preventive-smoke mbg-smoke public-good-smoke replay-smoke interop-smoke disaster-smoke disaster-evolution-smoke
+verify: test smoke landscape-smoke initiative-smoke control-smoke lifecycle-initiative-smoke preventive-smoke mbg-smoke public-good-smoke replay-smoke replay-corpus-smoke interop-smoke disaster-smoke disaster-evolution-smoke
 	python -m compileall -q app scripts tests
 
 run:
