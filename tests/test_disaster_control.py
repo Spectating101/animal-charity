@@ -73,6 +73,15 @@ class DisasterControlTests(unittest.TestCase):
         self.assertEqual(result.findings, [])
         self.assertTrue(any("hazard presence alone" in gap for gap in result.data_gaps))
 
+    def test_unknown_need_status_requests_evidence_instead_of_inventing_capacity_gap(self):
+        snapshot = self._load("disaster_kalimantan_synthetic.json")
+        snapshot.needs[1].status = "unknown"
+        result = assess_disaster(snapshot)
+        findings = [finding for finding in result.findings if finding.need_id == "suppression-b"]
+        self.assertTrue(any(f.problem_class == "need_status_not_established" for f in findings))
+        self.assertFalse(any(f.stage in {"route", "capacity", "access"} for f in findings))
+        self.assertFalse(any(r.need_id == "suppression-b" for r in result.proposed_reservations))
+
     def test_structural_candidate_requires_non_response_phase_and_recurrence(self):
         snapshot = self._load("disaster_kalimantan_synthetic.json")
         snapshot.phase = "mitigation"
