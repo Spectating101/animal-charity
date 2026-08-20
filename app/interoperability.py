@@ -54,6 +54,7 @@ class ExternalRecord(BaseModel):
         allowed = {
             ExternalRecordKind.hazard_observation: {IntegrationRole.evidence_source},
             ExternalRecordKind.capability_resource: {
+                IntegrationRole.evidence_source,
                 IntegrationRole.capability_registry,
                 IntegrationRole.operations_platform,
             },
@@ -115,6 +116,7 @@ class HazardSignal(BaseModel):
 class DeployableResource(BaseModel):
     record_id: str
     system_id: str
+    integration_role: IntegrationRole
     resource_type: str
     capabilities: list[str] = Field(default_factory=list)
     quantity: float = 1.0
@@ -187,6 +189,7 @@ def _resource(record: ExternalRecord) -> DeployableResource:
     return DeployableResource(
         record_id=record.record_id,
         system_id=record.system_id,
+        integration_role=record.integration_role,
         resource_type=str(attrs.get("resource_type", "unknown")),
         capabilities=[str(value) for value in attrs.get("capabilities", [])],
         quantity=float(attrs.get("quantity", 1.0)),
@@ -264,13 +267,25 @@ def build_control_plane_packet(bundle: InteroperabilityBundle) -> ControlPlaneIn
         elif record.kind == ExternalRecordKind.capability_resource:
             resource = _resource(record)
             verified_enough = record.verification_status in {"corroborated", "verified"}
-            if is_fresh and resource.availability == "available" and verified_enough:
+            live_operations_source = record.integration_role == IntegrationRole.operations_platform
+            if (
+                is_fresh
+                and resource.availability == "available"
+                and verified_enough
+                and live_operations_source
+            ):
                 deployable_resources.append(resource)
             elif is_fresh and resource.availability == "available":
                 candidates.append(resource)
-                warnings.append(
-                    f"{record.record_id} is reportedly available but requires verification before operational routing"
-                )
+                if not live_operations_source:
+                    warnings.append(
+                        f"{record.record_id} reports an available resource through {record.integration_role.value}; "
+                        "live operational availability must be re-verified before routing"
+                    )
+                else:
+                    warnings.append(
+                        f"{record.record_id} is reportedly available but requires verification before operational routing"
+                    )
 
         elif record.kind == ExternalRecordKind.service_presence:
             if is_fresh:
