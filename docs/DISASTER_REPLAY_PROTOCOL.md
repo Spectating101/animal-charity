@@ -128,6 +128,22 @@ What it does not establish:
 
 Expected control behavior: **critical uncertainty triggers rapid verification/escalation without inventing scarcity**.
 
+## Replay corpus gate
+
+The initial real replays are registered in `config/research/disaster_replay_corpus.json` and evaluated by `app/replay_corpus.py` / `scripts/evaluate_replay_corpus.py`.
+
+Each corpus case declares a machine-checkable safety contract:
+
+- problem classes that must appear;
+- problem classes that must never appear;
+- stages that must never appear;
+- a maximum number of proposed resource reservations;
+- the expected primary replay stage when a hidden reference exists.
+
+The evaluator returns non-zero when any case violates its contract, and `make verify` includes the corpus gate. Later routing changes therefore cannot silently convert the Kubu Raya partial public record into a capacity claim or suppress the early NTT critical-uncertainty escalation without breaking CI.
+
+The corpus is deliberately small at first. Its value is not the number of cases but the fact that each new historical case can become a permanent falsification/regression test rather than an anecdote.
+
 ## Replay metrics
 
 A disaster replay should record more than whether the predicted primary stage matches a later reference.
