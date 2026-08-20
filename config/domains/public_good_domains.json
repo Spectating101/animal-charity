@@ -1,5 +1,5 @@
 {
-  "version": "2026-08-19.v1",
+  "version": "2026-08-20.v2",
   "shared_loop": [
     "establish condition",
     "identify bad-state transition",
@@ -29,7 +29,28 @@
       "hard_gates": ["food safety", "resource-flow integrity before scarcity", "human entitlement/procurement/audit authority"],
       "structural_examples": ["catchment rebalance", "route repair", "supplier QA/aggregation", "reversible capacity extension", "new SPPG only after residual need"],
       "success_boundary": "meal production or delivery is not nutrition impact without outcome evidence"
+    },
+    "disaster_response": {
+      "adapter": "app.disaster_control",
+      "constitution_ref": "config/missions/disaster_response_control.json",
+      "unit_of_concern": "incident operational period plus affected locations, unmet humanitarian needs and currently usable capabilities",
+      "desired_state": "life-safety stabilization, humanitarian minimum coverage, restored critical services and progressively reduced recurrence vulnerability",
+      "hard_gates": [
+        "credible immediate life-safety needs before efficiency optimization",
+        "fresh verified resource and access state",
+        "current incident-command/professional authority",
+        "no human-worth or aid-deservingness optimization"
+      ],
+      "structural_examples": [
+        "mutual-aid staging",
+        "redundant communications",
+        "water and shelter contingency capacity",
+        "route resilience",
+        "fire/earthquake preparedness",
+        "recurrent-risk mitigation"
+      ],
+      "success_boundary": "dispatch or delivery is not humanitarian outcome; stabilization, service restoration, recovery and resilience require verified downstream state"
     }
   },
-  "non_transfer_rule": "Only the evidence-transition-access/integrity-intervention-authority-outcome architecture is shared. Animal-specific welfare, ownership, capture, return, population-control and veterinary rules must never be applied to human beneficiaries. Human rights, entitlement, consent/autonomy, privacy, procurement, audit, due-process and political-accountability rules must remain inside the human-domain constitution and must never be inferred from animal-welfare logic."
+  "non_transfer_rule": "Only the evidence-transition-access/integrity-intervention-authority-outcome architecture is shared. Animal-specific welfare, ownership, capture, return, population-control and veterinary rules must never be applied to human beneficiaries. Human rights, entitlement, consent/autonomy, privacy, procurement, audit, due-process and political-accountability rules must remain inside human-domain constitutions. Disaster urgency does not suspend those rights, convert the control plane into incident command, or authorize ranking people by economic value, social status, identity, predicted productivity or aid deservingness."
 }
