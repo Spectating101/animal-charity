@@ -10,6 +10,7 @@ from app.interoperability import (
     ControlPlaneInteropPacket,
     DeployableResource,
     InteroperabilityBundle,
+    ServicePresenceSignal,
     build_control_plane_packet,
 )
 
@@ -145,6 +146,16 @@ _DEFAULT_CAPABILITIES: dict[DisasterNeedCategory, set[str]] = {
     DisasterNeedCategory.other: set(),
 }
 
+_SERVICE_TYPES: dict[DisasterNeedCategory, set[str]] = {
+    DisasterNeedCategory.medical: {"emergency_hospital", "hospital", "clinic", "smoke_exposure_clinic", "field_hospital"},
+    DisasterNeedCategory.potable_water: {"potable_water_point", "water_distribution", "water_treatment"},
+    DisasterNeedCategory.shelter: {"emergency_shelter", "evacuation_centre", "temporary_shelter"},
+    DisasterNeedCategory.food: {"food_distribution", "community_kitchen", "emergency_feeding"},
+    DisasterNeedCategory.sanitation: {"sanitation", "wash_service", "hygiene_service"},
+    DisasterNeedCategory.communications: {"emergency_communications", "communications_hub"},
+    DisasterNeedCategory.power: {"emergency_power", "charging_hub"},
+}
+
 _ACCESS_CAPABILITIES = {"air_access", "air_delivery", "offroad_access", "helicopter_transport"}
 _PRIORITY_ORDER = {"critical": 0, "urgent": 1, "watch": 2}
 _SURVIVAL_ORDER = {
@@ -186,6 +197,17 @@ def _resource_matches(resource: DeployableResource, need: DisasterNeed) -> bool:
     if need.access_status == "isolated" and not available.intersection(_ACCESS_CAPABILITIES):
         return False
     return True
+
+
+def _service_matches(service: ServicePresenceSignal, need: DisasterNeed) -> bool:
+    service_types = _SERVICE_TYPES.get(need.category, set())
+    if not service_types or service.service_type.lower() not in service_types:
+        return False
+    if service.location_ref != need.location_ref:
+        return False
+    if service.access_status != "open":
+        return False
+    return service.capacity_status in {"spare", "normal"}
 
 
 def _structural_candidate(snapshot: DisasterSnapshot, need: DisasterNeed) -> bool:
@@ -260,6 +282,27 @@ def assess_disaster(snapshot: DisasterSnapshot) -> DisasterAssessment:
                 )
             )
 
+        existing_services = [service for service in packet.services if _service_matches(service, need)]
+        if existing_services and need.access_status != "isolated":
+            service = existing_services[0]
+            findings.append(
+                DisasterFinding(
+                    need_id=need.need_id,
+                    location_ref=need.location_ref,
+                    stage="route",
+                    problem_class=f"{need.category.value}_existing_service_route",
+                    priority=need.priority,
+                    recommended_action=(
+                        f"Use the existing reachable {service.service_type} first and verify downstream receipt/outcome before requesting new capacity."
+                    ),
+                    evidence_refs=_evidence_refs(need) + [service.source_ref],
+                    resource_refs=[service.record_id],
+                    structural_candidate=structural,
+                    rationale=["A fresh open service with spare/normal capacity exists at the need location."],
+                )
+            )
+            continue
+
         deployable = [
             resource
             for resource in packet.deployable_resources
@@ -280,7 +323,7 @@ def assess_disaster(snapshot: DisasterSnapshot) -> DisasterAssessment:
                     ),
                     evidence_refs=_evidence_refs(need),
                     structural_candidate=structural,
-                    rationale=["Resource existence does not establish physical reachability to an isolated location."],
+                    rationale=["Resource or service existence does not establish physical reachability to an isolated location."],
                 )
             )
             continue
@@ -348,7 +391,7 @@ def assess_disaster(snapshot: DisasterSnapshot) -> DisasterAssessment:
                 ),
                 evidence_refs=_evidence_refs(need),
                 structural_candidate=structural,
-                rationale=["No fresh verified uncommitted capability-compatible resource is present in the supplied interoperability packet."],
+                rationale=["No fresh reachable existing service or verified uncommitted capability-compatible resource is present in the supplied state."],
             )
         )
 
