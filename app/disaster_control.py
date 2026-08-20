@@ -133,7 +133,14 @@ class DisasterAssessment(BaseModel):
 
 
 _DEFAULT_CAPABILITIES: dict[DisasterNeedCategory, set[str]] = {
-    DisasterNeedCategory.life_safety: {"search_and_rescue", "urban_search_and_rescue", "rescue"},
+    DisasterNeedCategory.life_safety: {
+        "search_and_rescue",
+        "urban_search_and_rescue",
+        "urban_search_and_rescue_team",
+        "collapsed_structure_search",
+        "technical_rescue",
+        "rescue",
+    },
     DisasterNeedCategory.medical: {"emergency_medical", "medevac", "medical_stabilization"},
     DisasterNeedCategory.potable_water: {"potable_water_delivery", "water_purification"},
     DisasterNeedCategory.shelter: {"emergency_shelter", "shelter_management"},
