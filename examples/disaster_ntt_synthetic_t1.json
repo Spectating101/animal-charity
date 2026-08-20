@@ -9,6 +9,8 @@
   "interoperability": {
     "bundle_id": "synthetic-ntt-earthquake-interop-002",
     "as_of": "2026-08-20T08:00:00Z",
+    "resource_inventory_scope": "complete_for_scope",
+    "service_registry_scope": "complete_for_scope",
     "records": [
       {
         "record_id": "quake-alert-b",
