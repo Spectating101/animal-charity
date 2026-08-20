@@ -26,7 +26,7 @@ class InteroperabilityTests(unittest.TestCase):
         self.assertEqual(len(packet.resource_candidates_requiring_verification), 1)
         self.assertEqual(packet.resource_candidates_requiring_verification[0].resource_type, "water_bombing_aircraft")
         self.assertEqual(len(packet.command_contexts), 1)
-        self.assertTrue(any("verification" in warning for warning in packet.warnings))
+        self.assertTrue(any("live operational availability" in warning for warning in packet.warnings))
 
     def test_earthquake_bundle_does_not_treat_committed_resource_as_available(self):
         packet = build_control_plane_packet(self._load("interop_ntt_synthetic.json"))
