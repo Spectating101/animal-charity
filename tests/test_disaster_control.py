@@ -41,6 +41,23 @@ class DisasterControlTests(unittest.TestCase):
         isolated = [finding for finding in result.findings if finding.need_id == "isolated-medical-a"]
         self.assertTrue(any(f.stage == "access" for f in isolated))
 
+    def test_observed_access_failure_is_separate_from_unproven_capability_scarcity(self):
+        snapshot = self._load("disaster_ntt_synthetic.json")
+        snapshot.interoperability.resource_inventory_scope = "partial"
+        snapshot.interoperability.service_registry_scope = "unknown"
+        result = assess_disaster(snapshot)
+        isolated = [finding for finding in result.findings if finding.need_id == "isolated-medical-a"]
+        classes = [finding.problem_class for finding in isolated]
+        stages = [finding.stage for finding in isolated]
+
+        self.assertIn("confirmed_access_disruption", classes)
+        self.assertIn("capability_inventory_incomplete", classes)
+        self.assertIn("access", stages)
+        self.assertIn("evidence", stages)
+        self.assertNotIn("isolated_need_without_verified_access_capability", classes)
+        self.assertNotIn("capacity", stages)
+        self.assertFalse(any(r.need_id == "isolated-medical-a" for r in result.proposed_reservations))
+
     def test_existing_reachable_service_beats_new_mobile_capacity(self):
         result = assess_disaster(self._load("disaster_kalimantan_synthetic.json"))
         medical = [finding for finding in result.findings if finding.need_id == "smoke-medical-a"]
