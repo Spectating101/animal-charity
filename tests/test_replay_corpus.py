@@ -15,25 +15,35 @@ class ReplayCorpusTests(unittest.TestCase):
         spec = load_corpus(CORPUS)
         result = evaluate_corpus(spec, ROOT)
 
-        self.assertEqual(result.corpus_id, "disaster-public-r1-v1")
-        self.assertEqual(result.case_count, 2)
-        self.assertEqual(result.by_evidence_level, {"R1": 2})
-        self.assertEqual(result.passed_count, 2)
+        self.assertEqual(result.corpus_id, "disaster-public-r1-v2")
+        self.assertEqual(result.case_count, 3)
+        self.assertEqual(result.by_evidence_level, {"R1": 3})
+        self.assertEqual(result.passed_count, 3)
         self.assertEqual(result.failed_count, 0)
 
         by_id = {case.case_id: case for case in result.results}
         kubu = by_id["kubu-raya-karhutla-2026-08-07-public"]
-        ntt = by_id["ntt-earthquake-2026-08-15-early-public"]
+        ntt_early = by_id["ntt-earthquake-2026-08-15-early-public"]
+        ntt_access = by_id["ntt-earthquake-2026-08-16-access-public"]
+
         self.assertEqual(kubu.predicted_primary_stage, "evidence")
-        self.assertEqual(ntt.predicted_primary_stage, "safety")
+        self.assertEqual(ntt_early.predicted_primary_stage, "safety")
+        self.assertEqual(ntt_access.predicted_primary_stage, "access")
         self.assertEqual(kubu.resource_reservation_count, 0)
-        self.assertEqual(ntt.resource_reservation_count, 0)
+        self.assertEqual(ntt_early.resource_reservation_count, 0)
+        self.assertEqual(ntt_access.resource_reservation_count, 0)
         self.assertFalse(kubu.command_context_present)
-        self.assertFalse(ntt.command_context_present)
+        self.assertFalse(ntt_early.command_context_present)
+        self.assertFalse(ntt_access.command_context_present)
         self.assertEqual(kubu.resource_inventory_scope, "partial")
         self.assertEqual(kubu.service_registry_scope, "unknown")
-        self.assertEqual(ntt.resource_inventory_scope, "unknown")
-        self.assertEqual(ntt.service_registry_scope, "unknown")
+        self.assertEqual(ntt_early.resource_inventory_scope, "unknown")
+        self.assertEqual(ntt_early.service_registry_scope, "unknown")
+        self.assertEqual(ntt_access.resource_inventory_scope, "unknown")
+        self.assertEqual(ntt_access.service_registry_scope, "unknown")
+        self.assertIn("confirmed_access_disruption", ntt_access.problem_classes)
+        self.assertIn("capability_inventory_incomplete", ntt_access.problem_classes)
+        self.assertNotIn("capacity", ntt_access.stages)
 
     def test_corpus_reports_unsafe_contract_violation(self):
         spec = ReplayCorpusSpec(
