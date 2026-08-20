@@ -217,6 +217,14 @@ def _service_matches(service: ServicePresenceSignal, need: DisasterNeed) -> bool
     return service.capacity_status in {"spare", "normal"}
 
 
+def _inventory_complete_for_need(packet: ControlPlaneInteropPacket, need: DisasterNeed) -> bool:
+    if packet.resource_inventory_scope != "complete_for_scope":
+        return False
+    if _SERVICE_TYPES.get(need.category) and packet.service_registry_scope != "complete_for_scope":
+        return False
+    return True
+
+
 def _structural_candidate(snapshot: DisasterSnapshot, need: DisasterNeed) -> bool:
     if snapshot.phase not in {DisasterPhase.recovery, DisasterPhase.mitigation, DisasterPhase.preparedness}:
         return False
@@ -337,24 +345,6 @@ def assess_disaster(snapshot: DisasterSnapshot) -> DisasterAssessment:
         ]
         candidates = [resource for resource in packet.resource_candidates_requiring_verification if _resource_matches(resource, need)]
 
-        if need.access_status == "isolated" and not deployable:
-            findings.append(
-                DisasterFinding(
-                    need_id=need.need_id,
-                    location_ref=need.location_ref,
-                    stage="access",
-                    problem_class="isolated_need_without_verified_access_capability",
-                    priority=need.priority,
-                    recommended_action=(
-                        "Establish or verify an alternative access path (air/off-road/engineering) before counting nearby resources as reachable."
-                    ),
-                    evidence_refs=_evidence_refs(need),
-                    structural_candidate=structural,
-                    rationale=["Resource or service existence does not establish physical reachability to an isolated location."],
-                )
-            )
-            continue
-
         if deployable:
             resource = deployable[0]
             used_resources.add(resource.record_id)
@@ -380,7 +370,7 @@ def assess_disaster(snapshot: DisasterSnapshot) -> DisasterAssessment:
                     resource_refs=[resource.record_id],
                     structural_candidate=structural,
                     rationale=[
-                        "The resource is fresh, sufficiently verified, marked available, capability-compatible and not already proposed elsewhere in this assessment."
+                        "The resource is fresh, sufficiently verified, marked available, supplied by a live operations source, capability-compatible and not already proposed elsewhere in this assessment."
                     ],
                 )
             )
@@ -395,12 +385,50 @@ def assess_disaster(snapshot: DisasterSnapshot) -> DisasterAssessment:
                     problem_class="reported_resource_requires_verification",
                     priority=need.priority,
                     recommended_action=(
-                        "Verify the reportedly available matching resource before operational routing; keep the unmet need active meanwhile."
+                        "Verify the reportedly available matching resource in the live operational system before routing; keep the unmet need active meanwhile."
                     ),
                     evidence_refs=_evidence_refs(need) + [resource.source_ref for resource in candidates],
                     resource_refs=[resource.record_id for resource in candidates],
                     structural_candidate=structural,
-                    rationale=["Reported availability is not deployable capacity."],
+                    rationale=["A registry or public report can establish a candidate capability without establishing live deployability."],
+                )
+            )
+            continue
+
+        if not _inventory_complete_for_need(packet, need):
+            findings.append(
+                DisasterFinding(
+                    need_id=need.need_id,
+                    location_ref=need.location_ref,
+                    stage="evidence",
+                    problem_class="capability_inventory_incomplete",
+                    priority=need.priority,
+                    recommended_action=(
+                        "Obtain a complete-enough current resource/service inventory for this operational scope before declaring an access or capacity shortage."
+                    ),
+                    evidence_refs=_evidence_refs(need),
+                    structural_candidate=False,
+                    rationale=[
+                        "Absence from a partial or unknown inventory is missing evidence, not proof that relevant capability does not exist."
+                    ],
+                )
+            )
+            continue
+
+        if need.access_status == "isolated":
+            findings.append(
+                DisasterFinding(
+                    need_id=need.need_id,
+                    location_ref=need.location_ref,
+                    stage="access",
+                    problem_class="isolated_need_without_verified_access_capability",
+                    priority=need.priority,
+                    recommended_action=(
+                        "Establish or verify an alternative access path (air/off-road/engineering) before counting nearby resources as reachable."
+                    ),
+                    evidence_refs=_evidence_refs(need),
+                    structural_candidate=structural,
+                    rationale=["A complete-enough supplied inventory contains no verified compatible way to reach the isolated location."],
                 )
             )
             continue
@@ -418,7 +446,9 @@ def assess_disaster(snapshot: DisasterSnapshot) -> DisasterAssessment:
                 ),
                 evidence_refs=_evidence_refs(need),
                 structural_candidate=structural,
-                rationale=["No fresh reachable existing service or verified uncommitted capability-compatible resource is present in the supplied state."],
+                rationale=[
+                    "The supplied resource/service inventory is declared complete enough for this scope and contains no fresh reachable existing service or verified uncommitted compatible resource."
+                ],
             )
         )
 
