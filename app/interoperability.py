@@ -31,6 +31,9 @@ class ExternalRecordKind(str, Enum):
     outcome_observation = "outcome_observation"
 
 
+InventoryCoverage = Literal["complete_for_scope", "partial", "unknown"]
+
+
 class ExternalRecord(BaseModel):
     record_id: str
     system_id: str
@@ -90,6 +93,8 @@ class ExternalRecord(BaseModel):
 class InteroperabilityBundle(BaseModel):
     bundle_id: str
     as_of: datetime
+    resource_inventory_scope: InventoryCoverage = "unknown"
+    service_registry_scope: InventoryCoverage = "unknown"
     records: list[ExternalRecord] = Field(default_factory=list)
     metadata: dict[str, Any] = Field(default_factory=dict)
 
@@ -163,6 +168,8 @@ class CommandContextSignal(BaseModel):
 class ControlPlaneInteropPacket(BaseModel):
     bundle_id: str
     as_of: datetime
+    resource_inventory_scope: InventoryCoverage
+    service_registry_scope: InventoryCoverage
     hazards: list[HazardSignal] = Field(default_factory=list)
     deployable_resources: list[DeployableResource] = Field(default_factory=list)
     resource_candidates_requiring_verification: list[DeployableResource] = Field(default_factory=list)
@@ -268,12 +275,7 @@ def build_control_plane_packet(bundle: InteroperabilityBundle) -> ControlPlaneIn
             resource = _resource(record)
             verified_enough = record.verification_status in {"corroborated", "verified"}
             live_operations_source = record.integration_role == IntegrationRole.operations_platform
-            if (
-                is_fresh
-                and resource.availability == "available"
-                and verified_enough
-                and live_operations_source
-            ):
+            if is_fresh and resource.availability == "available" and verified_enough and live_operations_source:
                 deployable_resources.append(resource)
             elif is_fresh and resource.availability == "available":
                 candidates.append(resource)
@@ -347,13 +349,22 @@ def build_control_plane_packet(bundle: InteroperabilityBundle) -> ControlPlaneIn
         warnings.append(
             "No current command/authority context supplied: recommendations may be analyzed, but no consequential action should be treated as authorized"
         )
-
+    if bundle.resource_inventory_scope != "complete_for_scope":
+        warnings.append(
+            "Resource inventory is not declared complete for the assessed scope; absence of a listed resource cannot establish a capacity shortage"
+        )
+    if bundle.service_registry_scope != "complete_for_scope":
+        warnings.append(
+            "Service registry is not declared complete for the assessed scope; absence of a listed service cannot establish service scarcity"
+        )
     if not hazards and not services and not integrity and not outcomes:
         warnings.append("Bundle contains capability/authority data but no current condition or outcome evidence")
 
     return ControlPlaneInteropPacket(
         bundle_id=bundle.bundle_id,
         as_of=bundle.as_of,
+        resource_inventory_scope=bundle.resource_inventory_scope,
+        service_registry_scope=bundle.service_registry_scope,
         hazards=hazards,
         deployable_resources=deployable_resources,
         resource_candidates_requiring_verification=candidates,
