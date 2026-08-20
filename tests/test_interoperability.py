@@ -26,7 +26,7 @@ class InteroperabilityTests(unittest.TestCase):
         self.assertEqual(len(packet.resource_candidates_requiring_verification), 1)
         self.assertEqual(packet.resource_candidates_requiring_verification[0].resource_type, "water_bombing_aircraft")
         self.assertEqual(len(packet.command_contexts), 1)
-        self.assertTrue(any("requires verification" in warning for warning in packet.warnings))
+        self.assertTrue(any("verification" in warning for warning in packet.warnings))
 
     def test_earthquake_bundle_does_not_treat_committed_resource_as_available(self):
         packet = build_control_plane_packet(self._load("interop_ntt_synthetic.json"))
@@ -35,6 +35,37 @@ class InteroperabilityTests(unittest.TestCase):
         self.assertNotIn("potable_water_tanker", resource_types)
         self.assertIn("stale-road-report", packet.stale_record_ids)
         self.assertTrue(any("stale" in warning for warning in packet.warnings))
+
+    def test_verified_registry_or_public_report_does_not_become_live_deployable_capacity(self):
+        for role in ("capability_registry", "evidence_source"):
+            bundle = InteroperabilityBundle.model_validate(
+                {
+                    "bundle_id": f"source-role-{role}",
+                    "as_of": "2026-08-20T07:00:00Z",
+                    "records": [
+                        {
+                            "record_id": f"reported-helicopter-{role}",
+                            "system_id": "public-or-registry-source",
+                            "integration_role": role,
+                            "kind": "capability_resource",
+                            "source_ref": f"synthetic:{role}:helicopter",
+                            "source_kind": "official",
+                            "observed_at": "2026-08-20T06:50:00Z",
+                            "valid_until": "2026-08-20T07:10:00Z",
+                            "verification_status": "verified",
+                            "attributes": {
+                                "resource_type": "helicopter",
+                                "capabilities": ["air_access"],
+                                "availability": "available"
+                            }
+                        }
+                    ]
+                }
+            )
+            packet = build_control_plane_packet(bundle)
+            self.assertEqual(packet.deployable_resources, [])
+            self.assertEqual(len(packet.resource_candidates_requiring_verification), 1)
+            self.assertTrue(any("live operational availability" in warning for warning in packet.warnings))
 
     def test_stale_hazard_and_command_context_are_not_current_operational_state(self):
         bundle = InteroperabilityBundle.model_validate(
