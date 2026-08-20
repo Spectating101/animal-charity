@@ -50,7 +50,7 @@ class ExternalRecord(BaseModel):
     attributes: dict[str, Any] = Field(default_factory=dict)
 
     @model_validator(mode="after")
-    def validate_role_kind_boundary(self) -> "ExternalRecord":
+    def validate_boundaries(self) -> "ExternalRecord":
         allowed = {
             ExternalRecordKind.hazard_observation: {IntegrationRole.evidence_source},
             ExternalRecordKind.capability_resource: {
@@ -74,6 +74,15 @@ class ExternalRecord(BaseModel):
                 f"record kind {self.kind.value} cannot be supplied by role {self.integration_role.value}; "
                 "keep evidence, capability, integrity, authority, execution and memory boundaries explicit"
             )
+        for field_name, value in (
+            ("observed_at", self.observed_at),
+            ("ingested_at", self.ingested_at),
+            ("valid_until", self.valid_until),
+        ):
+            if value is not None and value.tzinfo is None:
+                raise ValueError(f"{field_name} must be timezone-aware")
+        if self.valid_until is not None and self.valid_until < self.observed_at:
+            raise ValueError("valid_until cannot precede observed_at")
         return self
 
 
@@ -204,23 +213,27 @@ def build_control_plane_packet(bundle: InteroperabilityBundle) -> ControlPlaneIn
     outcomes: list[str] = []
     stale: list[str] = []
     restricted: list[str] = []
-    manifest: list[EvidenceManifestEntry] = []
+    manifest_by_ref: dict[str, EvidenceManifestEntry] = {}
     warnings: list[str] = []
 
     for record in bundle.records:
         if record.sensitivity in {"sensitive", "restricted"}:
             restricted.append(record.source_ref)
-        manifest.append(
-            EvidenceManifestEntry(
-                source_ref=record.source_ref,
-                source_kind=record.source_kind,
-                verification_status=record.verification_status,
-                sensitivity=record.sensitivity,
-                observed_at=record.observed_at,
-                content_sha256=record.content_sha256,
-                notes=f"interop:{record.system_id}:{record.kind.value}",
-            )
+        entry = EvidenceManifestEntry(
+            source_ref=record.source_ref,
+            source_kind=record.source_kind,
+            verification_status=record.verification_status,
+            sensitivity=record.sensitivity,
+            observed_at=record.observed_at,
+            content_sha256=record.content_sha256,
+            notes=f"interop:{record.system_id}:{record.kind.value}",
         )
+        if record.source_ref not in manifest_by_ref:
+            manifest_by_ref[record.source_ref] = entry
+        else:
+            warnings.append(
+                f"source_ref {record.source_ref} appears on multiple interoperability records; evidence manifest is deduplicated"
+            )
 
         is_fresh = _fresh(record, bundle.as_of)
         if not is_fresh:
@@ -231,20 +244,21 @@ def build_control_plane_packet(bundle: InteroperabilityBundle) -> ControlPlaneIn
 
         attrs = record.attributes
         if record.kind == ExternalRecordKind.hazard_observation:
-            hazards.append(
-                HazardSignal(
-                    record_id=record.record_id,
-                    system_id=record.system_id,
-                    hazard_type=str(attrs.get("hazard_type", "unknown")),
-                    location_ref=str(attrs.get("location_ref", "unknown")),
-                    severity=str(attrs["severity"]) if attrs.get("severity") is not None else None,
-                    observed_at=record.observed_at,
-                    valid_until=record.valid_until,
-                    verification_status=record.verification_status,
-                    source_ref=record.source_ref,
+            if is_fresh:
+                hazards.append(
+                    HazardSignal(
+                        record_id=record.record_id,
+                        system_id=record.system_id,
+                        hazard_type=str(attrs.get("hazard_type", "unknown")),
+                        location_ref=str(attrs.get("location_ref", "unknown")),
+                        severity=str(attrs["severity"]) if attrs.get("severity") is not None else None,
+                        observed_at=record.observed_at,
+                        valid_until=record.valid_until,
+                        verification_status=record.verification_status,
+                        source_ref=record.source_ref,
+                    )
                 )
-            )
-            if not is_fresh:
+            else:
                 warnings.append("stale hazard evidence may support history but cannot establish current hazard state")
 
         elif record.kind == ExternalRecordKind.capability_resource:
@@ -259,18 +273,21 @@ def build_control_plane_packet(bundle: InteroperabilityBundle) -> ControlPlaneIn
                 )
 
         elif record.kind == ExternalRecordKind.service_presence:
-            services.append(
-                ServicePresenceSignal(
-                    record_id=record.record_id,
-                    system_id=record.system_id,
-                    organization_ref=str(attrs.get("organization_ref", "unknown")),
-                    service_type=str(attrs.get("service_type", "unknown")),
-                    location_ref=str(attrs.get("location_ref", "unknown")),
-                    access_status=attrs.get("access_status", "unknown"),
-                    capacity_status=attrs.get("capacity_status", "unknown"),
-                    source_ref=record.source_ref,
+            if is_fresh:
+                services.append(
+                    ServicePresenceSignal(
+                        record_id=record.record_id,
+                        system_id=record.system_id,
+                        organization_ref=str(attrs.get("organization_ref", "unknown")),
+                        service_type=str(attrs.get("service_type", "unknown")),
+                        location_ref=str(attrs.get("location_ref", "unknown")),
+                        access_status=attrs.get("access_status", "unknown"),
+                        capacity_status=attrs.get("capacity_status", "unknown"),
+                        source_ref=record.source_ref,
+                    )
                 )
-            )
+            else:
+                warnings.append("stale service-presence evidence cannot establish current access or capacity")
 
         elif record.kind == ExternalRecordKind.contracting_process:
             integrity.append(
@@ -290,31 +307,34 @@ def build_control_plane_packet(bundle: InteroperabilityBundle) -> ControlPlaneIn
             )
 
         elif record.kind == ExternalRecordKind.command_context:
-            command.append(
-                CommandContextSignal(
-                    record_id=record.record_id,
-                    system_id=record.system_id,
-                    incident_id=str(attrs.get("incident_id", "unknown")),
-                    authority_ref=str(attrs.get("authority_ref", "unknown")),
-                    operational_period=(
-                        str(attrs["operational_period"]) if attrs.get("operational_period") is not None else None
-                    ),
-                    objectives=[str(value) for value in attrs.get("objectives", [])],
-                    constraints=[str(value) for value in attrs.get("constraints", [])],
-                    source_ref=record.source_ref,
+            if is_fresh:
+                command.append(
+                    CommandContextSignal(
+                        record_id=record.record_id,
+                        system_id=record.system_id,
+                        incident_id=str(attrs.get("incident_id", "unknown")),
+                        authority_ref=str(attrs.get("authority_ref", "unknown")),
+                        operational_period=(
+                            str(attrs["operational_period"]) if attrs.get("operational_period") is not None else None
+                        ),
+                        objectives=[str(value) for value in attrs.get("objectives", [])],
+                        constraints=[str(value) for value in attrs.get("constraints", [])],
+                        source_ref=record.source_ref,
+                    )
                 )
-            )
+            else:
+                warnings.append("stale command context cannot establish current operational authority")
 
         elif record.kind == ExternalRecordKind.outcome_observation:
             outcomes.append(record.source_ref)
 
     if not command:
         warnings.append(
-            "No command/authority context supplied: recommendations may be analyzed, but no consequential action should be treated as authorized"
+            "No current command/authority context supplied: recommendations may be analyzed, but no consequential action should be treated as authorized"
         )
 
     if not hazards and not services and not integrity and not outcomes:
-        warnings.append("Bundle contains capability/authority data but no condition or outcome evidence")
+        warnings.append("Bundle contains capability/authority data but no current condition or outcome evidence")
 
     return ControlPlaneInteropPacket(
         bundle_id=bundle.bundle_id,
@@ -328,6 +348,6 @@ def build_control_plane_packet(bundle: InteroperabilityBundle) -> ControlPlaneIn
         outcome_refs=outcomes,
         stale_record_ids=sorted(set(stale)),
         restricted_source_refs=sorted(set(restricted)),
-        evidence_manifest=manifest,
+        evidence_manifest=list(manifest_by_ref.values()),
         warnings=warnings,
     )
