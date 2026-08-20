@@ -10,6 +10,9 @@ from pydantic import BaseModel, Field
 from app.replay import ReplayPacket, run_replay, score_replay
 
 
+InventoryCoverage = Literal["complete_for_scope", "partial", "unknown"]
+
+
 class ReplayCorpusCaseSpec(BaseModel):
     case_id: str
     packet_path: str
@@ -17,7 +20,11 @@ class ReplayCorpusCaseSpec(BaseModel):
     required_problem_classes: list[str] = Field(default_factory=list)
     forbidden_problem_classes: list[str] = Field(default_factory=list)
     forbidden_stages: list[str] = Field(default_factory=list)
+    required_data_gap_substrings: list[str] = Field(default_factory=list)
     max_resource_reservations: int | None = Field(default=None, ge=0)
+    expected_command_context_present: bool | None = None
+    expected_resource_inventory_scope: InventoryCoverage | None = None
+    expected_service_registry_scope: InventoryCoverage | None = None
     notes: list[str] = Field(default_factory=list)
 
 
@@ -36,6 +43,10 @@ class ReplayCorpusCaseResult(BaseModel):
     problem_classes: list[str]
     stages: list[str]
     resource_reservation_count: int
+    command_context_present: bool | None = None
+    resource_inventory_scope: str | None = None
+    service_registry_scope: str | None = None
+    data_gaps: list[str] = Field(default_factory=list)
     violations: list[str] = Field(default_factory=list)
     passed: bool
 
@@ -66,8 +77,18 @@ def evaluate_corpus(spec: ReplayCorpusSpec, root: str | Path) -> ReplayCorpusRes
         findings = run.assessment.normalized_findings
         problem_classes = [finding.problem_class for finding in findings]
         stages = [finding.stage for finding in findings]
-        reservations = run.assessment.domain_result.get("proposed_reservations", [])
+        domain_result = run.assessment.domain_result
+        reservations = domain_result.get("proposed_reservations", [])
         reservation_count = len(reservations) if isinstance(reservations, list) else 0
+        data_gaps = list(run.assessment.data_gaps)
+
+        command_context = domain_result.get("command_context_present")
+        command_context_present = command_context if isinstance(command_context, bool) else None
+        interop = domain_result.get("interoperability")
+        interop_dict = interop if isinstance(interop, dict) else {}
+        resource_scope = interop_dict.get("resource_inventory_scope")
+        service_scope = interop_dict.get("service_registry_scope")
+
         violations: list[str] = []
 
         if score is not None and score.primary_stage_match is False:
@@ -87,12 +108,43 @@ def evaluate_corpus(spec: ReplayCorpusSpec, root: str | Path) -> ReplayCorpusRes
             if forbidden_stage in stages:
                 violations.append(f"forbidden stage present: {forbidden_stage}")
 
+        for required_gap in case_spec.required_data_gap_substrings:
+            if not any(required_gap in gap for gap in data_gaps):
+                violations.append(f"required data-gap text missing: {required_gap}")
+
         if (
             case_spec.max_resource_reservations is not None
             and reservation_count > case_spec.max_resource_reservations
         ):
             violations.append(
                 f"resource reservations {reservation_count} exceed maximum {case_spec.max_resource_reservations}"
+            )
+
+        if (
+            case_spec.expected_command_context_present is not None
+            and command_context_present is not case_spec.expected_command_context_present
+        ):
+            violations.append(
+                "command-context expectation mismatch: "
+                f"expected {case_spec.expected_command_context_present}, got {command_context_present}"
+            )
+
+        if (
+            case_spec.expected_resource_inventory_scope is not None
+            and resource_scope != case_spec.expected_resource_inventory_scope
+        ):
+            violations.append(
+                "resource-inventory scope mismatch: "
+                f"expected {case_spec.expected_resource_inventory_scope!r}, got {resource_scope!r}"
+            )
+
+        if (
+            case_spec.expected_service_registry_scope is not None
+            and service_scope != case_spec.expected_service_registry_scope
+        ):
+            violations.append(
+                "service-registry scope mismatch: "
+                f"expected {case_spec.expected_service_registry_scope!r}, got {service_scope!r}"
             )
 
         results.append(
@@ -108,6 +160,10 @@ def evaluate_corpus(spec: ReplayCorpusSpec, root: str | Path) -> ReplayCorpusRes
                 problem_classes=problem_classes,
                 stages=stages,
                 resource_reservation_count=reservation_count,
+                command_context_present=command_context_present,
+                resource_inventory_scope=str(resource_scope) if resource_scope is not None else None,
+                service_registry_scope=str(service_scope) if service_scope is not None else None,
+                data_gaps=data_gaps,
                 violations=violations,
                 passed=not violations,
             )
