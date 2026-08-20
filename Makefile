@@ -41,6 +41,8 @@ public-good-smoke:
 replay-smoke:
 	@python scripts/replay_public_good_case.py examples/replay_animal_owner_retention.json | python -c "import json,sys; d=json.load(sys.stdin); assert d['reference_hidden'] is True; assert d['assessment']['normalized_findings'][0]['stage']=='prevent'; assert 'historical_action' not in d"
 	@python scripts/replay_public_good_case.py examples/replay_mbg_integrity.json --score | python -c "import json,sys; d=json.load(sys.stdin); assert d['predicted_primary_stage']=='integrity'; assert d['primary_stage_match'] is True"
+	@python scripts/replay_public_good_case.py examples/replay_disaster_kubu_raya_2026_08_07.json --score | python -c "import json,sys; d=json.load(sys.stdin); assert d['predicted_primary_stage']=='evidence'; assert d['primary_stage_match'] is True"
+	@python scripts/replay_public_good_case.py examples/replay_disaster_ntt_2026_08_15_0800.json --score | python -c "import json,sys; d=json.load(sys.stdin); assert d['predicted_primary_stage']=='safety'; assert d['primary_stage_match'] is True"
 
 interop-smoke:
 	@python scripts/build_control_plane_packet.py examples/interop_kalimantan_synthetic.json | python -c "import json,sys; d=json.load(sys.stdin); assert d['hazards'][0]['hazard_type']=='wildfire'; assert len(d['deployable_resources'])==1; assert len(d['resource_candidates_requiring_verification'])==1; assert d['command_contexts']"
