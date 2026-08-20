@@ -115,42 +115,49 @@ Research question:
 
 > Can the control layer distinguish genuine capacity shortage from failures elsewhere in the resource-to-outcome chain before expansion spending is justified?
 
-### Case 3 — Disaster response (Kalimantan / NTT stress-test family)
+### Case 3 — Disaster response
 
 Tests rapidly changing multi-agency state:
 
 - hazard evidence;
-- geographic exposure;
-- life-safety urgency;
+- life-safety urgency under incomplete verification;
+- humanitarian minimum floors;
 - stale data;
 - resource availability and commitment;
 - route/access constraints;
-- service capacity;
-- incident command;
-- repeated structural resilience failures.
+- existing service capacity;
+- incident-command authority;
+- resource reservation / double-booking prevention;
+- repeated structural resilience failures;
+- operational-period reassessment.
 
 Research question:
 
-> Can the same architecture remain useful under urgency and uncertainty without turning uncertain observations into autonomous life-and-death authority?
+> Can the same architecture remain useful under urgency and uncertainty while resource and command state changes underneath it, without converting decision support into autonomous life-and-death authority?
 
-The current disaster work is an interoperability layer, not yet a disaster-response domain.
+The current disaster domain is R0/synthetic. Kalimantan and NTT are the intended first real replay families, not hard-coded product logic.
 
 ## Why the third case matters
 
 Animal and MBG cases can largely be evaluated as snapshots. Disaster response forces **dynamic control**:
 
-`state(t0) → recommendation → new evidence → state(t1) → reroute`
+`state(t0) → recommendation → new evidence → state(t1) → invalidate/reroute → outcome`
 
-That introduces requirements that should be proven before a disaster adapter is operationally serious:
+The current implementation now tests:
 
 - freshness/expiry of evidence;
+- verified vs merely reported resources;
+- committed vs spare resources;
+- current-service-first routing;
 - resource reservation and double-booking prevention;
-- dependency/cascading-failure reasoning;
 - urgency under incomplete evidence;
 - humanitarian minimum floors;
-- geography and route feasibility;
+- isolation / access compatibility;
 - continuous reassessment;
+- explicit outcome vs missing follow-up;
 - clear incident-command handoff.
+
+See `docs/DISASTER_CONTROL_PLANE.md`.
 
 ## Packaging model
 
@@ -168,13 +175,10 @@ The project should be presented as three layers, not dozens of features:
 
 ### 2. Domain constitutions/adapters
 
-Current:
+Current R0 domain implementations:
 
 - animal welfare;
-- MBG public nutrition.
-
-Next candidate after interoperability/replay validation:
-
+- MBG public nutrition;
 - disaster response.
 
 Future domains should only be added when they test a genuinely new failure mode rather than serving as breadth theater.
@@ -196,7 +200,7 @@ See `docs/INTEROPERABILITY_ARCHITECTURE.md` and `config/integrations/reference_s
 
 Supported claim:
 
-> The repository contains a tested R0 control-plane architecture across animal welfare and MBG plus a typed interoperability contract for external evidence, capability, integrity and authority systems.
+> The repository contains a tested R0 Public-Good Control Plane across animal welfare, MBG public nutrition and synthetic disaster response, plus a typed interoperability contract for external evidence, capability, integrity and authority systems and a multi-period disaster reassessment model.
 
 Not yet supported:
 
@@ -205,6 +209,6 @@ Not yet supported:
 - that it can safely allocate national disaster resources;
 - that it detects real corruption;
 - that it can autonomously administer welfare rights;
-- that the disaster adapter itself is complete.
+- that synthetic disaster routing predicts real field performance.
 
 The next evidence upgrades remain retrospective real-case replay (R1), prospective shadow mode (R2), then supervised reversible intervention (R3).
