@@ -23,6 +23,7 @@ def utcnow() -> datetime:
 class PublicGoodDomain(str, Enum):
     animal_welfare = "animal_welfare"
     mbg_public_nutrition = "mbg_public_nutrition"
+    disaster_response = "disaster_response"
 
 
 class EvidenceManifestEntry(BaseModel):
@@ -166,6 +167,27 @@ def _normalize_mbg(result: MBGCaseAssessment) -> list[NormalizedFinding]:
     ]
 
 
+def _normalize_disaster(result: Any) -> list[NormalizedFinding]:
+    return [
+        NormalizedFinding(
+            stage=finding.stage,
+            problem_class=finding.problem_class,
+            priority=finding.priority,
+            recommended_action=finding.recommended_action,
+            evidence_refs=finding.evidence_refs,
+            human_authority_required=finding.human_authority_required,
+            structural_candidate=finding.structural_candidate,
+            domain_detail={
+                "need_id": finding.need_id,
+                "location_ref": finding.location_ref,
+                "resource_refs": finding.resource_refs,
+                "rationale": finding.rationale,
+            },
+        )
+        for finding in result.findings
+    ]
+
+
 def _manifest_summary(case: PublicGoodCase, normalized: list[NormalizedFinding]) -> EvidenceManifestSummary:
     cited = sorted({ref for finding in normalized for ref in finding.evidence_refs if ref})
     if not case.evidence_manifest:
@@ -196,6 +218,16 @@ def assess_public_good_case(case: PublicGoodCase) -> PublicGoodAssessment:
         payload = MBGCaseSnapshot.model_validate(case.payload)
         domain_result = assess_mbg_case(payload)
         normalized = _normalize_mbg(domain_result)
+        data_gaps = list(domain_result.data_gaps)
+        safe_conclusion = domain_result.safe_conclusion
+    elif case.domain == PublicGoodDomain.disaster_response:
+        # Lazy import avoids coupling the core evidence model back through the
+        # interoperability module during module initialization.
+        from app.disaster_control import DisasterSnapshot, assess_disaster
+
+        payload = DisasterSnapshot.model_validate(case.payload)
+        domain_result = assess_disaster(payload)
+        normalized = _normalize_disaster(domain_result)
         data_gaps = list(domain_result.data_gaps)
         safe_conclusion = domain_result.safe_conclusion
     else:  # defensive; enum validation should prevent this path.
