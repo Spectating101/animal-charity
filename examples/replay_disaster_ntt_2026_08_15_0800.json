@@ -1,0 +1,94 @@
+{
+  "replay_id": "r1-ntt-earthquake-2026-08-15-0800-wib",
+  "decision_cutoff": "2026-08-15T08:00:00+07:00",
+  "require_evidence_timestamps": true,
+  "metadata": {
+    "evidence_level": "R1_retrospective_public_replay",
+    "real_case": true,
+    "location": "Nagekeo/Sikka, East Nusa Tenggara, Indonesia",
+    "note": "The first BNPB publication timestamp is used as the conservative public decision cutoff; later casualty, access and resource information is excluded from the decision payload."
+  },
+  "case": {
+    "case_id": "ntt-earthquake-2026-08-15-early-public-cutoff",
+    "domain": "disaster_response",
+    "metadata": {
+      "source_ref": "https://www.bnpb.go.id/berita/gempa-magnitudo-77-guncang-nagekeo-dua-orang-meninggal-dunia-di-sikka"
+    },
+    "evidence_manifest": [
+      {
+        "source_ref": "https://www.bnpb.go.id/berita/gempa-magnitudo-77-guncang-nagekeo-dua-orang-meninggal-dunia-di-sikka",
+        "source_kind": "official",
+        "verification_status": "verified",
+        "sensitivity": "public",
+        "observed_at": "2026-08-15T08:00:00+07:00",
+        "notes": "Initial BNPB public update; casualty and damage data explicitly described as still being updated/verified."
+      }
+    ],
+    "payload": {
+      "incident_id": "real-ntt-earthquake-2026-08-15",
+      "as_of": "2026-08-15T08:00:00+07:00",
+      "phase": "response",
+      "metadata": {
+        "real_case": "true",
+        "public_replay": "true",
+        "claim_boundary": "Early official reporting establishes a serious earthquake and ongoing evacuation/verification, not a complete needs or resource picture."
+      },
+      "interoperability": {
+        "bundle_id": "real-ntt-public-interop-2026-08-15-0800",
+        "as_of": "2026-08-15T08:00:00+07:00",
+        "resource_inventory_scope": "unknown",
+        "service_registry_scope": "unknown",
+        "metadata": {
+          "source_scope": "single initial official BNPB public update",
+          "not_operational_inventory": true
+        },
+        "records": [
+          {
+            "record_id": "bnpb-ntt-m77-initial",
+            "system_id": "bnpb_public_reporting",
+            "integration_role": "evidence_source",
+            "kind": "hazard_observation",
+            "source_ref": "https://www.bnpb.go.id/berita/gempa-magnitudo-77-guncang-nagekeo-dua-orang-meninggal-dunia-di-sikka",
+            "source_kind": "official",
+            "observed_at": "2026-08-15T08:00:00+07:00",
+            "verification_status": "verified",
+            "sensitivity": "public",
+            "jurisdiction": "East Nusa Tenggara, Indonesia",
+            "attributes": {
+              "hazard_type": "major_earthquake_with_aftershocks",
+              "location_ref": "Nagekeo/Sikka, East Nusa Tenggara, Indonesia",
+              "severity": "major"
+            }
+          }
+        ]
+      },
+      "needs": [
+        {
+          "need_id": "ntt-early-life-safety-impact-verification",
+          "location_ref": "Nagekeo/Sikka, East Nusa Tenggara, Indonesia",
+          "category": "life_safety",
+          "priority": "critical",
+          "status": "unknown",
+          "source_ref": "https://www.bnpb.go.id/berita/gempa-magnitudo-77-guncang-nagekeo-dua-orang-meninggal-dunia-di-sikka",
+          "verification_status": "reported",
+          "observed_at": "2026-08-15T08:00:00+07:00",
+          "access_status": "unknown",
+          "notes": "BNPB reported deaths, injury, coastal evacuation direction and ongoing aftershocks while explicitly stating that casualties, injuries, structural damage and other impacts were still being updated."
+        }
+      ],
+      "recurrence_signals": []
+    }
+  },
+  "reference": {
+    "expected_primary_stages": ["safety"],
+    "historical_action": "Rescue, evacuation and aid operations expanded as later information established thousands of evacuees, blocked roads/landslides and continuing aftershocks.",
+    "historical_outcome_summary": "Later reporting showed that the early uncertainty concealed substantially larger impacts. This supports rapid verification/escalation of critical uncertainty, but does not prove a particular automated allocation would have improved outcomes.",
+    "reference_refs": [
+      "https://www.reuters.com/business/environment/thousands-evacuate-after-indonesia-quake-kills-51-cuts-roads-2026-08-16/"
+    ],
+    "notes": [
+      "The later Reuters report is hidden from the decision payload and used only after replay.",
+      "The replay tests that a critical but incomplete early report triggers safety escalation without inventing a capacity diagnosis."
+    ]
+  }
+}
