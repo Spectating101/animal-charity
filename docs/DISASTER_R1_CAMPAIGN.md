@@ -50,13 +50,60 @@ A case is not rewritten merely to make the current implementation pass. If a def
 | Semeru eruption, 5 Dec 2021 | severed bridge treated as proof that no alternate access capability exists | diagnose access failure; preserve alternative-capability uncertainty |
 | Cianjur Gasol shelter, 27 Nov 2022 | disaster severity creates false-positive intervention despite explicit adequate service | zero findings and zero reservations for represented met needs |
 
-The corpus is machine-enforced in `config/research/disaster_replay_corpus.json`. `make verify` fails if a case violates its declared contract.
+Wave 1 proved primarily **restraint**: the controller could distinguish critical uncertainty, known broken edges, partial capability information and explicitly met conditions without manufacturing scarcity or execution authority.
+
+## Wave 2: positive decisions without abandoning restraint
+
+Wave 2 deliberately attacks the opposite failure mode: a controller that never overclaims can still be useless if it refuses to recognize a shortage even when competent contemporaneous condition evidence says capacity is insufficient.
+
+### North Luwu flash flood — 19 July 2020
+
+The first Wave-2 case uses an official BNPB field-needs report quoting the North Luwu emergency authority. The report said evacuation tents were still needed and buildings were being used to anticipate a tent shortage.
+
+This exposed an architectural asymmetry. The earlier disaster controller could establish capacity scarcity only from a **complete resource/service inventory with no usable capability**. That is appropriate when scarcity is inferred from absence, but too conservative when capacity insufficiency is itself directly observed.
+
+The domain model therefore adds a separate need-level `capacity_status`:
+
+- `adequate`
+- `constrained`
+- `insufficient`
+- `unknown`
+
+The evidence rule is intentionally narrow:
+
+- `capacity_status = insufficient` + **corroborated/verified current condition evidence** → an `*_observed_capacity_shortage` finding may enter the `capacity` stage even if the wider resource inventory is incomplete;
+- the same shortage with merely `reported` evidence → `reported_capacity_shortage_requires_verification` at the `evidence` stage;
+- no explicit shortage state + incomplete inventory → the original `capability_inventory_incomplete` restraint remains unchanged;
+- a positive capacity finding still does not prove every relevant capability is absent and does not authorize dispatch, procurement or permanent infrastructure.
+
+This creates two legitimate routes to a capacity finding:
+
+```text
+A. inferred scarcity
+complete-enough scoped inventory
++ established unmet need
++ no reachable service / uncommitted compatible resource
+→ capacity gap
+
+B. observed scarcity
+established unmet need
++ direct corroborated/verified capacity_status = insufficient
+→ observed capacity shortage
+```
+
+The distinction matters because **absence from evidence** and **evidence of insufficiency** have different burdens of proof.
+
+The corpus is now eleven real R1 cases and is machine-enforced in `config/research/disaster_replay_corpus.json`. The first ten retain their original contracts unchanged; North Luwu is required to produce `shelter_observed_capacity_shortage`, zero resource reservations and no implied command authority.
 
 ## What the corpus currently tests
 
 ### False scarcity
 
 Absence from incomplete journalism, public reporting, partner registries or partial inventories is not proof that capability is absent.
+
+### Observed scarcity
+
+A current shortage can be established directly when sufficiently strong condition evidence explicitly records capacity as insufficient. This must not be confused with inferring absence from an incomplete inventory.
 
 ### Critical uncertainty
 
@@ -76,7 +123,7 @@ The controller must also know when **not** to propose an intervention. Explicitl
 
 ### Authority
 
-All Wave-1 public replays intentionally lack live command context. They may support diagnosis and research evaluation, but zero consequential resource routing is treated as authorized by the replay evidence.
+All current public R1 replays intentionally lack live command context. They may support diagnosis and research evaluation, but zero consequential resource routing is treated as authorized by the replay evidence.
 
 ## Evidence and claim boundaries
 
@@ -85,27 +132,29 @@ All Wave-1 public replays intentionally lack live command context. They may supp
 - replay agreement is not a causal estimate of lives saved, cost avoided or outcome improvement;
 - later sources are outcome/reference evidence only and remain hidden during the decision run;
 - no public-source replay may promote a reported resource into direct deployability without live operational evidence;
+- direct observed shortage evidence does not imply that all possible capacity is absent;
 - human incident command, clinical authority, evacuation authority, engineering authority and other consequential powers remain outside the controller.
 
-## Wave 2 red-team queue
+## Remaining Wave 2 red-team queue
 
 These are deliberately **not** forced into the green corpus yet. Each should be added only when the historical evidence packet is strong enough to make the intended test defensible.
 
-1. **True capacity shortage** — explicit contemporaneous operational evidence that a required resource/service is insufficient, testing whether the current complete-inventory gate is too conservative.
-2. **Committed-elsewhere conflict** — matching capability exists but is already committed to another critical need.
-3. **Conflicting reports** — two credible sources disagree about current need/access/resource state.
-4. **Stale-state reversal** — an earlier route/service observation becomes invalid and must not survive into the next operational period.
-5. **Recurring infrastructure failure** — repeated flood/fire/access failure with enough history to justify a mitigation/preparedness structural candidate.
-6. **Safety overrides throughput** — nominally efficient routing should stop because food safety, structural safety, contamination or clinical constraints fail.
-7. **Recovery integrity** — reconstruction/procurement promise, physical implementation and beneficiary outcome diverge without allowing the software to declare corruption.
-8. **Cross-jurisdiction mutual aid** — local capacity insufficient but neighboring capability exists under a different authority boundary.
+1. **Committed-elsewhere conflict** — matching capability exists but is already committed to another critical need.
+2. **Conflicting reports** — two credible sources disagree about current need/access/resource state.
+3. **Stale-state reversal** — an earlier route/service observation becomes invalid and must not survive into the next operational period.
+4. **Recurring infrastructure failure** — repeated flood/fire/access failure with enough history to justify a mitigation/preparedness structural candidate.
+5. **Safety overrides throughput** — nominally efficient routing should stop because food safety, structural safety, contamination or clinical constraints fail.
+6. **Recovery integrity** — reconstruction/procurement promise, physical implementation and beneficiary outcome diverge without allowing the software to declare corruption.
+7. **Cross-jurisdiction mutual aid** — local capacity insufficient but neighboring capability exists under a different authority boundary.
+8. **Dependency shortage** — operational capability exists but an upstream dependency such as fuel, power, access or communications prevents its use.
 
 ## Promotion criteria
 
-Wave 1 is a useful R1 campaign only if:
+The campaign remains useful only if:
 
 - all historical cutoffs pass hindsight gates;
-- all ten case contracts pass without weakening earlier safety rules;
+- all eleven case contracts pass without weakening earlier safety rules;
+- North Luwu produces a positive capacity finding while the ten Wave-1 cases keep their original restraint behavior;
 - negative controls prove the evaluator can fail;
 - the full animal, MBG, integrity, governance, interoperability and disaster stack remains green;
 - Docker packaging remains green.
