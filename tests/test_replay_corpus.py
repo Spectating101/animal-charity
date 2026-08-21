@@ -15,10 +15,10 @@ class ReplayCorpusTests(unittest.TestCase):
         spec = load_corpus(CORPUS)
         result = evaluate_corpus(spec, ROOT)
 
-        self.assertEqual(result.corpus_id, "disaster-public-r1-v3")
-        self.assertEqual(result.case_count, 10)
-        self.assertEqual(result.by_evidence_level, {"R1": 10})
-        self.assertEqual(result.passed_count, 10)
+        self.assertEqual(result.corpus_id, "disaster-public-r1-v4")
+        self.assertEqual(result.case_count, 11)
+        self.assertEqual(result.by_evidence_level, {"R1": 11})
+        self.assertEqual(result.passed_count, 11)
         self.assertEqual(result.failed_count, 0)
 
         by_id = {case.case_id: case for case in result.results}
@@ -33,12 +33,16 @@ class ReplayCorpusTests(unittest.TestCase):
             "bekasi-flood-hospital-2025-03-04-public": "safety",
             "semeru-eruption-2021-12-05-access-public": "access",
             "cianjur-gasol-2022-11-27-adequate-service": None,
+            "luwu-utara-flood-2020-07-19-capacity-public": "capacity",
         }
         for case_id, expected_stage in expected_stages.items():
             with self.subTest(case_id=case_id):
                 self.assertEqual(by_id[case_id].predicted_primary_stage, expected_stage)
                 self.assertEqual(by_id[case_id].resource_reservation_count, 0)
                 self.assertFalse(by_id[case_id].command_context_present)
+
+        for case_id in expected_stages:
+            if case_id != "luwu-utara-flood-2020-07-19-capacity-public":
                 self.assertNotIn("capacity", by_id[case_id].stages)
 
         self.assertIn(
@@ -62,6 +66,11 @@ class ReplayCorpusTests(unittest.TestCase):
         self.assertEqual(cianjur.finding_count, 0)
         self.assertEqual(cianjur.problem_classes, [])
         self.assertEqual(cianjur.stages, [])
+
+        luwu = by_id["luwu-utara-flood-2020-07-19-capacity-public"]
+        self.assertIn("shelter_observed_capacity_shortage", luwu.problem_classes)
+        self.assertIn("capacity", luwu.stages)
+        self.assertNotIn("capability_inventory_incomplete", luwu.problem_classes)
 
     def test_corpus_reports_unsafe_contract_violation(self):
         spec = ReplayCorpusSpec(
