@@ -1,0 +1,39 @@
+{
+  "incident_id": "real-aceh-blangkejeren-access-2025-2026",
+  "as_of": "2025-12-31T23:59:59+07:00",
+  "phase": "recovery",
+  "metadata": {
+    "real_case": "true",
+    "public_replay": "true",
+    "source_scope": "PT Hutama Karya public recovery update published 31 December 2025",
+    "time_boundary_note": "The public page exposes the publication date but not an exact publication time; the snapshot uses an end-of-day WIB knowledge boundary rather than inventing a more precise timestamp.",
+    "claim_boundary": "This snapshot establishes that the represented Blangkejeren-Gayo Lues/Aceh Tenggara corridor was functionally passable by this knowledge boundary. It does not claim unrestricted normal operation or permanent safety."
+  },
+  "interoperability": {
+    "bundle_id": "real-aceh-blangkejeren-public-interop-t0",
+    "as_of": "2025-12-31T23:59:59+07:00",
+    "resource_inventory_scope": "unknown",
+    "service_registry_scope": "unknown",
+    "metadata": {
+      "source_scope": "single public infrastructure recovery update",
+      "not_operational_inventory": true
+    },
+    "records": []
+  },
+  "needs": [
+    {
+      "need_id": "blangkejeren-gayo-lues-aceh-tenggara-access",
+      "location_ref": "Blangkejeren-Batas Gayo Lues/Aceh Tenggara corridor, Aceh, Indonesia",
+      "category": "access",
+      "priority": "urgent",
+      "status": "met",
+      "source_ref": "https://www.hutamakarya.com/en/hutama-karya-tangani-pemulihan-akses-kutacane-takengon-mobilitas-warga-berangsur-pulih",
+      "verification_status": "corroborated",
+      "observed_at": "2025-12-31T23:59:59+07:00",
+      "access_status": "open",
+      "capacity_status": "unknown",
+      "notes": "Hutama Karya reported the Batas Aceh Tengah/Gayo Lues-Blangkejeren-Batas Gayo Lues/Aceh Tenggara segment as functional since 20 December 2025. Operation remained temporary/controlled, including alternating traffic at some points and safety closures under heavy rain."
+    }
+  ],
+  "recurrence_signals": []
+}
