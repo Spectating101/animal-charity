@@ -1,0 +1,44 @@
+{
+  "version": "2026-08-21.v1",
+  "name": "dual-frontier-governance-pulse",
+  "purpose": "Track adverse and improvement evidence in parallel so governance can identify both unresolved problems and practices/outcomes worth learning from without netting one against the other.",
+  "directions": [
+    "adverse",
+    "improvement",
+    "ambiguous"
+  ],
+  "evidence_levels": [
+    "activity",
+    "output",
+    "outcome",
+    "system"
+  ],
+  "hard_rules": [
+    "never subtract improvement signals from adverse signals to create a net governance sentiment score",
+    "never treat activity or expenditure as outcome progress by itself",
+    "never infer that an intervention caused a positive outcome merely because both appear in the same report",
+    "never treat local improvement as proof that the broader domain problem is resolved",
+    "never treat absence from the pulse as proof that no adverse or improvement evidence exists",
+    "only treat a positive outcome as a learning candidate when it is at least corroborated and has an associated intervention or practice reference",
+    "transfer of a learning candidate to another jurisdiction or incident requires separate evidence and authority review"
+  ],
+  "monthly_review_questions": {
+    "stress_frontier": [
+      "What materially worsened or remained unresolved?",
+      "Which failures recur across place or time?",
+      "Which adverse states have the greatest humanitarian or system consequence?"
+    ],
+    "progress_frontier": [
+      "Where did the desired state measurably improve?",
+      "Which improvements are durable rather than momentary?",
+      "Which successful outcomes have enough intervention context to justify a learning hypothesis?"
+    ],
+    "paired_learning": [
+      "What differs between adverse and improvement cases in the same domain/topic?",
+      "Which difference is causal evidence versus merely contextual correlation?",
+      "What can be tested through replay or shadow operation before changing policy?"
+    ]
+  },
+  "nocturnal_boundary": "Nocturnal preserves sourced developments and longitudinal matter history. The governance control plane classifies public-good state direction under a domain constitution; Nocturnal should not be required to editorialize developments as good or bad.",
+  "success_boundary": "A useful pulse improves problem selection, learning hypotheses and intervention review. It is not validated merely because it produces balanced-looking positive and negative lists."
+}
