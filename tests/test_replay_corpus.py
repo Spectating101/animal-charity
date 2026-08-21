@@ -11,39 +11,57 @@ CORPUS = ROOT / "config" / "research" / "disaster_replay_corpus.json"
 
 
 class ReplayCorpusTests(unittest.TestCase):
-    def test_initial_real_disaster_corpus_passes_safety_contracts(self):
+    def test_disaster_r1_campaign_passes_safety_contracts(self):
         spec = load_corpus(CORPUS)
         result = evaluate_corpus(spec, ROOT)
 
-        self.assertEqual(result.corpus_id, "disaster-public-r1-v2")
-        self.assertEqual(result.case_count, 3)
-        self.assertEqual(result.by_evidence_level, {"R1": 3})
-        self.assertEqual(result.passed_count, 3)
+        self.assertEqual(result.corpus_id, "disaster-public-r1-v3")
+        self.assertEqual(result.case_count, 10)
+        self.assertEqual(result.by_evidence_level, {"R1": 10})
+        self.assertEqual(result.passed_count, 10)
         self.assertEqual(result.failed_count, 0)
 
         by_id = {case.case_id: case for case in result.results}
-        kubu = by_id["kubu-raya-karhutla-2026-08-07-public"]
-        ntt_early = by_id["ntt-earthquake-2026-08-15-early-public"]
-        ntt_access = by_id["ntt-earthquake-2026-08-16-access-public"]
+        expected_stages = {
+            "kubu-raya-karhutla-2026-08-07-public": "evidence",
+            "ntt-earthquake-2026-08-15-early-public": "safety",
+            "ntt-earthquake-2026-08-16-access-public": "access",
+            "ruang-eruption-2024-04-18-public": "safety",
+            "lewotobi-eruption-2024-11-05-public": "safety",
+            "palu-airport-comms-2018-09-29-public": "evidence",
+            "sumbar-lahar-2024-05-14-access-public": "access",
+            "bekasi-flood-hospital-2025-03-04-public": "safety",
+            "semeru-eruption-2021-12-05-access-public": "access",
+            "cianjur-gasol-2022-11-27-adequate-service": None,
+        }
+        for case_id, expected_stage in expected_stages.items():
+            with self.subTest(case_id=case_id):
+                self.assertEqual(by_id[case_id].predicted_primary_stage, expected_stage)
+                self.assertEqual(by_id[case_id].resource_reservation_count, 0)
+                self.assertFalse(by_id[case_id].command_context_present)
+                self.assertNotIn("capacity", by_id[case_id].stages)
 
-        self.assertEqual(kubu.predicted_primary_stage, "evidence")
-        self.assertEqual(ntt_early.predicted_primary_stage, "safety")
-        self.assertEqual(ntt_access.predicted_primary_stage, "access")
-        self.assertEqual(kubu.resource_reservation_count, 0)
-        self.assertEqual(ntt_early.resource_reservation_count, 0)
-        self.assertEqual(ntt_access.resource_reservation_count, 0)
-        self.assertFalse(kubu.command_context_present)
-        self.assertFalse(ntt_early.command_context_present)
-        self.assertFalse(ntt_access.command_context_present)
-        self.assertEqual(kubu.resource_inventory_scope, "partial")
-        self.assertEqual(kubu.service_registry_scope, "unknown")
-        self.assertEqual(ntt_early.resource_inventory_scope, "unknown")
-        self.assertEqual(ntt_early.service_registry_scope, "unknown")
-        self.assertEqual(ntt_access.resource_inventory_scope, "unknown")
-        self.assertEqual(ntt_access.service_registry_scope, "unknown")
-        self.assertIn("confirmed_access_disruption", ntt_access.problem_classes)
-        self.assertIn("capability_inventory_incomplete", ntt_access.problem_classes)
-        self.assertNotIn("capacity", ntt_access.stages)
+        self.assertIn(
+            "critical_need_requires_verification_and_escalation",
+            by_id["ruang-eruption-2024-04-18-public"].problem_classes,
+        )
+        self.assertIn(
+            "reported_resource_requires_verification",
+            by_id["lewotobi-eruption-2024-11-05-public"].problem_classes,
+        )
+        self.assertIn(
+            "confirmed_access_disruption",
+            by_id["sumbar-lahar-2024-05-14-access-public"].problem_classes,
+        )
+        self.assertIn(
+            "capability_inventory_incomplete",
+            by_id["palu-airport-comms-2018-09-29-public"].problem_classes,
+        )
+
+        cianjur = by_id["cianjur-gasol-2022-11-27-adequate-service"]
+        self.assertEqual(cianjur.finding_count, 0)
+        self.assertEqual(cianjur.problem_classes, [])
+        self.assertEqual(cianjur.stages, [])
 
     def test_corpus_reports_unsafe_contract_violation(self):
         spec = ReplayCorpusSpec(
@@ -56,6 +74,7 @@ class ReplayCorpusTests(unittest.TestCase):
                     required_problem_classes=["nonexistent_required_class"],
                     forbidden_stages=["evidence"],
                     required_data_gap_substrings=["nonexistent authority gap"],
+                    max_findings=0,
                     max_resource_reservations=0,
                     expected_command_context_present=True,
                     expected_resource_inventory_scope="complete_for_scope",
@@ -70,6 +89,7 @@ class ReplayCorpusTests(unittest.TestCase):
         self.assertTrue(any("required problem class missing" in v for v in violations))
         self.assertTrue(any("forbidden stage present" in v for v in violations))
         self.assertTrue(any("required data-gap text missing" in v for v in violations))
+        self.assertTrue(any("findings" in v and "exceed maximum" in v for v in violations))
         self.assertTrue(any("command-context expectation mismatch" in v for v in violations))
         self.assertTrue(any("resource-inventory scope mismatch" in v for v in violations))
         self.assertTrue(any("service-registry scope mismatch" in v for v in violations))
