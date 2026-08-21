@@ -1,0 +1,95 @@
+{
+  "replay_id": "r1-palu-airport-comms-2018-09-29-public",
+  "decision_cutoff": "2018-09-29T06:45:00+07:00",
+  "require_evidence_timestamps": true,
+  "metadata": {
+    "evidence_level": "R1_retrospective_public_replay",
+    "real_case": true,
+    "location": "Palu, Central Sulawesi, Indonesia",
+    "failure_mode": "confirmed communications outage without complete restoration inventory"
+  },
+  "case": {
+    "case_id": "palu-airport-comms-2018-09-29-public-cutoff",
+    "domain": "disaster_response",
+    "metadata": {
+      "source_ref": "https://en.antaranews.com/amp/news/119035/quake-cut-off-communications-at-palu-airport"
+    },
+    "evidence_manifest": [
+      {
+        "source_ref": "https://en.antaranews.com/amp/news/119035/quake-cut-off-communications-at-palu-airport",
+        "source_kind": "public",
+        "verification_status": "reported",
+        "sensitivity": "public",
+        "observed_at": "2018-09-29T06:45:00+07:00",
+        "notes": "ANTARA public reporting quoting AirNav Indonesia on the airport communications outage and temporary airport closure."
+      }
+    ],
+    "payload": {
+      "incident_id": "real-palu-earthquake-tsunami-2018",
+      "as_of": "2018-09-29T06:45:00+07:00",
+      "phase": "response",
+      "metadata": {
+        "real_case": "true",
+        "public_replay": "true",
+        "claim_boundary": "The report establishes an ATC communications outage and airport closure, not a complete current emergency-communications inventory."
+      },
+      "interoperability": {
+        "bundle_id": "real-palu-public-interop-2018-09-29",
+        "as_of": "2018-09-29T06:45:00+07:00",
+        "resource_inventory_scope": "unknown",
+        "service_registry_scope": "unknown",
+        "metadata": {
+          "source_scope": "single ANTARA public report",
+          "not_operational_inventory": true
+        },
+        "records": [
+          {
+            "record_id": "antara-palu-airport-comms-outage",
+            "system_id": "antara_public_reporting",
+            "integration_role": "evidence_source",
+            "kind": "hazard_observation",
+            "source_ref": "https://en.antaranews.com/amp/news/119035/quake-cut-off-communications-at-palu-airport",
+            "source_kind": "public",
+            "observed_at": "2018-09-29T06:45:00+07:00",
+            "verification_status": "reported",
+            "sensitivity": "public",
+            "jurisdiction": "Palu, Central Sulawesi, Indonesia",
+            "attributes": {
+              "hazard_type": "earthquake_infrastructure_disruption",
+              "location_ref": "SIS Al-Jufri Airport, Palu, Indonesia",
+              "severity": "major"
+            }
+          }
+        ]
+      },
+      "needs": [
+        {
+          "need_id": "palu-airport-emergency-comms-sep29",
+          "location_ref": "SIS Al-Jufri Airport, Palu, Indonesia",
+          "category": "communications",
+          "priority": "urgent",
+          "status": "unmet",
+          "source_ref": "https://en.antaranews.com/amp/news/119035/quake-cut-off-communications-at-palu-airport",
+          "verification_status": "reported",
+          "observed_at": "2018-09-29T06:45:00+07:00",
+          "access_status": "unknown",
+          "required_capabilities": ["emergency_communications", "satellite_communications"],
+          "notes": "AirNav reported the ATC communication network was cut off and the airport was temporarily closed. No complete emergency communications capability inventory is provided."
+        }
+      ],
+      "recurrence_signals": []
+    }
+  },
+  "reference": {
+    "expected_primary_stages": ["evidence"],
+    "historical_action": "Communications and basic utilities were progressively restored during the emergency response.",
+    "historical_outcome_summary": "Later BNPB reporting described telecommunications restored and electricity largely recovered across the affected region, while some locations still required generators. This shows the communications state changed materially after the cutoff without making the early public article a complete operational inventory.",
+    "reference_refs": [
+      "https://bnpb.go.id/berita/acceleration-of-disaster-casualties-recovery-keeps-on-being-intensified-in-central-sulawesi-2113-people-dead-and-1309"
+    ],
+    "notes": [
+      "Later recovery evidence is hidden from the decision payload.",
+      "The replay should identify an evidence/capability gap, not fabricate an emergency-communications capacity shortage."
+    ]
+  }
+}
