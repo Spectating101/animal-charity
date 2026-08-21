@@ -1,5 +1,5 @@
 {
-  "corpus_id": "disaster-public-r1-v4",
+  "corpus_id": "disaster-public-r1-v5",
   "cases": [
     {
       "case_id": "kubu-raya-karhutla-2026-08-07-public",
@@ -157,6 +157,23 @@
       "notes": [
         "Direct corroborated condition evidence can establish an insufficient shelter capacity state without pretending the wider resource inventory is complete.",
         "The finding must not reserve or dispatch a resource from public reporting."
+      ]
+    },
+    {
+      "case_id": "krayan-landslide-2026-07-17-dependency-public",
+      "packet_path": "examples/replay_disaster_krayan_2026_07_17_dependency.json",
+      "evidence_level": "R1",
+      "required_problem_classes": ["confirmed_access_disruption", "power_blocked_by_upstream_dependency", "capability_inventory_incomplete"],
+      "forbidden_problem_classes": ["power_capacity_gap", "power_observed_capacity_shortage", "access_capacity_gap", "reported_dependency_requires_verification"],
+      "forbidden_stages": ["capacity"],
+      "required_data_gap_substrings": ["No current command/authority context"],
+      "max_resource_reservations": 0,
+      "expected_command_context_present": false,
+      "expected_resource_inventory_scope": "unknown",
+      "expected_service_registry_scope": "unknown",
+      "notes": [
+        "Official condition evidence establishes the upstream access-to-fuel-to-power dependency, so the controller should target the broken delivery edge rather than invent an independent power-capacity shortage.",
+        "Unknown alternative transport or power capability remains unknown; the replay must not reserve or dispatch from public reporting."
       ]
     }
   ]
