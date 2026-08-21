@@ -221,10 +221,11 @@ def assess_public_good_case(case: PublicGoodCase) -> PublicGoodAssessment:
         data_gaps = list(domain_result.data_gaps)
         safe_conclusion = domain_result.safe_conclusion
     elif case.domain == PublicGoodDomain.disaster_response:
-        # Dependency resolution is a narrow overlay on top of the stable disaster
-        # router. It consumes the same raw payload so optional dependency links
-        # remain explicit research/operations evidence rather than hidden rules.
-        from app.disaster_dependencies import assess_disaster_payload
+        # Safety constraints are applied after dependency resolution and the
+        # stable disaster router. This lets a verified active safety rule
+        # invalidate an otherwise valid route without conflating safety with
+        # resource scarcity.
+        from app.disaster_safety import assess_disaster_payload
 
         domain_result = assess_disaster_payload(case.payload)
         normalized = _normalize_disaster(domain_result)
