@@ -54,7 +54,7 @@ Wave 1 proved primarily **restraint**: the controller could distinguish critical
 
 ## Wave 2: positive decisions without abandoning restraint
 
-Wave 2 deliberately attacks the opposite failure mode: a controller that never overclaims can still be useless if it refuses to recognize a shortage even when competent contemporaneous condition evidence says capacity is insufficient.
+Wave 2 attacks the opposite failure mode: a controller that never overclaims can still be useless if it refuses to recognize a real shortage or cannot identify the upstream broken edge that is producing downstream failures.
 
 ### North Luwu flash flood — 19 July 2020
 
@@ -93,7 +93,55 @@ established unmet need
 
 The distinction matters because **absence from evidence** and **evidence of insufficiency** have different burdens of proof.
 
-The corpus is now eleven real R1 cases and is machine-enforced in `config/research/disaster_replay_corpus.json`. The first ten retain their original contracts unchanged; North Luwu is required to produce `shelter_observed_capacity_shortage`, zero resource reservations and no implied command authority.
+### Krayan Selatan landslide — 17 July 2026
+
+The second Wave-2 attack asks a different question: can the controller identify an **upstream dependency failure** rather than diagnosing every downstream symptom as a separate shortage?
+
+BNPB reported that the landslide closed the main road and made a connecting bridge impassable, isolating 1,507 people in 13 villages. The same update said fuel-transport vehicles could no longer operate and electricity availability fell from roughly 12 hours per day to four because fuel distribution to the generator was disrupted.
+
+That gives a directly evidenced dependency:
+
+```text
+road / bridge access failure
+        ↓
+ fuel delivery interrupted
+        ↓
+generator fuel constrained
+        ↓
+electricity service degraded
+```
+
+The implementation keeps dependency reasoning as a narrow overlay on the stable disaster router. A dependency link is explicit evidence with its own source, timestamp, verification state and mechanism. It is not inferred merely because two failures occur together.
+
+For a dependency to change diagnosis:
+
+- both upstream and downstream needs must still be unresolved;
+- the link must be fresh;
+- the link must be `corroborated` or `verified`;
+- link endpoints must refer to known needs;
+- dependency graphs must be acyclic.
+
+When those conditions hold, an independent downstream capacity story can be replaced by an `*_blocked_by_upstream_dependency` routing finding. A merely `reported` dependency stays `reported_dependency_requires_verification` and is not strong enough to suppress the independent diagnosis.
+
+This preserves an important distinction:
+
+```text
+known broken upstream delivery edge
+        ≠
+proof that every downstream fallback capability is absent
+```
+
+In Krayan the required result is therefore:
+
+- diagnose the access edge;
+- identify power degradation as downstream of the access/fuel dependency;
+- keep alternative power/logistics capability uncertain;
+- do not create a power-capacity shortage;
+- do not reserve or dispatch anything from public reporting.
+
+The later BNPB report that relief was moved by pioneer aircraft while road and bridge restoration continued is hidden from the decision run. It demonstrates that alternative logistics can emerge after the cutoff, reinforcing why a dependency diagnosis should not be confused with proof that no workaround capability exists.
+
+The corpus is now **twelve real R1 cases** and is machine-enforced in `config/research/disaster_replay_corpus.json`. The first ten retain their Wave-1 contracts, North Luwu must positively recognize observed shelter shortage, and Krayan must identify the upstream dependency without inventing downstream power scarcity.
 
 ## What the corpus currently tests
 
@@ -112,6 +160,10 @@ Urgent life-safety uncertainty can justify rapid human escalation and verificati
 ### Broken edge vs missing capability
 
 A road, communications link, health-service path or evacuation route can be demonstrably broken while the inventory of repair/alternative capabilities remains unknown.
+
+### Upstream dependency vs downstream symptom
+
+A downstream service can be degraded because an upstream logistics/access/power/communications edge is broken. Strong explicit dependency evidence may change the recommended intervention target without proving that downstream fallback capacity is absent.
 
 ### Response activity vs spare capacity
 
@@ -133,6 +185,8 @@ All current public R1 replays intentionally lack live command context. They may 
 - later sources are outcome/reference evidence only and remain hidden during the decision run;
 - no public-source replay may promote a reported resource into direct deployability without live operational evidence;
 - direct observed shortage evidence does not imply that all possible capacity is absent;
+- dependency co-occurrence is not causation: only explicit fresh corroborated/verified links may change downstream diagnosis;
+- dependency diagnosis does not prove fallback capability is absent;
 - human incident command, clinical authority, evacuation authority, engineering authority and other consequential powers remain outside the controller.
 
 ## Remaining Wave 2 red-team queue
@@ -146,15 +200,18 @@ These are deliberately **not** forced into the green corpus yet. Each should be 
 5. **Safety overrides throughput** — nominally efficient routing should stop because food safety, structural safety, contamination or clinical constraints fail.
 6. **Recovery integrity** — reconstruction/procurement promise, physical implementation and beneficiary outcome diverge without allowing the software to declare corruption.
 7. **Cross-jurisdiction mutual aid** — local capacity insufficient but neighboring capability exists under a different authority boundary.
-8. **Dependency shortage** — operational capability exists but an upstream dependency such as fuel, power, access or communications prevents its use.
+8. **Multi-hop / branching dependency competition** — several downstream services share one upstream bottleneck or one need has multiple independent dependencies, testing whether root-edge repair is prioritized without collapsing everything into a single causal story.
 
 ## Promotion criteria
 
 The campaign remains useful only if:
 
 - all historical cutoffs pass hindsight gates;
-- all eleven case contracts pass without weakening earlier safety rules;
+- all twelve case contracts pass without weakening earlier safety rules;
 - North Luwu produces a positive capacity finding while the ten Wave-1 cases keep their original restraint behavior;
+- Krayan identifies the access-to-fuel-to-power dependency without creating a power-capacity shortage;
+- reported dependency evidence is unable to suppress an independent diagnosis;
+- cyclic dependency graphs fail closed;
 - negative controls prove the evaluator can fail;
 - the full animal, MBG, integrity, governance, interoperability and disaster stack remains green;
 - Docker packaging remains green.
