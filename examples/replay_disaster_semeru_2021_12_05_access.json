@@ -1,0 +1,95 @@
+{
+  "replay_id": "r1-semeru-eruption-2021-12-05-access-public",
+  "decision_cutoff": "2021-12-05T16:43:52+07:00",
+  "require_evidence_timestamps": true,
+  "metadata": {
+    "evidence_level": "R1_retrospective_public_replay",
+    "real_case": true,
+    "location": "Lumajang, East Java, Indonesia",
+    "failure_mode": "strategic bridge severance without complete alternative-access inventory"
+  },
+  "case": {
+    "case_id": "semeru-eruption-2021-12-05-access-public-cutoff",
+    "domain": "disaster_response",
+    "metadata": {
+      "source_ref": "https://www.thejakartapost.com/indonesia/2021/12/05/bnpb-evacuates-10-trapped-miners-after-semeru-volcano-erupts.html"
+    },
+    "evidence_manifest": [
+      {
+        "source_ref": "https://www.thejakartapost.com/indonesia/2021/12/05/bnpb-evacuates-10-trapped-miners-after-semeru-volcano-erupts.html",
+        "source_kind": "public",
+        "verification_status": "corroborated",
+        "sensitivity": "public",
+        "observed_at": "2021-12-05T16:43:52+07:00",
+        "notes": "Reuters report republished by The Jakarta Post, citing BNPB and local officials on evacuation and the severed strategic bridge."
+      }
+    ],
+    "payload": {
+      "incident_id": "real-semeru-eruption-2021-12",
+      "as_of": "2021-12-05T16:43:52+07:00",
+      "phase": "response",
+      "metadata": {
+        "real_case": "true",
+        "public_replay": "true",
+        "claim_boundary": "The report establishes severed land connectivity and evacuation activity, not a complete inventory of alternative access capabilities."
+      },
+      "interoperability": {
+        "bundle_id": "real-semeru-public-interop-2021-12-05",
+        "as_of": "2021-12-05T16:43:52+07:00",
+        "resource_inventory_scope": "unknown",
+        "service_registry_scope": "unknown",
+        "metadata": {
+          "source_scope": "single Reuters/Jakarta Post public report",
+          "not_operational_inventory": true
+        },
+        "records": [
+          {
+            "record_id": "reuters-semeru-hazard-dec5",
+            "system_id": "reuters_public_reporting",
+            "integration_role": "evidence_source",
+            "kind": "hazard_observation",
+            "source_ref": "https://www.thejakartapost.com/indonesia/2021/12/05/bnpb-evacuates-10-trapped-miners-after-semeru-volcano-erupts.html",
+            "source_kind": "public",
+            "observed_at": "2021-12-05T16:43:52+07:00",
+            "verification_status": "corroborated",
+            "sensitivity": "public",
+            "jurisdiction": "Lumajang, East Java, Indonesia",
+            "attributes": {
+              "hazard_type": "volcanic_eruption_and_ashfall",
+              "location_ref": "Mount Semeru impact area, Lumajang, Indonesia",
+              "severity": "major"
+            }
+          }
+        ]
+      },
+      "needs": [
+        {
+          "need_id": "semeru-severed-land-access-dec5",
+          "location_ref": "Lumajang-Malang strategic road connection, East Java, Indonesia",
+          "category": "access",
+          "priority": "urgent",
+          "status": "unmet",
+          "source_ref": "https://www.thejakartapost.com/indonesia/2021/12/05/bnpb-evacuates-10-trapped-miners-after-semeru-volcano-erupts.html",
+          "verification_status": "corroborated",
+          "observed_at": "2021-12-05T16:43:52+07:00",
+          "access_status": "isolated",
+          "required_capabilities": ["road_clearance", "engineering", "air_access", "offroad_access"],
+          "notes": "Authorities reported a strategic bridge connecting parts of Lumajang with Malang was severed. The public report does not establish current alternative access-resource availability."
+        }
+      ],
+      "recurrence_signals": []
+    }
+  },
+  "reference": {
+    "expected_primary_stages": ["access"],
+    "historical_action": "BNPB conducted aerial assessment and confirmed the Gladak Perak bridge damage and severed land route.",
+    "historical_outcome_summary": "BNPB's 6 December aerial assessment explicitly documented the destroyed bridge and cut Lumajang-Malang land connection, validating the access diagnosis without proving that no alternative air/off-road capability existed at the earlier cutoff.",
+    "reference_refs": [
+      "https://www.bnpb.go.id/berita/kepala-bnpb-tinjau-lokasi-terdampak-awan-panas-guguran-gunung-semeru-melalui-udara"
+    ],
+    "notes": [
+      "Later BNPB aerial evidence is hidden from the decision payload.",
+      "The replay must diagnose the access edge and preserve uncertainty about alternative capability scarcity."
+    ]
+  }
+}
