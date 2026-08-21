@@ -18,6 +18,7 @@ class ActionIntentTests(unittest.TestCase):
         result = evaluate_wildfire_uas_intent(intent, GateState())
         self.assertFalse(result.execution_ready)
         self.assertTrue(result.missing_gates)
+        self.assertEqual(result.intent.status.value, "awaiting_authority")
         self.assertIn("not a flight plan", " ".join(intent.notes).lower())
 
     def test_all_external_gates_can_mark_intent_authorized_without_creating_flight_command(self):
@@ -66,9 +67,9 @@ class ActionIntentTests(unittest.TestCase):
             intent_type="wildfire.verify_access_edge",
             priority="urgent",
             evidence_refs=["official:old:a"],
-            expires_at=now + timedelta(seconds=1),
+            created_at=now - timedelta(hours=2),
+            expires_at=now - timedelta(hours=1),
         )
-        intent = intent.model_copy(update={"expires_at": now - timedelta(seconds=1)})
         result = evaluate_wildfire_uas_intent(intent, GateState(
             incident_command_authority=True,
             airspace_operator_authorization=True,
