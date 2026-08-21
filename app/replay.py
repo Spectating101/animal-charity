@@ -103,16 +103,34 @@ def _untimestamped_evidence(value: Any, path: str = "case.payload") -> list[str]
     return gaps
 
 
+def _manifest_timestamp_violations(packet: ReplayPacket) -> tuple[list[str], list[str]]:
+    missing: list[str] = []
+    future: list[str] = []
+    for index, entry in enumerate(packet.case.evidence_manifest):
+        path = f"case.evidence_manifest[{index}].observed_at"
+        if entry.observed_at is None:
+            missing.append(path)
+        elif entry.observed_at > packet.decision_cutoff:
+            future.append(path)
+    return missing, future
+
+
 def run_replay(packet: ReplayPacket) -> ReplayRun:
     if packet.decision_cutoff.tzinfo is None:
         raise ValueError("decision_cutoff must be timezone-aware")
     if packet.require_evidence_timestamps:
         missing = _untimestamped_evidence(packet.case.payload)
+        manifest_missing, manifest_future = _manifest_timestamp_violations(packet)
+        missing.extend(manifest_missing)
         if missing:
             raise ValueError(
                 "strict replay requires timestamps on evidence-bearing records: " + ", ".join(missing[:10])
             )
+    else:
+        manifest_future = []
+
     violations = _future_evidence(packet.case.payload, packet.decision_cutoff)
+    violations.extend(manifest_future)
     if violations:
         raise ValueError(
             "replay contains evidence timestamped after the decision cutoff: " + ", ".join(violations[:10])
