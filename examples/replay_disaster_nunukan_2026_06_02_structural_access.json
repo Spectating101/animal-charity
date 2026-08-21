@@ -1,0 +1,126 @@
+{
+  "replay_id": "r1-nunukan-access-2026-06-02-structural-public",
+  "decision_cutoff": "2026-06-02T11:03:00+07:00",
+  "require_evidence_timestamps": true,
+  "metadata": {
+    "evidence_level": "R1_retrospective_public_replay",
+    "real_case": true,
+    "location": "Nunukan, North Kalimantan, Indonesia",
+    "note": "This replay asks whether repeated regional bridge/road disruption was sufficient to flag access resilience as a structural candidate before the severe Krayan Selatan isolation in July 2026. It does not assert repeated failure of the same asset."
+  },
+  "case": {
+    "case_id": "nunukan-access-2026-06-02-structural-public-cutoff",
+    "domain": "disaster_response",
+    "metadata": {
+      "source_ref": "https://bnpb.go.id/berita/perkembangan-situasi-dan-penanganan-bencana-di-tanah-air-tanggal-2-juni-2026"
+    },
+    "evidence_manifest": [
+      {
+        "source_ref": "https://bnpb.go.id/berita/tak-ada-pengungsian-pascabencana-banjir-dan-longsor-di-nunukan",
+        "source_kind": "official",
+        "verification_status": "corroborated",
+        "sensitivity": "public",
+        "observed_at": "2024-07-25T02:00:00+07:00",
+        "notes": "BNPB reported Krayan Selatan flooding/landslides with bridge and provincial-road damage, including a bridge failure that cut Long Layu access toward Krayan Tengah. This supports regional recurrence, not identity of a specific future failed asset."
+      },
+      {
+        "source_ref": "https://bnpb.go.id/berita/bantuan-dukungan-logistik-bnpb-tiba-di-kabupaten-nunukan",
+        "source_kind": "official",
+        "verification_status": "corroborated",
+        "sensitivity": "public",
+        "observed_at": "2025-06-03T05:15:00+07:00",
+        "notes": "BNPB reported flooding across nine Nunukan districts including the Krayan districts, with four bridges heavily damaged and seven road points affected. This is regional access-infrastructure evidence, not proof that the 2024 asset failed again."
+      },
+      {
+        "source_ref": "https://bnpb.go.id/berita/perkembangan-situasi-dan-penanganan-bencana-di-tanah-air-tanggal-2-juni-2026",
+        "source_kind": "official",
+        "verification_status": "corroborated",
+        "sensitivity": "public",
+        "observed_at": "2026-06-02T11:03:00+07:00",
+        "notes": "BNPB reported a fresh Nunukan flood/landslide episode; a road body was affected by landslide but remained passable. This is the current recovery-state observation at the historical cutoff."
+      }
+    ],
+    "payload": {
+      "incident_id": "real-nunukan-regional-access-recovery-2026-06",
+      "as_of": "2026-06-02T11:03:00+07:00",
+      "phase": "recovery",
+      "metadata": {
+        "real_case": "true",
+        "public_replay": "true",
+        "claim_boundary": "The unit is the regional Nunukan access network. The replay does not claim the same bridge or road segment failed repeatedly, does not assign engineering causality, and does not prove a specific mitigation would prevent a later event."
+      },
+      "interoperability": {
+        "bundle_id": "real-nunukan-public-interop-2026-06-02-structural",
+        "as_of": "2026-06-02T11:03:00+07:00",
+        "resource_inventory_scope": "unknown",
+        "service_registry_scope": "unknown",
+        "metadata": {
+          "source_scope": "BNPB public historical/current condition reports",
+          "not_operational_inventory": true
+        },
+        "records": [
+          {
+            "record_id": "bnpb-nunukan-access-current-jun2-2026",
+            "system_id": "bnpb_public_reporting",
+            "integration_role": "evidence_source",
+            "kind": "hazard_observation",
+            "source_ref": "https://bnpb.go.id/berita/perkembangan-situasi-dan-penanganan-bencana-di-tanah-air-tanggal-2-juni-2026",
+            "source_kind": "official",
+            "observed_at": "2026-06-02T11:03:00+07:00",
+            "verification_status": "corroborated",
+            "sensitivity": "public",
+            "jurisdiction": "Nunukan, North Kalimantan, Indonesia",
+            "attributes": {
+              "hazard_type": "flood_and_landslide_recovery",
+              "location_ref": "Nunukan regional access network, North Kalimantan, Indonesia",
+              "severity": "localized_current_access_disruption"
+            }
+          }
+        ]
+      },
+      "needs": [
+        {
+          "need_id": "nunukan-regional-access-resilience-jun2-2026",
+          "location_ref": "Nunukan regional access network, North Kalimantan, Indonesia",
+          "category": "access",
+          "priority": "urgent",
+          "status": "partially_met",
+          "source_ref": "https://bnpb.go.id/berita/perkembangan-situasi-dan-penanganan-bencana-di-tanah-air-tanggal-2-juni-2026",
+          "verification_status": "corroborated",
+          "observed_at": "2026-06-02T11:03:00+07:00",
+          "access_status": "constrained",
+          "capacity_status": "unknown",
+          "required_capabilities": ["road_clearance", "engineering", "access_resilience"],
+          "notes": "At the cutoff, the newly landslide-affected road remained passable. The need therefore represents constrained regional access resilience during recovery, not complete isolation."
+        }
+      ],
+      "recurrence_signals": [
+        {
+          "signal_id": "nunukan-regional-access-recurrence-2024-2026",
+          "location_ref": "Nunukan regional access network, North Kalimantan, Indonesia",
+          "problem_class": "access",
+          "event_count": 3,
+          "span_days": 677,
+          "source_refs": [
+            "https://bnpb.go.id/berita/tak-ada-pengungsian-pascabencana-banjir-dan-longsor-di-nunukan",
+            "https://bnpb.go.id/berita/bantuan-dukungan-logistik-bnpb-tiba-di-kabupaten-nunukan",
+            "https://bnpb.go.id/berita/perkembangan-situasi-dan-penanganan-bencana-di-tanah-air-tanggal-2-juni-2026"
+          ]
+        }
+      ]
+    }
+  },
+  "reference": {
+    "expected_primary_stages": ["access"],
+    "historical_action": "In July 2026, a separate severe landslide in Krayan Selatan closed the main Krayan Barat-Krayan Selatan road and made a connecting bridge impassable, isolating 1,507 people. BNPB later used air logistics while coordinating road reopening and bridge repair.",
+    "historical_outcome_summary": "The later Krayan event is recurrence evidence only. It supports the value of having flagged regional access resilience for structural review before July, but it does not prove a particular mitigation would have prevented the isolation or that the same infrastructure asset failed again.",
+    "reference_refs": [
+      "https://www.bnpb.go.id/berita/bnpb-berikan-dukungan-dan-pendampingan-penanganan-darurat-tanah-longsor-yang-memutus-akses-1507-warga-di-kabupaten-nunukan",
+      "https://www.bnpb.go.id/index.php/berita/akses-jalan-tertutup-longsor-bnpb-kirimkan-bantuan-via-udara-ke-krayan-selatan"
+    ],
+    "notes": [
+      "All July 2026 evidence is hidden from the decision payload.",
+      "The expected structural signal is regional access resilience, not asset-specific blame or a claim of preventability."
+    ]
+  }
+}
