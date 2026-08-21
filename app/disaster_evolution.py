@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -9,6 +10,46 @@ from app.disaster_control import DisasterSnapshot, assess_disaster
 
 def utcnow() -> datetime:
     return datetime.now(timezone.utc)
+
+
+AccessState = Literal["open", "constrained", "isolated", "unknown"]
+AccessTransitionClass = Literal["degradation", "recovery", "uncertainty_change"]
+
+
+class AccessStateTransition(BaseModel):
+    need_id: str
+    location_ref: str
+    from_as_of: datetime
+    to_as_of: datetime
+    from_state: AccessState
+    to_state: AccessState
+    transition_class: AccessTransitionClass
+    evidence_refs: list[str] = Field(default_factory=list)
+
+
+class AccessStateReversal(BaseModel):
+    need_id: str
+    location_ref: str
+    first_as_of: datetime
+    middle_as_of: datetime
+    final_as_of: datetime
+    initial_state: AccessState
+    intermediate_state: AccessState
+    final_state: AccessState
+    first_transition: AccessStateTransition
+    second_transition: AccessStateTransition
+    evidence_refs: list[str] = Field(default_factory=list)
+
+
+class DisasterOperationalHistory(BaseModel):
+    incident_id: str
+    from_as_of: datetime
+    to_as_of: datetime
+    assessed_at: datetime = Field(default_factory=utcnow)
+    snapshot_count: int
+    access_state_transitions: list[AccessStateTransition] = Field(default_factory=list)
+    access_state_reversals: list[AccessStateReversal] = Field(default_factory=list)
+    safe_conclusion: str
 
 
 class DisasterEvolution(BaseModel):
@@ -25,6 +66,7 @@ class DisasterEvolution(BaseModel):
     newly_stale_record_ids: list[str] = Field(default_factory=list)
     previous_reservations_invalidated: list[str] = Field(default_factory=list)
     recommendation_stage_changes: dict[str, dict[str, str | None]] = Field(default_factory=dict)
+    access_state_transitions: list[AccessStateTransition] = Field(default_factory=list)
     command_context_changed: bool = False
     safe_conclusion: str
 
@@ -50,6 +92,41 @@ def _primary_stage_by_need(assessment) -> dict[str, str]:
         # safety/evidence gates before lower-order routing/capacity actions.
         result.setdefault(finding.need_id, finding.stage)
     return result
+
+
+def _transition_class(before: AccessState, after: AccessState) -> AccessTransitionClass:
+    if "unknown" in {before, after}:
+        return "uncertainty_change"
+    severity = {"open": 0, "constrained": 1, "isolated": 2}
+    return "degradation" if severity[after] > severity[before] else "recovery"
+
+
+def _access_transitions(previous: DisasterSnapshot, current: DisasterSnapshot) -> list[AccessStateTransition]:
+    previous_by_id = {need.need_id: need for need in previous.needs}
+    current_by_id = {need.need_id: need for need in current.needs}
+    transitions: list[AccessStateTransition] = []
+
+    # Missing follow-up is deliberately not converted into an access state.
+    # A transition exists only when the same need is explicitly observed in
+    # both operational periods and its represented access state changed.
+    for need_id in sorted(set(previous_by_id).intersection(current_by_id)):
+        before = previous_by_id[need_id]
+        after = current_by_id[need_id]
+        if before.access_status == after.access_status:
+            continue
+        transitions.append(
+            AccessStateTransition(
+                need_id=need_id,
+                location_ref=after.location_ref,
+                from_as_of=previous.as_of,
+                to_as_of=current.as_of,
+                from_state=before.access_status,
+                to_state=after.access_status,
+                transition_class=_transition_class(before.access_status, after.access_status),
+                evidence_refs=list(dict.fromkeys([before.source_ref, after.source_ref])),
+            )
+        )
+    return transitions
 
 
 def compare_operational_periods(previous: DisasterSnapshot, current: DisasterSnapshot) -> DisasterEvolution:
@@ -123,9 +200,95 @@ def compare_operational_periods(previous: DisasterSnapshot, current: DisasterSna
         newly_stale_record_ids=sorted(current_stale - previous_stale),
         previous_reservations_invalidated=invalidated,
         recommendation_stage_changes=stage_changes,
+        access_state_transitions=_access_transitions(previous, current),
         command_context_changed=previous_commands != current_commands,
         safe_conclusion=(
             "A need disappearing from a later feed is not evidence of resolution. Only explicit outcome evidence may mark a previously unmet "
-            "need as resolved. Resource and command state must be revalidated each operational period; prior recommendations are not standing orders."
+            "need as resolved. Resource, access and command state must be revalidated each operational period; prior recommendations are not standing orders."
+        ),
+    )
+
+
+def trace_operational_history(snapshots: list[DisasterSnapshot]) -> DisasterOperationalHistory:
+    if len(snapshots) < 2:
+        raise ValueError("operational history requires at least two disaster snapshots")
+
+    incident_id = snapshots[0].incident_id
+    for index, snapshot in enumerate(snapshots):
+        if snapshot.incident_id != incident_id:
+            raise ValueError("cannot trace operational history across different disaster incidents")
+        if index and snapshot.as_of <= snapshots[index - 1].as_of:
+            raise ValueError("operational history snapshots must be strictly increasing in time")
+
+    transitions: list[AccessStateTransition] = []
+    for previous, current in zip(snapshots, snapshots[1:]):
+        transitions.extend(_access_transitions(previous, current))
+
+    # Detect A -> B -> A only across three consecutive explicit observations.
+    # A missing middle observation or an unknown state cannot manufacture a
+    # reversal signal.
+    reversals: list[AccessStateReversal] = []
+    for first, middle, final in zip(snapshots, snapshots[1:], snapshots[2:]):
+        first_by_id = {need.need_id: need for need in first.needs}
+        middle_by_id = {need.need_id: need for need in middle.needs}
+        final_by_id = {need.need_id: need for need in final.needs}
+        common_ids = sorted(set(first_by_id).intersection(middle_by_id, final_by_id))
+        for need_id in common_ids:
+            a = first_by_id[need_id]
+            b = middle_by_id[need_id]
+            c = final_by_id[need_id]
+            if "unknown" in {a.access_status, b.access_status, c.access_status}:
+                continue
+            if a.access_status != c.access_status or a.access_status == b.access_status:
+                continue
+
+            first_transition = next(
+                (
+                    item
+                    for item in transitions
+                    if item.need_id == need_id
+                    and item.from_as_of == first.as_of
+                    and item.to_as_of == middle.as_of
+                ),
+                None,
+            )
+            second_transition = next(
+                (
+                    item
+                    for item in transitions
+                    if item.need_id == need_id
+                    and item.from_as_of == middle.as_of
+                    and item.to_as_of == final.as_of
+                ),
+                None,
+            )
+            if first_transition is None or second_transition is None:
+                continue
+
+            reversals.append(
+                AccessStateReversal(
+                    need_id=need_id,
+                    location_ref=c.location_ref,
+                    first_as_of=first.as_of,
+                    middle_as_of=middle.as_of,
+                    final_as_of=final.as_of,
+                    initial_state=a.access_status,
+                    intermediate_state=b.access_status,
+                    final_state=c.access_status,
+                    first_transition=first_transition,
+                    second_transition=second_transition,
+                    evidence_refs=list(dict.fromkeys([a.source_ref, b.source_ref, c.source_ref])),
+                )
+            )
+
+    return DisasterOperationalHistory(
+        incident_id=incident_id,
+        from_as_of=snapshots[0].as_of,
+        to_as_of=snapshots[-1].as_of,
+        snapshot_count=len(snapshots),
+        access_state_transitions=transitions,
+        access_state_reversals=reversals,
+        safe_conclusion=(
+            "Operational truth is time-indexed. A route that was open can later become isolated and later reopen; the newest explicit observation supersedes prior state for current operations without erasing the historical transitions. Missing or unknown observations do not create a reversal by inference."
         ),
     )
