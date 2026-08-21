@@ -6,16 +6,17 @@ import sys
 import unittest
 from pathlib import Path
 
-from app.governance_pulse import GovernancePulseInput, build_governance_pulse
+from app.governance_pulse import GovernancePulseInput, GovernanceSignal, build_governance_pulse
 
 
 ROOT = Path(__file__).resolve().parents[1]
-FIXTURE = ROOT / "examples" / "governance_pulse_indonesia_wildfire_aug_2026.json"
+WILDFIRE_FIXTURE = ROOT / "examples" / "governance_pulse_indonesia_wildfire_aug_2026.json"
+NTT_FIXTURE = ROOT / "examples" / "governance_pulse_ntt_earthquake_aug_2026.json"
 
 
 class GovernancePulseTests(unittest.TestCase):
-    def _pulse(self):
-        payload = GovernancePulseInput.model_validate_json(FIXTURE.read_text(encoding="utf-8"))
+    def _pulse(self, fixture: Path = WILDFIRE_FIXTURE):
+        payload = GovernancePulseInput.model_validate_json(fixture.read_text(encoding="utf-8"))
         return build_governance_pulse(payload)
 
     def test_adverse_and_progress_frontiers_are_parallel_not_netted(self):
@@ -38,7 +39,7 @@ class GovernancePulseTests(unittest.TestCase):
         self.assertIn("multi-region-fires-extinguished-no-fatalities", topic.learning_candidate_ids)
         self.assertIn("paser-fire-extinguished", topic.preservation_candidate_ids)
         self.assertIn("paser-fire-extinguished", topic.regression_watch_ids)
-        self.assertIn("investigate why outcomes differ", topic.interpretation)
+        self.assertIn("making the cases comparable", topic.interpretation)
         self.assertTrue(any("Protect verified working capacity" in action for action in topic.next_review_actions))
         self.assertTrue(any("Compare learning candidates" in action for action in topic.next_review_actions))
         self.assertIn("does not establish", pulse.safe_conclusion)
@@ -52,24 +53,86 @@ class GovernancePulseTests(unittest.TestCase):
         self.assertIn("paser-fire-extinguished", progress_ids)
         self.assertTrue(adverse_ids and progress_ids)
 
-    def test_activity_requests_outcome_evidence_before_progress_promotion(self):
+    def test_mixed_scope_is_explicitly_not_directly_comparable(self):
         pulse = self._pulse()
         topic = next(item for item in pulse.topic_pulses if item.topic == "wildfire_management")
-        self.assertTrue(any("downstream outcome evidence" in action for action in topic.next_review_actions))
+        self.assertIsNotNone(topic.scope_warning)
+        self.assertIn("do not treat local and broader signals as direct performance comparators", topic.scope_warning)
+
+    def test_partial_public_coverage_cannot_claim_objective_monthly_extremes(self):
+        pulse = self._pulse()
+        self.assertEqual(pulse.coverage_status.value, "partial")
+        self.assertFalse(pulse.extreme_claim_allowed)
+        self.assertIn("Do not call", pulse.ranking_note)
+        self.assertTrue(pulse.known_gaps)
+
+    def test_ntt_operational_outputs_do_not_masquerade_as_target_state_progress(self):
+        pulse = self._pulse(NTT_FIXTURE)
+        progress_ids = {signal.signal_id for signal in pulse.progress_frontier}
+        output_ids = {signal.signal_id for signal in pulse.operational_outputs}
+        activity_ids = {signal.signal_id for signal in pulse.response_activity}
+
+        self.assertIn("larantuka-maumere-road-reconnected", progress_ids)
+        self.assertIn("ntt-electricity-near-restoration", progress_ids)
+        self.assertIn("reok-field-hospital-operational", output_ids)
+        self.assertIn("palue-logistics-arrived", output_ids)
+        self.assertNotIn("reok-field-hospital-operational", progress_ids)
+        self.assertNotIn("palue-logistics-arrived", progress_ids)
+        self.assertIn("ntt-large-scale-aid-flights", activity_ids)
+
+    def test_ntt_can_hold_access_failure_and_access_restoration_in_parallel(self):
+        pulse = self._pulse(NTT_FIXTURE)
+        adverse_ids = {signal.signal_id for signal in pulse.adverse_frontier}
+        progress_ids = {signal.signal_id for signal in pulse.progress_frontier}
+        self.assertIn("ende-nagekeo-road-still-cut", adverse_ids)
+        self.assertIn("larantuka-maumere-road-reconnected", progress_ids)
+        self.assertIn("ntt-deaths-displacement-damage", adverse_ids)
+
+    def test_activity_cannot_be_labeled_as_improvement(self):
+        with self.assertRaises(ValueError):
+            GovernanceSignal.model_validate({
+                "signal_id": "bad-activity",
+                "domain": "test",
+                "topic": "test",
+                "geography": "test",
+                "observed_at": "2026-08-21T12:00:00Z",
+                "source_ref": "synthetic:test",
+                "direction": "improvement",
+                "level": "activity",
+                "condition_class": "deployment",
+                "summary": "Team deployed."
+            })
+
+    def test_major_state_claim_requires_significance_and_direction_basis(self):
+        with self.assertRaises(ValueError):
+            GovernanceSignal.model_validate({
+                "signal_id": "unjustified-major",
+                "domain": "test",
+                "topic": "test",
+                "geography": "test",
+                "observed_at": "2026-08-21T12:00:00Z",
+                "source_ref": "synthetic:test",
+                "direction": "adverse",
+                "level": "outcome",
+                "significance": "major",
+                "condition_class": "test",
+                "summary": "Claim without explicit basis."
+            })
 
     def test_cli_emits_machine_readable_dual_frontier(self):
         proc = subprocess.run(
-            [sys.executable, "scripts/build_governance_pulse.py", str(FIXTURE)],
+            [sys.executable, "scripts/build_governance_pulse.py", str(WILDFIRE_FIXTURE)],
             cwd=ROOT,
             check=True,
             capture_output=True,
             text=True,
         )
         payload = json.loads(proc.stdout)
-        self.assertEqual(payload["pulse_id"], "indonesia-wildfire-2026-08-public-v0")
+        self.assertEqual(payload["pulse_id"], "indonesia-wildfire-2026-08-public-v1")
         self.assertGreaterEqual(len(payload["adverse_frontier"]), 2)
         self.assertGreaterEqual(len(payload["progress_frontier"]), 2)
         self.assertEqual(len(payload["response_activity"]), 1)
+        self.assertFalse(payload["extreme_claim_allowed"])
         self.assertTrue(payload["topic_pulses"][0]["next_review_actions"])
 
 
