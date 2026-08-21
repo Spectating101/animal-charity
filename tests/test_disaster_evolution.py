@@ -100,6 +100,28 @@ class DisasterEvolutionTests(unittest.TestCase):
         reversal = result.access_state_reversals[0]
         self.assertEqual((reversal.initial_state, reversal.intermediate_state, reversal.final_state), ("open", "isolated", "open"))
 
+    def test_real_aceh_sequence_preserves_open_isolated_open_history(self):
+        result = trace_operational_history(
+            [
+                self._load("disaster_aceh_blangkejeren_state_t0_2025_12_31.json"),
+                self._load("disaster_aceh_blangkejeren_state_t1_2026_01_06.json"),
+                self._load("disaster_aceh_blangkejeren_state_t2_2026_01_10.json"),
+            ]
+        )
+        self.assertEqual(result.snapshot_count, 3)
+        self.assertEqual(
+            [(x.from_state, x.to_state, x.transition_class) for x in result.access_state_transitions],
+            [("open", "isolated", "degradation"), ("isolated", "open", "recovery")],
+        )
+        self.assertEqual(len(result.access_state_reversals), 1)
+        reversal = result.access_state_reversals[0]
+        self.assertEqual(reversal.need_id, "blangkejeren-gayo-lues-aceh-tenggara-access")
+        self.assertEqual(
+            (reversal.initial_state, reversal.intermediate_state, reversal.final_state),
+            ("open", "isolated", "open"),
+        )
+        self.assertEqual(len(reversal.evidence_refs), 3)
+
     def test_unknown_middle_state_cannot_manufacture_reversal(self):
         result = trace_operational_history(
             [
