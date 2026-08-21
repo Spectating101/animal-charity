@@ -21,6 +21,7 @@ class ReplayCorpusCaseSpec(BaseModel):
     forbidden_problem_classes: list[str] = Field(default_factory=list)
     forbidden_stages: list[str] = Field(default_factory=list)
     required_data_gap_substrings: list[str] = Field(default_factory=list)
+    max_findings: int | None = Field(default=None, ge=0)
     max_resource_reservations: int | None = Field(default=None, ge=0)
     expected_command_context_present: bool | None = None
     expected_resource_inventory_scope: InventoryCoverage | None = None
@@ -40,6 +41,7 @@ class ReplayCorpusCaseResult(BaseModel):
     domain: str
     predicted_primary_stage: str | None
     primary_stage_match: bool | None
+    finding_count: int
     problem_classes: list[str]
     stages: list[str]
     resource_reservation_count: int
@@ -75,6 +77,7 @@ def evaluate_corpus(spec: ReplayCorpusSpec, root: str | Path) -> ReplayCorpusRes
         score = score_replay(packet) if packet.reference is not None else None
 
         findings = run.assessment.normalized_findings
+        finding_count = len(findings)
         problem_classes = [finding.problem_class for finding in findings]
         stages = [finding.stage for finding in findings]
         domain_result = run.assessment.domain_result
@@ -111,6 +114,9 @@ def evaluate_corpus(spec: ReplayCorpusSpec, root: str | Path) -> ReplayCorpusRes
         for required_gap in case_spec.required_data_gap_substrings:
             if not any(required_gap in gap for gap in data_gaps):
                 violations.append(f"required data-gap text missing: {required_gap}")
+
+        if case_spec.max_findings is not None and finding_count > case_spec.max_findings:
+            violations.append(f"findings {finding_count} exceed maximum {case_spec.max_findings}")
 
         if (
             case_spec.max_resource_reservations is not None
@@ -157,6 +163,7 @@ def evaluate_corpus(spec: ReplayCorpusSpec, root: str | Path) -> ReplayCorpusRes
                     stages[0] if stages else None
                 ),
                 primary_stage_match=score.primary_stage_match if score is not None else None,
+                finding_count=finding_count,
                 problem_classes=problem_classes,
                 stages=stages,
                 resource_reservation_count=reservation_count,
