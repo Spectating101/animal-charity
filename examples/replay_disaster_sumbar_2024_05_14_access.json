@@ -1,0 +1,116 @@
+{
+  "replay_id": "r1-sumbar-lahar-2024-05-14-access-public",
+  "decision_cutoff": "2024-05-14T17:35:00+07:00",
+  "require_evidence_timestamps": true,
+  "metadata": {
+    "evidence_level": "R1_retrospective_public_replay",
+    "real_case": true,
+    "location": "West Sumatra, Indonesia",
+    "failure_mode": "known access restoration activity without spare-capacity proof"
+  },
+  "case": {
+    "case_id": "sumbar-lahar-2024-05-14-access-public-cutoff",
+    "domain": "disaster_response",
+    "metadata": {
+      "source_ref": "https://www.bnpb.go.id/index.php/berita/update-banjir-lahar-dan-longsor-sumatra-barat-korban-jiwa-capai-50-orang-pemerintah-upayakan-penanganan-terbaik"
+    },
+    "evidence_manifest": [
+      {
+        "source_ref": "https://www.bnpb.go.id/index.php/berita/update-banjir-lahar-dan-longsor-sumatra-barat-korban-jiwa-capai-50-orang-pemerintah-upayakan-penanganan-terbaik",
+        "source_kind": "official",
+        "verification_status": "verified",
+        "sensitivity": "public",
+        "observed_at": "2024-05-14T17:35:00+07:00",
+        "notes": "Official BNPB public update describing road-access restoration with heavy equipment, search and rescue, and continuing casualty search."
+      }
+    ],
+    "payload": {
+      "incident_id": "real-west-sumatra-lahar-floods-2024-05",
+      "as_of": "2024-05-14T17:35:00+07:00",
+      "phase": "response",
+      "metadata": {
+        "real_case": "true",
+        "public_replay": "true",
+        "claim_boundary": "Official reporting establishes a broken access edge and heavy-equipment activity, but not spare equipment availability for a new assignment."
+      },
+      "interoperability": {
+        "bundle_id": "real-sumbar-public-interop-2024-05-14",
+        "as_of": "2024-05-14T17:35:00+07:00",
+        "resource_inventory_scope": "partial",
+        "service_registry_scope": "unknown",
+        "metadata": {
+          "source_scope": "single BNPB official public update",
+          "not_operational_inventory": true
+        },
+        "records": [
+          {
+            "record_id": "bnpb-sumbar-hazard-may14",
+            "system_id": "bnpb_public_reporting",
+            "integration_role": "evidence_source",
+            "kind": "hazard_observation",
+            "source_ref": "https://www.bnpb.go.id/index.php/berita/update-banjir-lahar-dan-longsor-sumatra-barat-korban-jiwa-capai-50-orang-pemerintah-upayakan-penanganan-terbaik",
+            "source_kind": "official",
+            "observed_at": "2024-05-14T17:35:00+07:00",
+            "verification_status": "verified",
+            "sensitivity": "public",
+            "jurisdiction": "West Sumatra, Indonesia",
+            "attributes": {
+              "hazard_type": "lahar_flash_flood_and_landslide",
+              "location_ref": "affected districts and cities in West Sumatra, Indonesia",
+              "severity": "major"
+            }
+          },
+          {
+            "record_id": "bnpb-sumbar-heavy-equipment-may14",
+            "system_id": "bnpb_public_reporting",
+            "integration_role": "evidence_source",
+            "kind": "capability_resource",
+            "source_ref": "https://www.bnpb.go.id/index.php/berita/update-banjir-lahar-dan-longsor-sumatra-barat-korban-jiwa-capai-50-orang-pemerintah-upayakan-penanganan-terbaik",
+            "source_kind": "official",
+            "observed_at": "2024-05-14T17:35:00+07:00",
+            "verification_status": "verified",
+            "sensitivity": "public",
+            "attributes": {
+              "resource_type": "heavy_equipment",
+              "capabilities": ["road_clearance", "engineering"],
+              "quantity": 1,
+              "unit": "reported_activity",
+              "location_ref": "affected areas in West Sumatra",
+              "owner_ref": "government-response",
+              "availability": "available",
+              "deployment_state": "reported_in_use"
+            }
+          }
+        ]
+      },
+      "needs": [
+        {
+          "need_id": "sumbar-road-access-restoration-may14",
+          "location_ref": "affected land-access routes in West Sumatra, Indonesia",
+          "category": "access",
+          "priority": "urgent",
+          "status": "partially_met",
+          "source_ref": "https://www.bnpb.go.id/index.php/berita/update-banjir-lahar-dan-longsor-sumatra-barat-korban-jiwa-capai-50-orang-pemerintah-upayakan-penanganan-terbaik",
+          "verification_status": "verified",
+          "observed_at": "2024-05-14T17:35:00+07:00",
+          "access_status": "constrained",
+          "required_capabilities": ["road_clearance", "engineering"],
+          "notes": "BNPB described restoration of road access using heavy equipment while search and rescue continued. The activity is known; spare equipment capacity is not."
+        }
+      ],
+      "recurrence_signals": []
+    }
+  },
+  "reference": {
+    "expected_primary_stages": ["access"],
+    "historical_action": "Road clearing and search operations continued with excavators and responders.",
+    "historical_outcome_summary": "Reuters reported on 15 May that BNPB was clearing main roads with excavators and that 19 bridges had been damaged. This supports the access diagnosis while reinforcing that equipment already in use should not be treated as spare deployable capacity.",
+    "reference_refs": [
+      "https://www.reuters.com/world/asia-pacific/indonesia-searches-35-still-missing-deadly-sumatra-floods-2024-05-15/"
+    ],
+    "notes": [
+      "Later Reuters evidence is hidden from the decision payload.",
+      "The replay should identify access disruption and require live verification before treating reported heavy equipment as assignable."
+    ]
+  }
+}
