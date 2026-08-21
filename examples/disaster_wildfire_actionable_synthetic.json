@@ -44,9 +44,9 @@
       "source_ref": "synthetic:official:wildfire-a",
       "verification_status": "corroborated",
       "observed_at": "2026-08-21T10:55:00Z",
-      "access_status": "constrained",
+      "access_status": "open",
       "required_capabilities": ["fire_suppression"],
-      "notes": "Synthetic condition evidence explicitly says current suppression capacity is insufficient; no UAS availability or authority is asserted."
+      "notes": "Synthetic condition evidence explicitly says current suppression capacity is insufficient; no UAS availability or authority is asserted. Access is intentionally represented as open so this fixture isolates the capacity-to-actuator handoff."
     }
   ],
   "recurrence_signals": []
