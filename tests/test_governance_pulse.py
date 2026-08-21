@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+import subprocess
+import sys
 import unittest
 from pathlib import Path
 
@@ -44,6 +47,20 @@ class GovernancePulseTests(unittest.TestCase):
         self.assertIn("wildfire-priority-provinces-burden", adverse_ids)
         self.assertIn("paser-fire-extinguished", progress_ids)
         self.assertTrue(adverse_ids and progress_ids)
+
+    def test_cli_emits_machine_readable_dual_frontier(self):
+        proc = subprocess.run(
+            [sys.executable, "scripts/build_governance_pulse.py", str(FIXTURE)],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        payload = json.loads(proc.stdout)
+        self.assertEqual(payload["pulse_id"], "indonesia-wildfire-2026-08-public-v0")
+        self.assertGreaterEqual(len(payload["adverse_frontier"]), 2)
+        self.assertGreaterEqual(len(payload["progress_frontier"]), 2)
+        self.assertEqual(len(payload["response_activity"]), 1)
 
 
 if __name__ == "__main__":
