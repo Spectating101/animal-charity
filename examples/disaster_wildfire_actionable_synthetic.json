@@ -1,0 +1,53 @@
+{
+  "incident_id": "synthetic-actionable-wildfire-001",
+  "as_of": "2026-08-21T11:00:00Z",
+  "phase": "response",
+  "metadata": {
+    "synthetic": "true",
+    "purpose": "Demonstrate governance-to-actuator intent handoff without granting flight or fire-suppression authority."
+  },
+  "interoperability": {
+    "bundle_id": "synthetic-actionable-wildfire-interop-001",
+    "as_of": "2026-08-21T11:00:00Z",
+    "resource_inventory_scope": "unknown",
+    "service_registry_scope": "unknown",
+    "metadata": {
+      "synthetic": true
+    },
+    "records": [
+      {
+        "record_id": "wildfire-condition-a",
+        "system_id": "synthetic-fire-observation",
+        "integration_role": "evidence_source",
+        "kind": "hazard_observation",
+        "source_ref": "synthetic:official:wildfire-a",
+        "source_kind": "synthetic",
+        "observed_at": "2026-08-21T10:55:00Z",
+        "verification_status": "corroborated",
+        "sensitivity": "public",
+        "attributes": {
+          "hazard_type": "wildfire",
+          "location_ref": "synthetic-fire-zone-a",
+          "severity": "high"
+        }
+      }
+    ]
+  },
+  "needs": [
+    {
+      "need_id": "suppression-capacity-a",
+      "location_ref": "synthetic-fire-zone-a",
+      "category": "fire_suppression",
+      "priority": "critical",
+      "status": "unmet",
+      "capacity_status": "insufficient",
+      "source_ref": "synthetic:official:wildfire-a",
+      "verification_status": "corroborated",
+      "observed_at": "2026-08-21T10:55:00Z",
+      "access_status": "constrained",
+      "required_capabilities": ["fire_suppression"],
+      "notes": "Synthetic condition evidence explicitly says current suppression capacity is insufficient; no UAS availability or authority is asserted."
+    }
+  ],
+  "recurrence_signals": []
+}
