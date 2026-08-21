@@ -40,18 +40,28 @@ class GovernancePulseTests(unittest.TestCase):
         self.assertIn("paser-fire-extinguished", topic.preservation_candidate_ids)
         self.assertIn("paser-fire-extinguished", topic.regression_watch_ids)
         self.assertIn("making the cases comparable", topic.interpretation)
-        self.assertTrue(any("Protect verified working capacity" in action for action in topic.next_review_actions))
+        self.assertTrue(any("Protect the verified gain" in action for action in topic.next_review_actions))
         self.assertTrue(any("Compare learning candidates" in action for action in topic.next_review_actions))
         self.assertIn("does not establish", pulse.safe_conclusion)
 
-    def test_large_adverse_state_survives_alongside_local_improvements(self):
+    def test_current_adverse_state_survives_alongside_local_improvements(self):
         pulse = self._pulse()
         adverse_ids = {signal.signal_id for signal in pulse.adverse_frontier}
         progress_ids = {signal.signal_id for signal in pulse.progress_frontier}
-        self.assertIn("wildfire-national-july-burn-surge", adverse_ids)
         self.assertIn("wildfire-priority-provinces-burden", adverse_ids)
+        self.assertIn("kalimantan-hotspots-rising-current", adverse_ids)
         self.assertIn("paser-fire-extinguished", progress_ids)
         self.assertTrue(adverse_ids and progress_ids)
+
+    def test_july_state_reported_in_august_is_lagged_context_not_current_stress(self):
+        pulse = self._pulse()
+        adverse_ids = {signal.signal_id for signal in pulse.adverse_frontier}
+        lagged_ids = {signal.signal_id for signal in pulse.lagged_context}
+        self.assertIn("wildfire-national-july-burn-surge", lagged_ids)
+        self.assertNotIn("wildfire-national-july-burn-surge", adverse_ids)
+        topic = next(item for item in pulse.topic_pulses if item.topic == "wildfire_management")
+        self.assertIn("wildfire-national-july-burn-surge", topic.lagged_signal_ids)
+        self.assertTrue(any("lagged reports" in action for action in topic.next_review_actions))
 
     def test_mixed_scope_is_explicitly_not_directly_comparable(self):
         pulse = self._pulse()
@@ -119,6 +129,23 @@ class GovernancePulseTests(unittest.TestCase):
                 "summary": "Claim without explicit basis."
             })
 
+    def test_effective_period_rejects_reverse_time(self):
+        with self.assertRaises(ValueError):
+            GovernanceSignal.model_validate({
+                "signal_id": "reverse-period",
+                "domain": "test",
+                "topic": "test",
+                "geography": "test",
+                "observed_at": "2026-08-21T12:00:00Z",
+                "effective_period_start": "2026-08-20T12:00:00Z",
+                "effective_period_end": "2026-08-19T12:00:00Z",
+                "source_ref": "synthetic:test",
+                "direction": "ambiguous",
+                "level": "output",
+                "condition_class": "test",
+                "summary": "Reverse period."
+            })
+
     def test_cli_emits_machine_readable_dual_frontier(self):
         proc = subprocess.run(
             [sys.executable, "scripts/build_governance_pulse.py", str(WILDFIRE_FIXTURE)],
@@ -128,10 +155,11 @@ class GovernancePulseTests(unittest.TestCase):
             text=True,
         )
         payload = json.loads(proc.stdout)
-        self.assertEqual(payload["pulse_id"], "indonesia-wildfire-2026-08-public-v1")
+        self.assertEqual(payload["pulse_id"], "indonesia-wildfire-2026-08-public-v2")
         self.assertGreaterEqual(len(payload["adverse_frontier"]), 2)
         self.assertGreaterEqual(len(payload["progress_frontier"]), 2)
         self.assertEqual(len(payload["response_activity"]), 1)
+        self.assertEqual(len(payload["lagged_context"]), 1)
         self.assertFalse(payload["extreme_claim_allowed"])
         self.assertTrue(payload["topic_pulses"][0]["next_review_actions"])
 
