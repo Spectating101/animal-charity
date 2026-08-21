@@ -3,6 +3,7 @@ from __future__ import annotations
 import unittest
 from pathlib import Path
 
+from app.action_intents import GateState, evaluate_wildfire_uas_intent
 from app.disaster_actuators import propose_wildfire_uas_intents
 from app.disaster_control import DisasterSnapshot, assess_disaster
 
@@ -34,12 +35,11 @@ class DisasterActuatorTests(unittest.TestCase):
         self.assertFalse(any(intent.intent_type == "wildfire.request_suppression_support" for intent in plan.proposed_intents))
 
     def test_corrob_observed_fire_capacity_shortage_can_request_operator_suppression_evaluation(self):
-        snapshot = self._load("disaster_kalimantan_synthetic.json")
-        target = next(need for need in snapshot.needs if need.category.value == "fire_suppression")
-        target.status = "unmet"
-        target.capacity_status = "insufficient"
-        target.verification_status = "corroborated"
+        snapshot = self._load("disaster_wildfire_actionable_synthetic.json")
         assessment = assess_disaster(snapshot)
+        classes = [finding.problem_class for finding in assessment.findings]
+        self.assertIn("fire_suppression_observed_capacity_shortage", classes)
+
         plan = propose_wildfire_uas_intents(snapshot, assessment)
         matching = [intent for intent in plan.proposed_intents if intent.intent_type == "wildfire.request_suppression_support"]
         self.assertEqual(len(matching), 1)
@@ -48,15 +48,17 @@ class DisasterActuatorTests(unittest.TestCase):
         self.assertIn("request evaluation", intent.goal.lower())
         self.assertEqual(intent.status.value, "proposed")
 
-    def test_actionable_synthetic_case_produces_one_nonbinding_suppression_intent(self):
+    def test_actionable_synthetic_intent_is_still_blocked_without_execution_gates(self):
         snapshot = self._load("disaster_wildfire_actionable_synthetic.json")
         assessment = assess_disaster(snapshot)
         plan = propose_wildfire_uas_intents(snapshot, assessment)
         self.assertEqual(len(plan.proposed_intents), 1)
         intent = plan.proposed_intents[0]
-        self.assertEqual(intent.intent_type, "wildfire.request_suppression_support")
-        self.assertEqual(intent.status.value, "proposed")
         self.assertIn("not a flight plan", " ".join(intent.notes).lower())
+
+        gate_result = evaluate_wildfire_uas_intent(intent, GateState())
+        self.assertFalse(gate_result.execution_ready)
+        self.assertEqual(gate_result.intent.status.value, "awaiting_authority")
 
     def test_non_wildfire_disaster_never_enters_wildfire_uas_mapper(self):
         snapshot = self._load("disaster_ntt_synthetic.json")
