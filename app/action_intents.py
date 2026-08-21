@@ -118,8 +118,17 @@ def build_wildfire_uas_intent(
     )
 
 
-def evaluate_wildfire_uas_intent(intent: ActionIntent, gates: GateState) -> ActionIntentEvaluation:
-    if intent.expires_at is not None and intent.expires_at < utcnow():
+def evaluate_wildfire_uas_intent(
+    intent: ActionIntent,
+    gates: GateState,
+    *,
+    as_of: datetime | None = None,
+) -> ActionIntentEvaluation:
+    evaluated_at = as_of or utcnow()
+    if evaluated_at.tzinfo is None:
+        raise ValueError("as_of must be timezone-aware")
+
+    if intent.expires_at is not None and intent.expires_at < evaluated_at:
         return ActionIntentEvaluation(
             intent=intent.model_copy(update={"status": ActionIntentStatus.blocked}),
             execution_ready=False,
