@@ -1,13 +1,21 @@
 {
-  "pulse_id": "indonesia-wildfire-2026-08-public-v0",
+  "pulse_id": "indonesia-wildfire-2026-08-public-v1",
   "period_start": "2026-08-01T00:00:00+07:00",
   "period_end": "2026-08-21T23:59:59+07:00",
+  "coverage_status": "partial",
+  "selection_protocol": "Public-source audit sample using BNPB operational reporting plus Reuters national/context reporting, selected to test adverse state, response activity and verified local outcome lanes for August 2026 wildfire management.",
+  "known_gaps": [
+    "Not an exhaustive census of all August wildfire incidents or all local BPBD reports.",
+    "Public reporting does not provide a complete live resource inventory or standardized containment-time denominator.",
+    "Local success cases differ in terrain, exposure and fire size from national/multi-region burden signals."
+  ],
   "signals": [
     {
       "signal_id": "wildfire-national-july-burn-surge",
       "domain": "disaster_response",
       "topic": "wildfire_management",
       "geography": "Indonesia",
+      "scope_level": "national",
       "observed_at": "2026-08-18T12:00:00+07:00",
       "source_ref": "https://www.reuters.com/business/environment/indonesia-wildfires-damage-nearly-95000-hectares-land-july-alone-minister-says-2026-08-18/",
       "direction": "adverse",
@@ -16,6 +24,8 @@
       "verification_status": "corroborated",
       "condition_class": "burned_area_acceleration",
       "summary": "Public reporting citing Indonesia's forestry minister said nearly 95,000 hectares burned in July 2026, almost double the prior six-month burned area.",
+      "direction_basis": "Burned area accelerated sharply relative to the preceding six-month total, moving the national wildfire-loss state away from the desired low-burn condition.",
+      "significance_basis": "National-scale land loss increased sharply during peak dry-season risk.",
       "metric_name": "burned_area",
       "metric_value": 95000,
       "metric_unit": "hectares",
@@ -28,6 +38,7 @@
       "domain": "disaster_response",
       "topic": "wildfire_management",
       "geography": "Riau, South Sumatra, Jambi, West/Central/South Kalimantan",
+      "scope_level": "multi_region",
       "observed_at": "2026-08-10T19:25:00+07:00",
       "source_ref": "https://www.bnpb.go.id/berita/kepala-bnpb-hadiri-rakor-penanganan-karhutla-pemerintah-perkuat-operasi-darat-hadapi-puncak-risiko-agustusseptember",
       "direction": "adverse",
@@ -36,6 +47,8 @@
       "verification_status": "verified",
       "condition_class": "priority_region_fire_burden",
       "summary": "BNPB reported about 48,889.69 hectares burned across six priority provinces through 9 August and warned of unhealthy air quality and cross-border smoke risk.",
+      "direction_basis": "Large burned area plus unhealthy-air/cross-border-smoke risk represents persistent multi-region deterioration during the peak-risk period.",
+      "significance_basis": "Six priority provinces were simultaneously affected with environmental and population-health consequences.",
       "metric_name": "burned_area_priority_provinces",
       "metric_value": 48889.69,
       "metric_unit": "hectares"
@@ -45,14 +58,16 @@
       "domain": "disaster_response",
       "topic": "wildfire_management",
       "geography": "Kubu Raya, West Kalimantan",
+      "scope_level": "district",
       "observed_at": "2026-08-07T19:12:00+07:00",
       "source_ref": "https://www.bnpb.go.id/berita/kepala-bnpb-tinjau-pemadaman-karhutla-kubu-raya",
-      "direction": "improvement",
+      "direction": "ambiguous",
       "level": "activity",
       "significance": "major",
       "verification_status": "verified",
       "condition_class": "combined_ground_air_suppression_active",
       "summary": "BNPB documented simultaneous ground spraying and helicopter water bombing in Kubu Raya.",
+      "significance_basis": "Ground and aerial suppression were simultaneously active against difficult peat-fire conditions, making the response operationally important even though outcome improvement was not yet established.",
       "intervention_refs": [
         "ground_firefighting",
         "helicopter_water_bombing"
@@ -66,6 +81,7 @@
       "domain": "disaster_response",
       "topic": "wildfire_management",
       "geography": "Paser, East Kalimantan",
+      "scope_level": "district",
       "observed_at": "2026-08-14T10:00:00+07:00",
       "source_ref": "https://www.bnpb.go.id/berita/perkembangan-situasi-dan-penanganan-bencana-di-tanah-air-14-agustus-2026",
       "direction": "improvement",
@@ -74,6 +90,7 @@
       "verification_status": "verified",
       "condition_class": "local_fire_contained",
       "summary": "BNPB reported that a roughly 4.64-hectare fire affecting several villages in Paser had been extinguished.",
+      "direction_basis": "The incident state changed from active fire to extinguished/controlled, which is a direct movement toward the desired local safety condition.",
       "intervention_refs": [
         "local_combined_fire_response"
       ],
@@ -89,6 +106,7 @@
       "domain": "disaster_response",
       "topic": "wildfire_management",
       "geography": "Klaten, Magetan, Jombang, Seram Bagian Timur",
+      "scope_level": "multi_region",
       "observed_at": "2026-08-11T10:27:00+07:00",
       "source_ref": "https://bnpb.go.id/berita/perkembangan-situasi-dan-penanganan-bencana-di-tanah-air-tanggal-11-agustus-2026",
       "direction": "improvement",
@@ -97,12 +115,13 @@
       "verification_status": "verified",
       "condition_class": "multiple_local_fires_extinguished",
       "summary": "BNPB reported that the listed 8-10 August wildfire incidents were extinguished and caused no fatalities.",
+      "direction_basis": "Multiple individually active fire incidents transitioned to extinguished status without reported fatalities.",
       "intervention_refs": [
         "bpbd_fire_response",
         "local_combined_response"
       ],
       "notes": [
-        "Local success does not offset the wider national fire burden; it provides cases to study for transferable response practice."
+        "Local success does not offset the wider national fire burden; it provides cases to study only after matching terrain, exposure, fire size and response context."
       ]
     }
   ]
