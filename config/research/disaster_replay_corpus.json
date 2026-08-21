@@ -1,79 +1,165 @@
 {
-  "corpus_id": "disaster-public-r1-v2",
+  "corpus_id": "disaster-public-r1-v3",
   "cases": [
     {
       "case_id": "kubu-raya-karhutla-2026-08-07-public",
       "packet_path": "examples/replay_disaster_kubu_raya_2026_08_07.json",
       "evidence_level": "R1",
-      "required_problem_classes": [
-        "capability_inventory_incomplete",
-        "need_status_not_established"
-      ],
-      "forbidden_problem_classes": [
-        "fire_suppression_capacity_gap",
-        "medical_capacity_gap"
-      ],
+      "required_problem_classes": ["capability_inventory_incomplete", "need_status_not_established"],
+      "forbidden_problem_classes": ["fire_suppression_capacity_gap", "medical_capacity_gap"],
       "forbidden_stages": ["capacity"],
-      "required_data_gap_substrings": [
-        "No current command/authority context"
-      ],
+      "required_data_gap_substrings": ["No current command/authority context"],
       "max_resource_reservations": 0,
       "expected_command_context_present": false,
       "expected_resource_inventory_scope": "partial",
       "expected_service_registry_scope": "unknown",
       "notes": [
-        "Single public BNPB report is not a complete operational inventory or live command feed.",
-        "The benchmark must not promote missing public inventory into a scarcity claim or imply consequential authority."
+        "Partial public fire reporting must not become a scarcity claim or implied command authority."
       ]
     },
     {
       "case_id": "ntt-earthquake-2026-08-15-early-public",
       "packet_path": "examples/replay_disaster_ntt_2026_08_15_0800.json",
       "evidence_level": "R1",
-      "required_problem_classes": [
-        "critical_need_requires_verification_and_escalation",
-        "need_status_not_established"
-      ],
-      "forbidden_problem_classes": [
-        "life_safety_capacity_gap"
-      ],
+      "required_problem_classes": ["critical_need_requires_verification_and_escalation", "need_status_not_established"],
+      "forbidden_problem_classes": ["life_safety_capacity_gap"],
       "forbidden_stages": ["capacity"],
-      "required_data_gap_substrings": [
-        "No current command/authority context"
-      ],
+      "required_data_gap_substrings": ["No current command/authority context"],
       "max_resource_reservations": 0,
       "expected_command_context_present": false,
       "expected_resource_inventory_scope": "unknown",
       "expected_service_registry_scope": "unknown",
       "notes": [
-        "Early official reporting establishes serious life-safety uncertainty but not a complete needs/resource picture or live command feed.",
-        "The benchmark requires escalation without inventing a resource shortage or implying execution authority."
+        "Critical uncertainty must escalate without inventing a resource shortage."
       ]
     },
     {
       "case_id": "ntt-earthquake-2026-08-16-access-public",
       "packet_path": "examples/replay_disaster_ntt_2026_08_16_access.json",
       "evidence_level": "R1",
-      "required_problem_classes": [
-        "confirmed_access_disruption",
-        "capability_inventory_incomplete"
-      ],
-      "forbidden_problem_classes": [
-        "access_capacity_gap",
-        "access_disruption_without_verified_access_capability",
-        "isolated_need_without_verified_access_capability"
-      ],
+      "required_problem_classes": ["confirmed_access_disruption", "capability_inventory_incomplete"],
+      "forbidden_problem_classes": ["access_capacity_gap", "access_disruption_without_verified_access_capability", "isolated_need_without_verified_access_capability"],
       "forbidden_stages": ["capacity"],
-      "required_data_gap_substrings": [
-        "No current command/authority context"
-      ],
+      "required_data_gap_substrings": ["No current command/authority context"],
       "max_resource_reservations": 0,
       "expected_command_context_present": false,
       "expected_resource_inventory_scope": "unknown",
       "expected_service_registry_scope": "unknown",
       "notes": [
-        "Reuters public reporting establishes blocked-road/landslide access disruption and rescue impediment, but is not a live access-capability inventory.",
-        "The benchmark must diagnose the broken access edge while refusing to claim that engineering/air/off-road capability is absent."
+        "Known access failure must remain separate from unproven access-capability scarcity."
+      ]
+    },
+    {
+      "case_id": "ruang-eruption-2024-04-18-public",
+      "packet_path": "examples/replay_disaster_ruang_2024_04_18.json",
+      "evidence_level": "R1",
+      "required_problem_classes": ["critical_need_requires_verification_and_escalation", "capability_inventory_incomplete"],
+      "forbidden_problem_classes": ["life_safety_capacity_gap"],
+      "forbidden_stages": ["capacity"],
+      "required_data_gap_substrings": ["No current command/authority context"],
+      "max_resource_reservations": 0,
+      "expected_command_context_present": false,
+      "expected_resource_inventory_scope": "unknown",
+      "expected_service_registry_scope": "unknown",
+      "notes": [
+        "Ongoing critical evacuation should escalate while transport scarcity remains unproven."
+      ]
+    },
+    {
+      "case_id": "lewotobi-eruption-2024-11-05-public",
+      "packet_path": "examples/replay_disaster_lewotobi_2024_11_05.json",
+      "evidence_level": "R1",
+      "required_problem_classes": ["critical_need_requires_verification_and_escalation", "confirmed_access_disruption", "reported_resource_requires_verification"],
+      "forbidden_problem_classes": ["life_safety_capacity_gap", "access_disruption_without_verified_access_capability"],
+      "forbidden_stages": ["capacity"],
+      "required_data_gap_substrings": ["No current command/authority context"],
+      "max_resource_reservations": 0,
+      "expected_command_context_present": false,
+      "expected_resource_inventory_scope": "partial",
+      "expected_service_registry_scope": "unknown",
+      "notes": [
+        "Publicly reported evacuation trucks are candidate capability, not a live assignable resource."
+      ]
+    },
+    {
+      "case_id": "palu-airport-comms-2018-09-29-public",
+      "packet_path": "examples/replay_disaster_palu_2018_09_29_comms.json",
+      "evidence_level": "R1",
+      "required_problem_classes": ["capability_inventory_incomplete"],
+      "forbidden_problem_classes": ["communications_capacity_gap"],
+      "forbidden_stages": ["capacity"],
+      "required_data_gap_substrings": ["No current command/authority context"],
+      "max_resource_reservations": 0,
+      "expected_command_context_present": false,
+      "expected_resource_inventory_scope": "unknown",
+      "expected_service_registry_scope": "unknown",
+      "notes": [
+        "A confirmed communications outage does not prove which emergency communications capacity is absent."
+      ]
+    },
+    {
+      "case_id": "sumbar-lahar-2024-05-14-access-public",
+      "packet_path": "examples/replay_disaster_sumbar_2024_05_14_access.json",
+      "evidence_level": "R1",
+      "required_problem_classes": ["confirmed_access_disruption", "reported_resource_requires_verification"],
+      "forbidden_problem_classes": ["access_capacity_gap", "access_disruption_without_verified_access_capability"],
+      "forbidden_stages": ["capacity"],
+      "required_data_gap_substrings": ["No current command/authority context"],
+      "max_resource_reservations": 0,
+      "expected_command_context_present": false,
+      "expected_resource_inventory_scope": "partial",
+      "expected_service_registry_scope": "unknown",
+      "notes": [
+        "Heavy equipment reported in use must not be double-counted as spare operational capacity."
+      ]
+    },
+    {
+      "case_id": "bekasi-flood-hospital-2025-03-04-public",
+      "packet_path": "examples/replay_disaster_bekasi_2025_03_04_hospital.json",
+      "evidence_level": "R1",
+      "required_problem_classes": ["critical_need_requires_verification_and_escalation", "confirmed_access_disruption", "capability_inventory_incomplete"],
+      "forbidden_problem_classes": ["medical_capacity_gap", "access_disruption_without_verified_access_capability"],
+      "forbidden_stages": ["capacity"],
+      "required_data_gap_substrings": ["No current command/authority context"],
+      "max_resource_reservations": 0,
+      "expected_command_context_present": false,
+      "expected_resource_inventory_scope": "unknown",
+      "expected_service_registry_scope": "partial",
+      "notes": [
+        "Hospital flooding plus power loss is a critical service-continuity problem, not proof that alternate medical capacity is absent."
+      ]
+    },
+    {
+      "case_id": "semeru-eruption-2021-12-05-access-public",
+      "packet_path": "examples/replay_disaster_semeru_2021_12_05_access.json",
+      "evidence_level": "R1",
+      "required_problem_classes": ["confirmed_access_disruption", "capability_inventory_incomplete"],
+      "forbidden_problem_classes": ["access_capacity_gap", "access_disruption_without_verified_access_capability", "isolated_need_without_verified_access_capability"],
+      "forbidden_stages": ["capacity"],
+      "required_data_gap_substrings": ["No current command/authority context"],
+      "max_resource_reservations": 0,
+      "expected_command_context_present": false,
+      "expected_resource_inventory_scope": "unknown",
+      "expected_service_registry_scope": "unknown",
+      "notes": [
+        "A destroyed strategic bridge establishes access failure while alternative-access scarcity remains unknown."
+      ]
+    },
+    {
+      "case_id": "cianjur-gasol-2022-11-27-adequate-service",
+      "packet_path": "examples/replay_disaster_cianjur_2022_11_27_adequate_service.json",
+      "evidence_level": "R1",
+      "required_problem_classes": [],
+      "forbidden_problem_classes": [],
+      "forbidden_stages": ["safety", "stabilize", "route", "capacity", "access", "outcome", "evidence"],
+      "required_data_gap_substrings": ["No current command/authority context"],
+      "max_findings": 0,
+      "max_resource_reservations": 0,
+      "expected_command_context_present": false,
+      "expected_resource_inventory_scope": "unknown",
+      "expected_service_registry_scope": "partial",
+      "notes": [
+        "False-positive control: represented health, clean-water and basic-needs conditions were explicitly reported as met."
       ]
     }
   ]
