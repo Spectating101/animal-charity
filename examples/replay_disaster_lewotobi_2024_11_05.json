@@ -1,0 +1,116 @@
+{
+  "replay_id": "r1-lewotobi-eruption-2024-11-05-public",
+  "decision_cutoff": "2024-11-05T16:54:00Z",
+  "require_evidence_timestamps": true,
+  "metadata": {
+    "evidence_level": "R1_retrospective_public_replay",
+    "real_case": true,
+    "location": "East Flores, East Nusa Tenggara, Indonesia",
+    "failure_mode": "confirmed evacuation impediment plus public resource report"
+  },
+  "case": {
+    "case_id": "lewotobi-eruption-2024-11-05-public-cutoff",
+    "domain": "disaster_response",
+    "metadata": {
+      "source_ref": "https://www.reuters.com/world/asia-pacific/indonesia-evacuate-16000-people-after-mount-lewotobi-laki-laki-eruption-2024-11-05/"
+    },
+    "evidence_manifest": [
+      {
+        "source_ref": "https://www.reuters.com/world/asia-pacific/indonesia-evacuate-16000-people-after-mount-lewotobi-laki-laki-eruption-2024-11-05/",
+        "source_kind": "public",
+        "verification_status": "reported",
+        "sensitivity": "public",
+        "observed_at": "2024-11-05T16:54:00Z",
+        "notes": "Reuters public report citing East Flores officials. Truck deployment is public evidence of activity, not a live resource-availability feed."
+      }
+    ],
+    "payload": {
+      "incident_id": "real-lewotobi-eruption-2024-11",
+      "as_of": "2024-11-05T16:54:00Z",
+      "phase": "response",
+      "metadata": {
+        "real_case": "true",
+        "public_replay": "true",
+        "claim_boundary": "The report establishes evacuation progress and ash-related road impediment; it does not establish spare trucks or complete shelter/transport inventory."
+      },
+      "interoperability": {
+        "bundle_id": "real-lewotobi-public-interop-2024-11-05",
+        "as_of": "2024-11-05T16:54:00Z",
+        "resource_inventory_scope": "partial",
+        "service_registry_scope": "unknown",
+        "metadata": {
+          "source_scope": "single Reuters public report",
+          "not_operational_inventory": true
+        },
+        "records": [
+          {
+            "record_id": "reuters-lewotobi-hazard-nov5",
+            "system_id": "reuters_public_reporting",
+            "integration_role": "evidence_source",
+            "kind": "hazard_observation",
+            "source_ref": "https://www.reuters.com/world/asia-pacific/indonesia-evacuate-16000-people-after-mount-lewotobi-laki-laki-eruption-2024-11-05/",
+            "source_kind": "public",
+            "observed_at": "2024-11-05T16:54:00Z",
+            "verification_status": "reported",
+            "sensitivity": "public",
+            "jurisdiction": "East Flores, East Nusa Tenggara, Indonesia",
+            "attributes": {
+              "hazard_type": "volcanic_eruption_and_ashfall",
+              "location_ref": "Mount Lewotobi Laki-laki, East Flores, Indonesia",
+              "severity": "highest_alert"
+            }
+          },
+          {
+            "record_id": "reuters-lewotobi-evacuation-trucks-nov5",
+            "system_id": "reuters_public_reporting",
+            "integration_role": "evidence_source",
+            "kind": "capability_resource",
+            "source_ref": "https://www.reuters.com/world/asia-pacific/indonesia-evacuate-16000-people-after-mount-lewotobi-laki-laki-eruption-2024-11-05/",
+            "source_kind": "public",
+            "observed_at": "2024-11-05T16:54:00Z",
+            "verification_status": "reported",
+            "sensitivity": "public",
+            "attributes": {
+              "resource_type": "evacuation_truck",
+              "capabilities": ["evacuation_transport", "road_transport"],
+              "quantity": 1,
+              "unit": "reported_resource_group",
+              "location_ref": "East Flores evacuation area",
+              "owner_ref": "government-response",
+              "availability": "available",
+              "deployment_state": "reported_deployed"
+            }
+          }
+        ]
+      },
+      "needs": [
+        {
+          "need_id": "lewotobi-critical-evacuation-nov5",
+          "location_ref": "high-risk villages around Mount Lewotobi Laki-laki, East Flores, Indonesia",
+          "category": "life_safety",
+          "priority": "critical",
+          "status": "partially_met",
+          "source_ref": "https://www.reuters.com/world/asia-pacific/indonesia-evacuate-16000-people-after-mount-lewotobi-laki-laki-eruption-2024-11-05/",
+          "verification_status": "reported",
+          "observed_at": "2024-11-05T16:54:00Z",
+          "access_status": "constrained",
+          "required_capabilities": ["evacuation_transport", "offroad_access"],
+          "notes": "Officials aimed to evacuate 16,086 residents; about 2,472 had been evacuated and volcanic ash was hampering evacuation on some roads."
+        }
+      ],
+      "recurrence_signals": []
+    }
+  },
+  "reference": {
+    "expected_primary_stages": ["safety"],
+    "historical_action": "Evacuations continued while the volcanic hazard persisted; later reporting said about 6,000 people had been evacuated and food/mask supplies at evacuation sites were sufficient.",
+    "historical_outcome_summary": "The later public picture confirms continued evacuation progress and adequate reported supplies, supporting the need to separate an access problem from an unsupported claim that transport or shelter capacity was absent.",
+    "reference_refs": [
+      "https://www.reuters.com/world/asia-pacific/indonesian-volcano-spews-ash-10-km-high-thousands-evacuate-2024-11-08/"
+    ],
+    "notes": [
+      "Later Reuters evidence is hidden from the decision payload.",
+      "The replay must not convert publicly reported truck deployment into a direct resource reservation."
+    ]
+  }
+}
