@@ -1,7 +1,7 @@
 {
-  "version": "2026-08-21.v1",
+  "version": "2026-08-21.v2",
   "name": "dual-frontier-governance-pulse",
-  "purpose": "Track adverse and improvement evidence in parallel so governance can identify both unresolved problems and practices/outcomes worth learning from without netting one against the other.",
+  "purpose": "Track unresolved adverse state and verified target-state improvement in parallel while keeping response activity, operational outputs, coverage limits and comparison scope explicit.",
   "directions": [
     "adverse",
     "improvement",
@@ -13,20 +13,43 @@
     "outcome",
     "system"
   ],
+  "lanes": {
+    "stress_frontier": "Adverse condition evidence at any meaningful level.",
+    "progress_frontier": "Only verified/corroborated target-state outcome or system improvement.",
+    "operational_outputs": "Delivered operational products/services that still require downstream outcome verification.",
+    "response_activity": "Attempted/deployed/spent response activity; state direction remains ambiguous until downstream evidence exists.",
+    "ambiguous": "Condition evidence whose direction cannot yet be established."
+  },
+  "coverage_status": [
+    "unknown",
+    "partial",
+    "bounded",
+    "complete"
+  ],
   "hard_rules": [
     "never subtract improvement signals from adverse signals to create a net governance sentiment score",
-    "never treat activity or expenditure as outcome progress by itself",
+    "never treat activity, expenditure or deployment as state improvement by itself",
+    "never treat an operational output such as aid arrival, facility activation or goods delivery as beneficiary/public-good outcome progress by itself",
     "never infer that an intervention caused a positive outcome merely because both appear in the same report",
-    "never treat local improvement as proof that the broader domain problem is resolved",
+    "never treat local improvement as proof that a broader domain problem is resolved",
+    "never directly compare local, district, province, multi-region and national signals without exposure/context normalization",
+    "never call an observed frontier entry the objectively best or worst news of the month unless the stated source-selection protocol is genuinely complete",
     "never treat absence from the pulse as proof that no adverse or improvement evidence exists",
-    "only treat a positive outcome as a learning candidate when it is at least corroborated and has an associated intervention or practice reference",
-    "transfer of a learning candidate to another jurisdiction or incident requires separate evidence and authority review"
+    "require an explicit direction basis for adverse/improvement claims",
+    "require an explicit significance basis for major/critical triage claims",
+    "only treat a positive outcome/system signal as a learning candidate when it is at least corroborated and has an associated intervention or practice reference",
+    "transfer of a learning candidate to another jurisdiction or incident requires separate evidence, comparability and authority review"
   ],
   "monthly_review_questions": {
     "stress_frontier": [
       "What materially worsened or remained unresolved?",
       "Which failures recur across place or time?",
-      "Which adverse states have the greatest humanitarian or system consequence?"
+      "Which adverse states have the greatest humanitarian or system consequence, and what is the evidence basis for that triage?"
+    ],
+    "operational_progress": [
+      "What response activity occurred?",
+      "What concrete outputs were delivered?",
+      "Which outputs still lack beneficiary/service/environmental outcome evidence?"
     ],
     "progress_frontier": [
       "Where did the desired state measurably improve?",
@@ -34,11 +57,17 @@
       "Which successful outcomes have enough intervention context to justify a learning hypothesis?"
     ],
     "paired_learning": [
-      "What differs between adverse and improvement cases in the same domain/topic?",
+      "Are the adverse and improvement cases actually comparable in hazard, exposure, geography and operational context?",
+      "What differs between comparable adverse and improvement cases in the same domain/topic?",
       "Which difference is causal evidence versus merely contextual correlation?",
       "What can be tested through replay or shadow operation before changing policy?"
+    ],
+    "coverage": [
+      "What source universe was searched?",
+      "Which jurisdictions, outcome types or data systems are missing?",
+      "Does the pulse support only observed-frontier language or a stronger exhaustive claim?"
     ]
   },
   "nocturnal_boundary": "Nocturnal preserves sourced developments and longitudinal matter history. The governance control plane classifies public-good state direction under a domain constitution; Nocturnal should not be required to editorialize developments as good or bad.",
-  "success_boundary": "A useful pulse improves problem selection, learning hypotheses and intervention review. It is not validated merely because it produces balanced-looking positive and negative lists."
+  "success_boundary": "A useful pulse improves problem selection, protects real gains, exposes unverified implementation claims and generates falsifiable learning questions. It is not validated merely because it produces balanced-looking positive and negative lists."
 }
