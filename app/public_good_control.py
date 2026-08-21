@@ -221,12 +221,12 @@ def assess_public_good_case(case: PublicGoodCase) -> PublicGoodAssessment:
         data_gaps = list(domain_result.data_gaps)
         safe_conclusion = domain_result.safe_conclusion
     elif case.domain == PublicGoodDomain.disaster_response:
-        # Lazy import avoids coupling the core evidence model back through the
-        # interoperability module during module initialization.
-        from app.disaster_control import DisasterSnapshot, assess_disaster
+        # Dependency resolution is a narrow overlay on top of the stable disaster
+        # router. It consumes the same raw payload so optional dependency links
+        # remain explicit research/operations evidence rather than hidden rules.
+        from app.disaster_dependencies import assess_disaster_payload
 
-        payload = DisasterSnapshot.model_validate(case.payload)
-        domain_result = assess_disaster(payload)
+        domain_result = assess_disaster_payload(case.payload)
         normalized = _normalize_disaster(domain_result)
         data_gaps = list(domain_result.data_gaps)
         safe_conclusion = domain_result.safe_conclusion
