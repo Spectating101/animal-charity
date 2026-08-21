@@ -1,0 +1,124 @@
+{
+  "replay_id": "r1-krayan-landslide-2026-07-17-dependency-public",
+  "decision_cutoff": "2026-07-17T19:18:00+07:00",
+  "require_evidence_timestamps": true,
+  "metadata": {
+    "evidence_level": "R1_retrospective_public_replay",
+    "real_case": true,
+    "location": "Krayan Selatan, Nunukan, North Kalimantan, Indonesia",
+    "note": "Official BNPB publication time is used as the conservative public decision cutoff. The packet tests whether an established access-to-fuel-to-power dependency is diagnosed without inventing independent power-capacity scarcity."
+  },
+  "case": {
+    "case_id": "krayan-landslide-2026-07-17-dependency-public-cutoff",
+    "domain": "disaster_response",
+    "metadata": {
+      "source_ref": "https://www.bnpb.go.id/berita/bnpb-berikan-dukungan-dan-pendampingan-penanganan-darurat-tanah-longsor-yang-memutus-akses-1507-warga-di-kabupaten-nunukan"
+    },
+    "evidence_manifest": [
+      {
+        "source_ref": "https://www.bnpb.go.id/berita/bnpb-berikan-dukungan-dan-pendampingan-penanganan-darurat-tanah-longsor-yang-memutus-akses-1507-warga-di-kabupaten-nunukan",
+        "source_kind": "official",
+        "verification_status": "corroborated",
+        "sensitivity": "public",
+        "observed_at": "2026-07-17T19:18:00+07:00",
+        "notes": "BNPB field update attributes the road/bridge isolation, stopped fuel-truck operation and reduced generator electricity hours to current local response reporting. It is not a complete live capability inventory."
+      }
+    ],
+    "payload": {
+      "incident_id": "real-krayan-landslide-2026-07",
+      "as_of": "2026-07-17T19:18:00+07:00",
+      "phase": "response",
+      "metadata": {
+        "real_case": "true",
+        "public_replay": "true",
+        "claim_boundary": "Official condition evidence establishes the road/bridge closure and its disruption of fuel delivery to the generator. It does not establish that all alternative transport, fuel or power capability is absent."
+      },
+      "interoperability": {
+        "bundle_id": "real-krayan-public-interop-2026-07-17",
+        "as_of": "2026-07-17T19:18:00+07:00",
+        "resource_inventory_scope": "unknown",
+        "service_registry_scope": "unknown",
+        "metadata": {
+          "source_scope": "single BNPB official field update",
+          "not_operational_inventory": true
+        },
+        "records": [
+          {
+            "record_id": "bnpb-krayan-landslide-response-jul17",
+            "system_id": "bnpb_public_reporting",
+            "integration_role": "evidence_source",
+            "kind": "hazard_observation",
+            "source_ref": "https://www.bnpb.go.id/berita/bnpb-berikan-dukungan-dan-pendampingan-penanganan-darurat-tanah-longsor-yang-memutus-akses-1507-warga-di-kabupaten-nunukan",
+            "source_kind": "official",
+            "observed_at": "2026-07-17T19:18:00+07:00",
+            "verification_status": "corroborated",
+            "sensitivity": "public",
+            "jurisdiction": "Krayan Selatan, Nunukan, North Kalimantan, Indonesia",
+            "attributes": {
+              "hazard_type": "landslide",
+              "location_ref": "Krayan Barat-Krayan Selatan corridor, Nunukan, Indonesia",
+              "severity": "major_access_disruption"
+            }
+          }
+        ]
+      },
+      "needs": [
+        {
+          "need_id": "krayan-road-bridge-access-jul17",
+          "location_ref": "Krayan Barat-Krayan Selatan corridor, Nunukan, Indonesia",
+          "category": "access",
+          "priority": "critical",
+          "status": "unmet",
+          "source_ref": "https://www.bnpb.go.id/berita/bnpb-berikan-dukungan-dan-pendampingan-penanganan-darurat-tanah-longsor-yang-memutus-akses-1507-warga-di-kabupaten-nunukan",
+          "verification_status": "corroborated",
+          "observed_at": "2026-07-17T19:18:00+07:00",
+          "people_affected": 1507,
+          "access_status": "isolated",
+          "capacity_status": "unknown",
+          "required_capabilities": ["road_clearance", "engineering", "air_access", "offroad_access"],
+          "notes": "BNPB reported the main road closed by landslide material and the connecting bridge impassable, isolating 13 villages."
+        },
+        {
+          "need_id": "krayan-electricity-service-jul17",
+          "location_ref": "Krayan Selatan, Nunukan, Indonesia",
+          "category": "power",
+          "priority": "urgent",
+          "status": "partially_met",
+          "source_ref": "https://www.bnpb.go.id/berita/bnpb-berikan-dukungan-dan-pendampingan-penanganan-darurat-tanah-longsor-yang-memutus-akses-1507-warga-di-kabupaten-nunukan",
+          "verification_status": "corroborated",
+          "observed_at": "2026-07-17T19:18:00+07:00",
+          "access_status": "unknown",
+          "capacity_status": "constrained",
+          "required_capabilities": ["fuel_delivery", "emergency_power", "generator_support"],
+          "notes": "BNPB reported electricity availability reduced from about 12 hours to four hours per day because fuel distribution to the power generator was disrupted."
+        }
+      ],
+      "dependencies": [
+        {
+          "link_id": "krayan-access-fuel-power-jul17",
+          "upstream_need_id": "krayan-road-bridge-access-jul17",
+          "downstream_need_id": "krayan-electricity-service-jul17",
+          "relation": "degrades",
+          "mechanism": "road_and_bridge_closure_interrupts_fuel_delivery_to_generator",
+          "source_ref": "https://www.bnpb.go.id/berita/bnpb-berikan-dukungan-dan-pendampingan-penanganan-darurat-tanah-longsor-yang-memutus-akses-1507-warga-di-kabupaten-nunukan",
+          "verification_status": "corroborated",
+          "observed_at": "2026-07-17T19:18:00+07:00",
+          "notes": "The same official update states that fuel-transport vehicles could not operate and attributes reduced electricity hours to disrupted fuel distribution."
+        }
+      ],
+      "recurrence_signals": []
+    }
+  },
+  "reference": {
+    "expected_primary_stages": ["access"],
+    "historical_action": "By 24-25 July BNPB used pioneer aircraft to move relief into the still-isolated area while continuing coordination to reopen the road and repair the damaged bridge.",
+    "historical_outcome_summary": "The later response demonstrates that alternative logistics can emerge while the road dependency remains broken. It supports dependency-aware workaround reasoning but does not establish that power service was restored or that the replay recommendation caused a better outcome.",
+    "reference_refs": [
+      "https://bnpb.go.id/index.php/berita/akses-jalan-tertutup-longsor-bnpb-kirimkan-bantuan-via-udara-ke-krayan-selatan"
+    ],
+    "notes": [
+      "The later BNPB air-relief report is hidden from the decision payload.",
+      "The replay must identify the upstream access dependency without promoting unknown alternative power/logistics capability into either scarcity or deployability."
+    ]
+  }
+}
