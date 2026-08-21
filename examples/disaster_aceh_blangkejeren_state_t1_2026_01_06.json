@@ -1,0 +1,39 @@
+{
+  "incident_id": "real-aceh-blangkejeren-access-2025-2026",
+  "as_of": "2026-01-06T23:59:59+07:00",
+  "phase": "response",
+  "metadata": {
+    "real_case": "true",
+    "public_replay": "true",
+    "source_scope": "Kementerian PU public update published 6 January 2026 describing the 3 January landslide closure",
+    "time_boundary_note": "The public page exposes the publication date but not an exact publication time; the snapshot uses an end-of-day WIB knowledge boundary rather than inventing a more precise timestamp.",
+    "claim_boundary": "This snapshot establishes the represented route was closed by landslide at this later operational period. It does not infer that every alternative route or transport capability was unavailable."
+  },
+  "interoperability": {
+    "bundle_id": "real-aceh-blangkejeren-public-interop-t1",
+    "as_of": "2026-01-06T23:59:59+07:00",
+    "resource_inventory_scope": "unknown",
+    "service_registry_scope": "unknown",
+    "metadata": {
+      "source_scope": "single official Kementerian PU infrastructure update",
+      "not_operational_inventory": true
+    },
+    "records": []
+  },
+  "needs": [
+    {
+      "need_id": "blangkejeren-gayo-lues-aceh-tenggara-access",
+      "location_ref": "Blangkejeren-Batas Gayo Lues/Aceh Tenggara corridor, Aceh, Indonesia",
+      "category": "access",
+      "priority": "urgent",
+      "status": "unmet",
+      "source_ref": "https://sahabat.pu.go.id/eppid/berita/detail/menteri-dody-tinjau-infrastruktur-terdampak-banjir-susulan-di-aceh-pastikan-akses-logistik-",
+      "verification_status": "corroborated",
+      "observed_at": "2026-01-06T23:59:59+07:00",
+      "access_status": "isolated",
+      "capacity_status": "unknown",
+      "notes": "Kementerian PU reported the Blangkejeren-Batas Kabupaten Gayo Lues/Aceh Tenggara road closed by landslide caused by heavy rain on 3 January 2026. The access state is represented separately from unknown alternative-resource availability."
+    }
+  ],
+  "recurrence_signals": []
+}
