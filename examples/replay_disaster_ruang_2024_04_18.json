@@ -1,0 +1,95 @@
+{
+  "replay_id": "r1-ruang-eruption-2024-04-18-public",
+  "decision_cutoff": "2024-04-18T09:48:00Z",
+  "require_evidence_timestamps": true,
+  "metadata": {
+    "evidence_level": "R1_retrospective_public_replay",
+    "real_case": true,
+    "location": "Sitaro, North Sulawesi, Indonesia",
+    "failure_mode": "critical evacuation under incomplete operational inventory"
+  },
+  "case": {
+    "case_id": "ruang-eruption-2024-04-18-public-cutoff",
+    "domain": "disaster_response",
+    "metadata": {
+      "source_ref": "https://www.reuters.com/world/asia-pacific/indonesian-volcano-eruption-forces-evacuations-airport-closure-2024-04-18/"
+    },
+    "evidence_manifest": [
+      {
+        "source_ref": "https://www.reuters.com/world/asia-pacific/indonesian-volcano-eruption-forces-evacuations-airport-closure-2024-04-18/",
+        "source_kind": "public",
+        "verification_status": "reported",
+        "sensitivity": "public",
+        "observed_at": "2024-04-18T09:48:00Z",
+        "notes": "Reuters public report citing volcanology and disaster-management officials; not a live EOC inventory."
+      }
+    ],
+    "payload": {
+      "incident_id": "real-ruang-eruption-2024-04",
+      "as_of": "2024-04-18T09:48:00Z",
+      "phase": "response",
+      "metadata": {
+        "real_case": "true",
+        "public_replay": "true",
+        "claim_boundary": "The report establishes ongoing high-risk evacuation, not current spare transport capacity or command authorization."
+      },
+      "interoperability": {
+        "bundle_id": "real-ruang-public-interop-2024-04-18",
+        "as_of": "2024-04-18T09:48:00Z",
+        "resource_inventory_scope": "unknown",
+        "service_registry_scope": "unknown",
+        "metadata": {
+          "source_scope": "single Reuters public report",
+          "not_operational_inventory": true
+        },
+        "records": [
+          {
+            "record_id": "reuters-ruang-hazard-apr18",
+            "system_id": "reuters_public_reporting",
+            "integration_role": "evidence_source",
+            "kind": "hazard_observation",
+            "source_ref": "https://www.reuters.com/world/asia-pacific/indonesian-volcano-eruption-forces-evacuations-airport-closure-2024-04-18/",
+            "source_kind": "public",
+            "observed_at": "2024-04-18T09:48:00Z",
+            "verification_status": "reported",
+            "sensitivity": "public",
+            "jurisdiction": "Sitaro, North Sulawesi, Indonesia",
+            "attributes": {
+              "hazard_type": "explosive_volcanic_eruption",
+              "location_ref": "Mount Ruang and Tagulandang, North Sulawesi, Indonesia",
+              "severity": "highest_alert"
+            }
+          }
+        ]
+      },
+      "needs": [
+        {
+          "need_id": "ruang-critical-evacuation-apr18",
+          "location_ref": "high-risk communities around Mount Ruang, North Sulawesi, Indonesia",
+          "category": "life_safety",
+          "priority": "critical",
+          "status": "partially_met",
+          "source_ref": "https://www.reuters.com/world/asia-pacific/indonesian-volcano-eruption-forces-evacuations-airport-closure-2024-04-18/",
+          "verification_status": "reported",
+          "observed_at": "2024-04-18T09:48:00Z",
+          "access_status": "unknown",
+          "required_capabilities": ["evacuation_transport"],
+          "notes": "More than 800 people had been evacuated while officials said about 1,500 people in high-risk areas still needed immediate evacuation. Public reporting does not establish live spare transport capacity."
+        }
+      ],
+      "recurrence_signals": []
+    }
+  },
+  "reference": {
+    "expected_primary_stages": ["safety"],
+    "historical_action": "Evacuation and exclusion continued; later BNPB reporting documented thousands of evacuees and maintained restrictions even after the alert level was reduced.",
+    "historical_outcome_summary": "By 25 April BNPB reported 6,125 evacuees and continuing exclusion measures. This validates that the cutoff represented an active life-safety evacuation problem, but does not prove any specific resource-allocation counterfactual.",
+    "reference_refs": [
+      "https://www.bnpb.go.id/berita/larangan-memasuki-kampung-pumpente-dan-laingpatihe-kabupaten-sitaro"
+    ],
+    "notes": [
+      "Later BNPB evidence is hidden from the decision payload.",
+      "The replay should escalate the critical evacuation condition while refusing to invent transport scarcity from an unknown inventory."
+    ]
+  }
+}
