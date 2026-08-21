@@ -74,6 +74,11 @@ class GateState(BaseModel):
     site_safety_review: bool = False
 
 
+class ActionIntentGateRequest(BaseModel):
+    intent: ActionIntent
+    gates: GateState
+
+
 def _registry() -> dict[str, Any]:
     return json.loads(WILDFIRE_UAS_REGISTRY.read_text(encoding="utf-8"))
 
