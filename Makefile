@@ -64,6 +64,7 @@ disaster-smoke:
 
 disaster-evolution-smoke:
 	@python scripts/compare_disaster_periods.py examples/disaster_ntt_synthetic.json examples/disaster_ntt_synthetic_t1.json | python -c "import json,sys; d=json.load(sys.stdin); assert 'trapped-a' in d['explicitly_resolved_need_ids']; assert 'water-a' in d['missing_followup_need_ids']; assert 'sar-team-a' in d['lost_deployable_resource_ids']; assert 'medevac-air-a' in d['newly_deployable_resource_ids']; assert d['recommendation_stage_changes']['isolated-medical-a']['from']=='access'; assert d['recommendation_stage_changes']['isolated-medical-a']['to']=='route'"
+	@python scripts/trace_disaster_history.py examples/disaster_aceh_blangkejeren_state_t0_2025_12_31.json examples/disaster_aceh_blangkejeren_state_t1_2026_01_06.json examples/disaster_aceh_blangkejeren_state_t2_2026_01_10.json | python -c "import json,sys; d=json.load(sys.stdin); assert d['snapshot_count']==3; assert [(x['from_state'],x['to_state'],x['transition_class']) for x in d['access_state_transitions']]==[('open','isolated','degradation'),('isolated','open','recovery')]; assert len(d['access_state_reversals'])==1; r=d['access_state_reversals'][0]; assert (r['initial_state'],r['intermediate_state'],r['final_state'])==('open','isolated','open'); assert len(r['evidence_refs'])==3"
 
 verify: test smoke landscape-smoke initiative-smoke control-smoke lifecycle-initiative-smoke preventive-smoke mbg-smoke public-good-smoke replay-smoke replay-corpus-smoke interop-smoke disaster-smoke disaster-evolution-smoke
 	python -m compileall -q app scripts tests
