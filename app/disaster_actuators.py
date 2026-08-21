@@ -60,6 +60,7 @@ def propose_wildfire_uas_intents(
                         priority=need.priority,
                         evidence_refs=finding.evidence_refs,
                         source_finding_class=finding.problem_class,
+                        created_at=snapshot.as_of,
                         expires_at=snapshot.as_of + timedelta(hours=2),
                     )
                 )
@@ -83,6 +84,7 @@ def propose_wildfire_uas_intents(
                         priority=need.priority,
                         evidence_refs=finding.evidence_refs,
                         source_finding_class=finding.problem_class,
+                        created_at=snapshot.as_of,
                         expires_at=snapshot.as_of + timedelta(hours=1),
                     )
                 )
