@@ -56,7 +56,9 @@ class DisasterActuatorTests(unittest.TestCase):
         intent = plan.proposed_intents[0]
         self.assertIn("not a flight plan", " ".join(intent.notes).lower())
 
-        gate_result = evaluate_wildfire_uas_intent(intent, GateState())
+        # Historical/shadow evaluation must be deterministic at the incident time;
+        # it must not change merely because the wall clock later passes intent expiry.
+        gate_result = evaluate_wildfire_uas_intent(intent, GateState(), as_of=snapshot.as_of)
         self.assertFalse(gate_result.execution_ready)
         self.assertEqual(gate_result.intent.status.value, "awaiting_authority")
 
