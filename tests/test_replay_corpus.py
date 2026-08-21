@@ -15,10 +15,10 @@ class ReplayCorpusTests(unittest.TestCase):
         spec = load_corpus(CORPUS)
         result = evaluate_corpus(spec, ROOT)
 
-        self.assertEqual(result.corpus_id, "disaster-public-r1-v6")
-        self.assertEqual(result.case_count, 13)
-        self.assertEqual(result.by_evidence_level, {"R1": 13})
-        self.assertEqual(result.passed_count, 13)
+        self.assertEqual(result.corpus_id, "disaster-public-r1-v7")
+        self.assertEqual(result.case_count, 14)
+        self.assertEqual(result.by_evidence_level, {"R1": 14})
+        self.assertEqual(result.passed_count, 14)
         self.assertEqual(result.failed_count, 0)
 
         by_id = {case.case_id: case for case in result.results}
@@ -36,6 +36,7 @@ class ReplayCorpusTests(unittest.TestCase):
             "luwu-utara-flood-2020-07-19-capacity-public": "capacity",
             "krayan-landslide-2026-07-17-dependency-public": "access",
             "nunukan-access-2026-06-02-structural-public": "access",
+            "humbang-2025-11-30-conditional-route-public": "safety",
         }
         for case_id, expected_stage in expected_stages.items():
             with self.subTest(case_id=case_id):
@@ -86,6 +87,12 @@ class ReplayCorpusTests(unittest.TestCase):
         self.assertTrue(structural.predicted_structural_candidate)
         self.assertIn("confirmed_access_disruption", structural.problem_classes)
         self.assertNotIn("capacity", structural.stages)
+
+        humbang = by_id["humbang-2025-11-30-conditional-route-public"]
+        self.assertEqual(humbang.predicted_primary_stage, "safety")
+        self.assertEqual(humbang.problem_classes, ["conditional_operational_safety_constraint"])
+        self.assertEqual(humbang.stages, ["safety"])
+        self.assertFalse(humbang.predicted_structural_candidate)
 
     def test_corpus_reports_unsafe_contract_violation(self):
         spec = ReplayCorpusSpec(
