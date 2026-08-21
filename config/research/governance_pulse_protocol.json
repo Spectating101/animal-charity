@@ -1,7 +1,7 @@
 {
-  "version": "2026-08-21.v2",
+  "version": "2026-08-21.v3",
   "name": "dual-frontier-governance-pulse",
-  "purpose": "Track unresolved adverse state and verified target-state improvement in parallel while keeping response activity, operational outputs, coverage limits and comparison scope explicit.",
+  "purpose": "Track unresolved current adverse state and verified current target-state improvement in parallel while keeping lagged context, response activity, operational outputs, coverage limits and comparison scope explicit.",
   "directions": [
     "adverse",
     "improvement",
@@ -14,11 +14,12 @@
     "system"
   ],
   "lanes": {
-    "stress_frontier": "Adverse condition evidence at any meaningful level.",
-    "progress_frontier": "Only verified/corroborated target-state outcome or system improvement.",
+    "stress_frontier": "Current-period adverse condition evidence.",
+    "progress_frontier": "Current-period target-state outcome or system improvement.",
     "operational_outputs": "Delivered operational products/services that still require downstream outcome verification.",
     "response_activity": "Attempted/deployed/spent response activity; state direction remains ambiguous until downstream evidence exists.",
-    "ambiguous": "Condition evidence whose direction cannot yet be established."
+    "ambiguous": "Current condition evidence whose direction cannot yet be established.",
+    "lagged_context": "News learned during the review period about a condition whose effective period ended before the review period; useful for risk/history, not current-state proof."
   },
   "coverage_status": [
     "unknown",
@@ -33,16 +34,19 @@
     "never infer that an intervention caused a positive outcome merely because both appear in the same report",
     "never treat local improvement as proof that a broader domain problem is resolved",
     "never directly compare local, district, province, multi-region and national signals without exposure/context normalization",
+    "never confuse source publication or discovery time with the effective period of the underlying condition",
+    "prior-period condition evidence published this month remains lagged context until current-period evidence establishes persistence",
     "never call an observed frontier entry the objectively best or worst news of the month unless the stated source-selection protocol is genuinely complete",
     "never treat absence from the pulse as proof that no adverse or improvement evidence exists",
     "require an explicit direction basis for adverse/improvement claims",
     "require an explicit significance basis for major/critical triage claims",
     "only treat a positive outcome/system signal as a learning candidate when it is at least corroborated and has an associated intervention or practice reference",
+    "preserve a verified gain from regression, but do not attribute that gain to an associated intervention without mechanism evidence",
     "transfer of a learning candidate to another jurisdiction or incident requires separate evidence, comparability and authority review"
   ],
   "monthly_review_questions": {
     "stress_frontier": [
-      "What materially worsened or remained unresolved?",
+      "What materially worsened or remained unresolved during the current condition period?",
       "Which failures recur across place or time?",
       "Which adverse states have the greatest humanitarian or system consequence, and what is the evidence basis for that triage?"
     ],
@@ -52,9 +56,13 @@
       "Which outputs still lack beneficiary/service/environmental outcome evidence?"
     ],
     "progress_frontier": [
-      "Where did the desired state measurably improve?",
+      "Where did the desired state measurably improve during the current period?",
       "Which improvements are durable rather than momentary?",
       "Which successful outcomes have enough intervention context to justify a learning hypothesis?"
+    ],
+    "lagged_context": [
+      "Which important reports published this period actually describe prior-period conditions?",
+      "What current evidence is needed before carrying those conditions forward as still active?"
     ],
     "paired_learning": [
       "Are the adverse and improvement cases actually comparable in hazard, exposure, geography and operational context?",
@@ -68,6 +76,6 @@
       "Does the pulse support only observed-frontier language or a stronger exhaustive claim?"
     ]
   },
-  "nocturnal_boundary": "Nocturnal preserves sourced developments and longitudinal matter history. The governance control plane classifies public-good state direction under a domain constitution; Nocturnal should not be required to editorialize developments as good or bad.",
-  "success_boundary": "A useful pulse improves problem selection, protects real gains, exposes unverified implementation claims and generates falsifiable learning questions. It is not validated merely because it produces balanced-looking positive and negative lists."
+  "nocturnal_boundary": "Nocturnal preserves sourced developments and longitudinal matter history, including both publication time and event/effective time where knowable. The governance control plane classifies public-good state direction under a domain constitution; Nocturnal should not be required to editorialize developments as good or bad.",
+  "success_boundary": "A useful pulse improves problem selection, protects real gains, exposes unverified implementation claims, distinguishes current state from lagged reporting and generates falsifiable learning questions. It is not validated merely because it produces balanced-looking positive and negative lists."
 }
