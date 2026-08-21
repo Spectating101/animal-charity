@@ -48,6 +48,16 @@ class DisasterActuatorTests(unittest.TestCase):
         self.assertIn("request evaluation", intent.goal.lower())
         self.assertEqual(intent.status.value, "proposed")
 
+    def test_actionable_synthetic_case_produces_one_nonbinding_suppression_intent(self):
+        snapshot = self._load("disaster_wildfire_actionable_synthetic.json")
+        assessment = assess_disaster(snapshot)
+        plan = propose_wildfire_uas_intents(snapshot, assessment)
+        self.assertEqual(len(plan.proposed_intents), 1)
+        intent = plan.proposed_intents[0]
+        self.assertEqual(intent.intent_type, "wildfire.request_suppression_support")
+        self.assertEqual(intent.status.value, "proposed")
+        self.assertIn("not a flight plan", " ".join(intent.notes).lower())
+
     def test_non_wildfire_disaster_never_enters_wildfire_uas_mapper(self):
         snapshot = self._load("disaster_ntt_synthetic.json")
         assessment = assess_disaster(snapshot)
