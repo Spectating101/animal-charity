@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from app.disaster_control import DisasterSnapshot, assess_disaster
+from app.disaster_dependencies import assess_disaster_payload
 
 
 def main() -> int:
@@ -17,8 +17,8 @@ def main() -> int:
     parser.add_argument("path", help="Path to a DisasterSnapshot JSON file")
     args = parser.parse_args()
 
-    snapshot = DisasterSnapshot.model_validate_json(Path(args.path).read_text(encoding="utf-8"))
-    assessment = assess_disaster(snapshot)
+    payload = json.loads(Path(args.path).read_text(encoding="utf-8"))
+    assessment = assess_disaster_payload(payload)
     print(json.dumps(assessment.model_dump(mode="json"), indent=2, ensure_ascii=False))
     return 0
 
