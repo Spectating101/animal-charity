@@ -1,5 +1,5 @@
 {
-  "corpus_id": "disaster-public-r1-v6",
+  "corpus_id": "disaster-public-r1-v7",
   "cases": [
     {
       "case_id": "kubu-raya-karhutla-2026-08-07-public",
@@ -192,6 +192,25 @@
       "notes": [
         "The structural unit is the regional Nunukan access network, not a specific bridge or road segment.",
         "Three pre-cutoff access/infrastructure disruption episodes support mitigation/preparedness review; the July 2026 Krayan isolation remains hidden future evidence and cannot create the structural flag."
+      ]
+    },
+    {
+      "case_id": "humbang-2025-11-30-conditional-route-public",
+      "packet_path": "examples/replay_disaster_humbang_2025_11_30_conditional_route.json",
+      "evidence_level": "R1",
+      "required_problem_classes": ["conditional_operational_safety_constraint"],
+      "forbidden_problem_classes": ["confirmed_access_disruption", "access_capacity_gap", "access_disruption_without_verified_access_capability", "operational_safety_constraint_triggered", "reported_safety_constraint_requires_verification"],
+      "forbidden_stages": ["capacity", "access", "route"],
+      "required_data_gap_substrings": ["No current command/authority context"],
+      "max_findings": 1,
+      "max_resource_reservations": 0,
+      "expected_command_context_present": false,
+      "expected_resource_inventory_scope": "unknown",
+      "expected_service_registry_scope": "unknown",
+      "expected_structural_candidate": false,
+      "notes": [
+        "The route is currently reported open/met, so the base router should not invent an access problem.",
+        "The verified rain-trigger closure rule must remain visible as conditional safety state without claiming that the trigger is currently active or that alternatives are absent."
       ]
     }
   ]
