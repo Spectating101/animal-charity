@@ -1,0 +1,39 @@
+{
+  "incident_id": "real-aceh-blangkejeren-access-2025-2026",
+  "as_of": "2026-01-10T23:59:59+07:00",
+  "phase": "recovery",
+  "metadata": {
+    "real_case": "true",
+    "public_replay": "true",
+    "source_scope": "BPJN Aceh/Kementerian PU public update published 10 January 2026",
+    "time_boundary_note": "The article is dated 10 January 2026 and describes conditions that morning; the snapshot uses an end-of-day WIB knowledge boundary to avoid inventing a more precise observation time for the represented route state.",
+    "claim_boundary": "This snapshot establishes renewed functional passage after the earlier landslide closure. It does not erase the prior closure or imply permanent unrestricted safety."
+  },
+  "interoperability": {
+    "bundle_id": "real-aceh-blangkejeren-public-interop-t2",
+    "as_of": "2026-01-10T23:59:59+07:00",
+    "resource_inventory_scope": "unknown",
+    "service_registry_scope": "unknown",
+    "metadata": {
+      "source_scope": "single official BPJN Aceh/Kementerian PU connectivity update",
+      "not_operational_inventory": true
+    },
+    "records": []
+  },
+  "needs": [
+    {
+      "need_id": "blangkejeren-gayo-lues-aceh-tenggara-access",
+      "location_ref": "Blangkejeren-Batas Gayo Lues/Aceh Tenggara corridor, Aceh, Indonesia",
+      "category": "access",
+      "priority": "urgent",
+      "status": "met",
+      "source_ref": "https://binamarga.pu.go.id/balai-aceh/berita/perhatian-menteri-dody-pada-konektivitas-aceh-tengah-arah-kota-canai-menuju-blangkejeren-dan-gayo-lues-dapat-dilalui",
+      "verification_status": "corroborated",
+      "observed_at": "2026-01-10T23:59:59+07:00",
+      "access_status": "open",
+      "capacity_status": "unknown",
+      "notes": "BPJN Aceh/Kementerian PU reported the previously cut access recovering and passable again; by the morning of 10 January almost all vehicle classes could pass. This is a renewed observed state, not a retroactive claim that the route had remained open continuously."
+    }
+  ],
+  "recurrence_signals": []
+}
