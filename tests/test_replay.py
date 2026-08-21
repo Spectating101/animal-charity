@@ -84,6 +84,22 @@ class ReplayTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "requires timestamps"):
             run_replay(missing)
 
+    def test_future_manifest_evidence_is_rejected(self):
+        packet = self._packet("replay_disaster_kubu_raya_2026_08_07.json")
+        raw = copy.deepcopy(packet.model_dump(mode="json"))
+        raw["case"]["evidence_manifest"][0]["observed_at"] = "2026-08-08T10:00:00+07:00"
+        future = ReplayPacket.model_validate(raw)
+        with self.assertRaisesRegex(ValueError, "after the decision cutoff"):
+            run_replay(future)
+
+    def test_untimestamped_manifest_evidence_is_rejected_in_strict_mode(self):
+        packet = self._packet("replay_disaster_kubu_raya_2026_08_07.json")
+        raw = copy.deepcopy(packet.model_dump(mode="json"))
+        raw["case"]["evidence_manifest"][0]["observed_at"] = None
+        missing = ReplayPacket.model_validate(raw)
+        with self.assertRaisesRegex(ValueError, "requires timestamps"):
+            run_replay(missing)
+
 
 if __name__ == "__main__":
     unittest.main()
