@@ -1,0 +1,156 @@
+{
+  "pulse_id": "indonesia-ntt-earthquake-2026-08-public-v0",
+  "period_start": "2026-08-15T00:00:00+07:00",
+  "period_end": "2026-08-21T23:59:59+07:00",
+  "coverage_status": "partial",
+  "selection_protocol": "Public-source audit sample using BNPB operational updates and Reuters context to test whether the pulse separates continuing humanitarian harm, service restoration, operational outputs and response activity after the August 2026 NTT earthquake.",
+  "known_gaps": [
+    "Not an exhaustive municipality-by-municipality outcome census.",
+    "Public logistics reporting often records shipment/arrival before beneficiary receipt or adequacy is verified.",
+    "Infrastructure restoration percentages do not by themselves establish household-level service quality everywhere."
+  ],
+  "signals": [
+    {
+      "signal_id": "ntt-deaths-displacement-damage",
+      "domain": "disaster_response",
+      "topic": "earthquake_response_recovery",
+      "geography": "East Nusa Tenggara",
+      "scope_level": "province",
+      "observed_at": "2026-08-16T18:40:00+07:00",
+      "source_ref": "https://www.bnpb.go.id/berita/update-dampak-gempa-m77-ntt-korban-meninggal-dunia-menjadi-53-orang",
+      "direction": "adverse",
+      "level": "system",
+      "significance": "critical",
+      "verification_status": "verified",
+      "condition_class": "fatality_displacement_damage_burden",
+      "summary": "BNPB reported 53 deaths, 137 injuries, thousands displaced and extensive housing/public-facility damage as impact verification continued.",
+      "direction_basis": "Fatalities, injuries, displacement and widespread damage represent severe deterioration from the pre-earthquake safety/service state.",
+      "significance_basis": "Multi-district loss of life, displacement and infrastructure damage created immediate humanitarian and service-system consequences."
+    },
+    {
+      "signal_id": "ende-nagekeo-road-still-cut",
+      "domain": "disaster_response",
+      "topic": "earthquake_response_recovery",
+      "geography": "Ende - Nagekeo corridor",
+      "scope_level": "multi_region",
+      "observed_at": "2026-08-16T07:34:00+07:00",
+      "source_ref": "https://www.bnpb.go.id/berita/update-pascagempa-ntt-lebih-5000-warga-bertahan-di-pengungsian",
+      "direction": "adverse",
+      "level": "outcome",
+      "significance": "major",
+      "verification_status": "verified",
+      "condition_class": "critical_access_route_disrupted",
+      "summary": "BNPB reported the Ende-Nagekeo land connection remained cut, requiring continued search for alternatives.",
+      "direction_basis": "A key land-access corridor remained unavailable for mobility/logistics after the earthquake.",
+      "significance_basis": "Continued route disruption can constrain evacuation, logistics and service access across affected districts."
+    },
+    {
+      "signal_id": "larantuka-maumere-road-reconnected",
+      "domain": "disaster_response",
+      "topic": "earthquake_response_recovery",
+      "geography": "Larantuka - Maumere corridor",
+      "scope_level": "multi_region",
+      "observed_at": "2026-08-16T07:34:00+07:00",
+      "source_ref": "https://www.bnpb.go.id/berita/update-pascagempa-ntt-lebih-5000-warga-bertahan-di-pengungsian",
+      "direction": "improvement",
+      "level": "outcome",
+      "significance": "major",
+      "verification_status": "verified",
+      "condition_class": "critical_access_route_restored",
+      "summary": "BNPB reported the Larantuka-Maumere land route was connected and passable.",
+      "direction_basis": "The transport state was reported as connected/passable, restoring a usable land-access path during emergency response.",
+      "significance_basis": "Restored inter-area access directly improves mobility and logistics options during a multi-district emergency.",
+      "intervention_refs": [
+        "road_access_restoration"
+      ]
+    },
+    {
+      "signal_id": "reok-field-hospital-operational",
+      "domain": "disaster_response",
+      "topic": "earthquake_response_recovery",
+      "geography": "Reok, Manggarai",
+      "scope_level": "district",
+      "observed_at": "2026-08-16T07:34:00+07:00",
+      "source_ref": "https://www.bnpb.go.id/berita/update-pascagempa-ntt-lebih-5000-warga-bertahan-di-pengungsian",
+      "direction": "improvement",
+      "level": "output",
+      "significance": "major",
+      "verification_status": "verified",
+      "condition_class": "field_hospital_operational",
+      "summary": "BNPB reported an emergency field hospital had been established and was operating in Reok.",
+      "direction_basis": "A functioning emergency-care delivery node became available after healthcare infrastructure damage.",
+      "significance_basis": "Emergency medical capacity is operationally important after a disaster affecting dozens of health facilities.",
+      "intervention_refs": [
+        "field_hospital"
+      ],
+      "notes": [
+        "This is operational service output. It does not by itself prove patient access, adequacy or health outcomes improved."
+      ]
+    },
+    {
+      "signal_id": "palue-logistics-arrived",
+      "domain": "disaster_response",
+      "topic": "earthquake_response_recovery",
+      "geography": "Palue Island, Sikka",
+      "scope_level": "district",
+      "observed_at": "2026-08-17T17:51:00+07:00",
+      "source_ref": "https://www.bnpb.go.id/berita/bnpb-salurkan-bantuan-logistik-melalui-jalur-laut-untuk-masyarakat-terdampak-gempa-di-pulau-palue-sikka",
+      "direction": "improvement",
+      "level": "output",
+      "significance": "moderate",
+      "verification_status": "verified",
+      "condition_class": "island_logistics_arrival",
+      "summary": "BNPB reported tents, mats, generators, food, water, hygiene supplies and other aid had arrived on Palue Island through sea/air delivery.",
+      "direction_basis": "Physical relief goods reached the island-level distribution point, improving implementation state relative to supplies not yet present.",
+      "intervention_refs": [
+        "sea_logistics",
+        "air_logistics"
+      ],
+      "notes": [
+        "Arrival at the island/distribution point is not equivalent to beneficiary receipt, adequacy or welfare outcome."
+      ]
+    },
+    {
+      "signal_id": "ntt-electricity-near-restoration",
+      "domain": "disaster_response",
+      "topic": "earthquake_response_recovery",
+      "geography": "Flores electricity service areas",
+      "scope_level": "multi_region",
+      "observed_at": "2026-08-17T21:00:00+07:00",
+      "source_ref": "https://www.bnpb.go.id/berita/update-pemulihan-infrastruktur-listrik-dan-komunikasi-pascagempa-m77-ntt",
+      "direction": "improvement",
+      "level": "system",
+      "significance": "major",
+      "verification_status": "verified",
+      "condition_class": "electricity_infrastructure_restoration",
+      "summary": "BNPB reported transformer restoration at 100% and affected electricity poles functioning at 98.3%, with eastern/western Flores service restoration near 100%.",
+      "direction_basis": "Electricity infrastructure moved from earthquake disruption toward near-restored operational service across affected service areas.",
+      "significance_basis": "Electricity restoration supports healthcare, communications, shelter and wider recovery across multiple affected areas.",
+      "intervention_refs": [
+        "electricity_network_repair"
+      ],
+      "metric_name": "affected_poles_functioning",
+      "metric_value": 98.3,
+      "metric_unit": "percent"
+    },
+    {
+      "signal_id": "ntt-large-scale-aid-flights",
+      "domain": "disaster_response",
+      "topic": "earthquake_response_recovery",
+      "geography": "National logistics hub to NTT",
+      "scope_level": "multi_region",
+      "observed_at": "2026-08-17T20:35:00+07:00",
+      "source_ref": "https://www.bnpb.go.id/berita/bnpb-percepat-distribusi-bantuan-untuk-penanganan-darurat-gempa-ntt",
+      "direction": "ambiguous",
+      "level": "activity",
+      "significance": "major",
+      "verification_status": "verified",
+      "condition_class": "large_scale_air_logistics_active",
+      "summary": "BNPB reported three large air-logistics flights on 17 August carrying about 40,567 kg of emergency supplies.",
+      "significance_basis": "Large-scale airlift activity materially expands response throughput, but beneficiary receipt/outcome remains a separate question.",
+      "intervention_refs": [
+        "air_logistics"
+      ]
+    }
+  ]
+}
