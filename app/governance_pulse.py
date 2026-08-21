@@ -64,7 +64,10 @@ class TopicPulse(BaseModel):
     activity_signal_ids: list[str] = Field(default_factory=list)
     ambiguous_signal_ids: list[str] = Field(default_factory=list)
     learning_candidate_ids: list[str] = Field(default_factory=list)
+    preservation_candidate_ids: list[str] = Field(default_factory=list)
+    regression_watch_ids: list[str] = Field(default_factory=list)
     interpretation: str
+    next_review_actions: list[str] = Field(default_factory=list)
 
 
 class GovernancePulseInput(BaseModel):
@@ -134,6 +137,14 @@ def _is_learning_candidate(signal: GovernanceSignal) -> bool:
     )
 
 
+def _is_preservation_candidate(signal: GovernanceSignal) -> bool:
+    return (
+        signal.direction == SignalDirection.improvement
+        and signal.level in {SignalLevel.outcome, SignalLevel.system}
+        and signal.verification_status in {"corroborated", "verified"}
+    )
+
+
 def build_governance_pulse(payload: GovernancePulseInput) -> GovernancePulse:
     adverse = sorted(
         [signal for signal in payload.signals if signal.direction == SignalDirection.adverse],
@@ -174,6 +185,31 @@ def build_governance_pulse(payload: GovernancePulseInput) -> GovernancePulse:
         activity_ids = [s.signal_id for s in signals if s.level == SignalLevel.activity]
         ambiguous_ids = [s.signal_id for s in signals if s.direction == SignalDirection.ambiguous]
         learning_ids = [s.signal_id for s in signals if _is_learning_candidate(s)]
+        preservation_ids = [s.signal_id for s in signals if _is_preservation_candidate(s)]
+        regression_watch_ids = list(preservation_ids)
+
+        next_actions: list[str] = []
+        if adverse_ids:
+            next_actions.append(
+                "Keep adverse states open until the underlying condition improves; diagnose the broken edge instead of allowing positive cases elsewhere to close the problem."
+            )
+        if improvement_ids:
+            next_actions.append(
+                "Protect verified working capacity/practice from accidental regression while collecting enough mechanism/context evidence to explain the improvement."
+            )
+            next_actions.append(
+                "Re-check improvement cases in the next period so temporary success is not mistaken for durable progress."
+            )
+        if learning_ids:
+            next_actions.append(
+                "Compare learning candidates against adverse cases in the same topic and generate testable transfer hypotheses before replication."
+            )
+        if activity_ids:
+            next_actions.append(
+                "Request downstream outcome evidence for response activity before promoting it into the progress frontier."
+            )
+        if ambiguous_ids:
+            next_actions.append("Resolve ambiguous direction with additional condition/outcome evidence before using it for policy learning.")
 
         if adverse_ids and improvement_ids:
             interpretation = (
@@ -195,7 +231,10 @@ def build_governance_pulse(payload: GovernancePulseInput) -> GovernancePulse:
                 activity_signal_ids=activity_ids,
                 ambiguous_signal_ids=ambiguous_ids,
                 learning_candidate_ids=learning_ids,
+                preservation_candidate_ids=preservation_ids,
+                regression_watch_ids=regression_watch_ids,
                 interpretation=interpretation,
+                next_review_actions=next_actions,
             )
         )
 
@@ -211,6 +250,6 @@ def build_governance_pulse(payload: GovernancePulseInput) -> GovernancePulse:
         safe_conclusion=(
             "Adverse and improvement signals are parallel governance frontiers, not positive and negative points in a net score. "
             "A successful local outcome does not cancel unresolved harm elsewhere. Response activity is not counted as progress until an output/outcome/system improvement is observed. "
-            "A learning candidate identifies something worth studying; it does not establish that the cited intervention caused the improvement or will transfer safely to another context."
+            "Verified progress may justify preservation and learning review, but a learning candidate does not establish that the cited intervention caused the improvement or will transfer safely to another context."
         ),
     )
