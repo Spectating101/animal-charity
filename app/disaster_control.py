@@ -52,6 +52,7 @@ class DisasterNeed(BaseModel):
     valid_until: datetime | None = None
     people_affected: int | None = Field(default=None, ge=0)
     access_status: Literal["open", "constrained", "isolated", "unknown"] = "unknown"
+    capacity_status: Literal["adequate", "constrained", "insufficient", "unknown"] = "unknown"
     required_capabilities: list[str] = Field(default_factory=list)
     notes: str | None = None
 
@@ -227,6 +228,10 @@ def _inventory_complete_for_need(packet: ControlPlaneInteropPacket, need: Disast
 
 def _access_disruption_established(need: DisasterNeed) -> bool:
     return need.category == DisasterNeedCategory.access or need.access_status in {"constrained", "isolated"}
+
+
+def _observed_capacity_shortage(need: DisasterNeed) -> bool:
+    return need.capacity_status == "insufficient" and need.verification_status in {"corroborated", "verified"}
 
 
 def _structural_candidate(snapshot: DisasterSnapshot, need: DisasterNeed) -> bool:
@@ -472,6 +477,46 @@ def assess_disaster(snapshot: DisasterSnapshot) -> DisasterAssessment:
                         structural_candidate=False,
                         rationale=[
                             "The access failure is established, but absence from a partial or unknown capability inventory is not proof of resource scarcity."
+                        ],
+                    )
+                )
+            continue
+
+        if need.capacity_status == "insufficient":
+            if _observed_capacity_shortage(need):
+                findings.append(
+                    DisasterFinding(
+                        need_id=need.need_id,
+                        location_ref=need.location_ref,
+                        stage="capacity",
+                        problem_class=f"{need.category.value}_observed_capacity_shortage",
+                        priority=need.priority,
+                        recommended_action=(
+                            "Treat the capacity deficit as established condition evidence and route the smallest safe temporary or mutual-aid response through authorized coordination. "
+                            "Continue reconciling the wider inventory; this finding does not imply that all relevant capability is absent."
+                        ),
+                        evidence_refs=_evidence_refs(need),
+                        structural_candidate=structural,
+                        rationale=[
+                            "Current corroborated/verified condition evidence explicitly records capacity as insufficient, so the shortage does not depend on inferring absence from an incomplete inventory."
+                        ],
+                    )
+                )
+            else:
+                findings.append(
+                    DisasterFinding(
+                        need_id=need.need_id,
+                        location_ref=need.location_ref,
+                        stage="evidence",
+                        problem_class="reported_capacity_shortage_requires_verification",
+                        priority=need.priority,
+                        recommended_action=(
+                            "Verify the reported capacity insufficiency through an authorized operational source before treating it as an established shortage."
+                        ),
+                        evidence_refs=_evidence_refs(need),
+                        structural_candidate=False,
+                        rationale=[
+                            "A reported shortage is condition evidence worth escalating, but it is not yet strong enough for a consequential scarcity finding."
                         ],
                     )
                 )
