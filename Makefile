@@ -47,9 +47,10 @@ replay-smoke:
 	@python scripts/replay_public_good_case.py examples/replay_disaster_ruang_2024_04_18.json --score | python -c "import json,sys; d=json.load(sys.stdin); assert d['predicted_primary_stage']=='safety'; assert d['primary_stage_match'] is True"
 	@python scripts/replay_public_good_case.py examples/replay_disaster_cianjur_2022_11_27_adequate_service.json | python -c "import json,sys; d=json.load(sys.stdin); assert d['reference_hidden'] is True; assert d['assessment']['normalized_findings']==[]"
 	@python scripts/replay_public_good_case.py examples/replay_disaster_luwu_utara_2020_07_19_capacity.json --score | python -c "import json,sys; d=json.load(sys.stdin); assert d['predicted_primary_stage']=='capacity'; assert d['primary_stage_match'] is True"
+	@python scripts/replay_public_good_case.py examples/replay_disaster_krayan_2026_07_17_dependency.json --score | python -c "import json,sys; d=json.load(sys.stdin); assert d['predicted_primary_stage']=='access'; assert d['primary_stage_match'] is True"
 
 replay-corpus-smoke:
-	@python scripts/evaluate_replay_corpus.py config/research/disaster_replay_corpus.json | python -c "import json,sys; d=json.load(sys.stdin); assert d['case_count']==11; assert d['passed_count']==11; assert d['failed_count']==0; assert d['by_evidence_level']=={'R1': 11}"
+	@python scripts/evaluate_replay_corpus.py config/research/disaster_replay_corpus.json | python -c "import json,sys; d=json.load(sys.stdin); assert d['case_count']==12; assert d['passed_count']==12; assert d['failed_count']==0; assert d['by_evidence_level']=={'R1': 12}"
 
 interop-smoke:
 	@python scripts/build_control_plane_packet.py examples/interop_kalimantan_synthetic.json | python -c "import json,sys; d=json.load(sys.stdin); assert d['hazards'][0]['hazard_type']=='wildfire'; assert len(d['deployable_resources'])==1; assert len(d['resource_candidates_requiring_verification'])==1; assert d['command_contexts']"
