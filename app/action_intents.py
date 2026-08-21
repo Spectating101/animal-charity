@@ -129,7 +129,12 @@ def evaluate_wildfire_uas_intent(intent: ActionIntent, gates: GateState) -> Acti
     }
     missing = [name for name, value in gate_map.items() if not value]
     ready = not missing
-    status = ActionIntentStatus.authorized if ready else ActionIntentStatus.awaiting_operator_verification
+    if ready:
+        status = ActionIntentStatus.authorized
+    elif not gates.incident_command_authority:
+        status = ActionIntentStatus.awaiting_authority
+    else:
+        status = ActionIntentStatus.awaiting_operator_verification
     return ActionIntentEvaluation(
         intent=intent.model_copy(update={"status": status}),
         execution_ready=ready,
