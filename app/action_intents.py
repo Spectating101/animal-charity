@@ -91,6 +91,7 @@ def build_wildfire_uas_intent(
     priority: Literal["watch", "urgent", "critical"],
     evidence_refs: list[str],
     source_finding_class: str | None = None,
+    created_at: datetime | None = None,
     expires_at: datetime | None = None,
 ) -> ActionIntent:
     registry = _registry()
@@ -104,6 +105,7 @@ def build_wildfire_uas_intent(
         capability_class=spec["capability_class"],
         goal=spec["allowed_goal"],
         priority=priority,
+        created_at=created_at or utcnow(),
         expires_at=expires_at,
         evidence_refs=evidence_refs,
         required_authorization_gates=list(registry["hard_blocks"]),
