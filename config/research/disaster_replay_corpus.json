@@ -1,5 +1,5 @@
 {
-  "corpus_id": "disaster-public-r1-v3",
+  "corpus_id": "disaster-public-r1-v4",
   "cases": [
     {
       "case_id": "kubu-raya-karhutla-2026-08-07-public",
@@ -13,9 +13,7 @@
       "expected_command_context_present": false,
       "expected_resource_inventory_scope": "partial",
       "expected_service_registry_scope": "unknown",
-      "notes": [
-        "Partial public fire reporting must not become a scarcity claim or implied command authority."
-      ]
+      "notes": ["Partial public fire reporting must not become a scarcity claim or implied command authority."]
     },
     {
       "case_id": "ntt-earthquake-2026-08-15-early-public",
@@ -29,9 +27,7 @@
       "expected_command_context_present": false,
       "expected_resource_inventory_scope": "unknown",
       "expected_service_registry_scope": "unknown",
-      "notes": [
-        "Critical uncertainty must escalate without inventing a resource shortage."
-      ]
+      "notes": ["Critical uncertainty must escalate without inventing a resource shortage."]
     },
     {
       "case_id": "ntt-earthquake-2026-08-16-access-public",
@@ -45,9 +41,7 @@
       "expected_command_context_present": false,
       "expected_resource_inventory_scope": "unknown",
       "expected_service_registry_scope": "unknown",
-      "notes": [
-        "Known access failure must remain separate from unproven access-capability scarcity."
-      ]
+      "notes": ["Known access failure must remain separate from unproven access-capability scarcity."]
     },
     {
       "case_id": "ruang-eruption-2024-04-18-public",
@@ -61,9 +55,7 @@
       "expected_command_context_present": false,
       "expected_resource_inventory_scope": "unknown",
       "expected_service_registry_scope": "unknown",
-      "notes": [
-        "Ongoing critical evacuation should escalate while transport scarcity remains unproven."
-      ]
+      "notes": ["Ongoing critical evacuation should escalate while transport scarcity remains unproven."]
     },
     {
       "case_id": "lewotobi-eruption-2024-11-05-public",
@@ -77,9 +69,7 @@
       "expected_command_context_present": false,
       "expected_resource_inventory_scope": "partial",
       "expected_service_registry_scope": "unknown",
-      "notes": [
-        "Publicly reported evacuation trucks are candidate capability, not a live assignable resource."
-      ]
+      "notes": ["Publicly reported evacuation trucks are candidate capability, not a live assignable resource."]
     },
     {
       "case_id": "palu-airport-comms-2018-09-29-public",
@@ -93,9 +83,7 @@
       "expected_command_context_present": false,
       "expected_resource_inventory_scope": "unknown",
       "expected_service_registry_scope": "unknown",
-      "notes": [
-        "A confirmed communications outage does not prove which emergency communications capacity is absent."
-      ]
+      "notes": ["A confirmed communications outage does not prove which emergency communications capacity is absent."]
     },
     {
       "case_id": "sumbar-lahar-2024-05-14-access-public",
@@ -109,9 +97,7 @@
       "expected_command_context_present": false,
       "expected_resource_inventory_scope": "partial",
       "expected_service_registry_scope": "unknown",
-      "notes": [
-        "Heavy equipment reported in use must not be double-counted as spare operational capacity."
-      ]
+      "notes": ["Heavy equipment reported in use must not be double-counted as spare operational capacity."]
     },
     {
       "case_id": "bekasi-flood-hospital-2025-03-04-public",
@@ -125,9 +111,7 @@
       "expected_command_context_present": false,
       "expected_resource_inventory_scope": "unknown",
       "expected_service_registry_scope": "partial",
-      "notes": [
-        "Hospital flooding plus power loss is a critical service-continuity problem, not proof that alternate medical capacity is absent."
-      ]
+      "notes": ["Hospital flooding plus power loss is a critical service-continuity problem, not proof that alternate medical capacity is absent."]
     },
     {
       "case_id": "semeru-eruption-2021-12-05-access-public",
@@ -141,9 +125,7 @@
       "expected_command_context_present": false,
       "expected_resource_inventory_scope": "unknown",
       "expected_service_registry_scope": "unknown",
-      "notes": [
-        "A destroyed strategic bridge establishes access failure while alternative-access scarcity remains unknown."
-      ]
+      "notes": ["A destroyed strategic bridge establishes access failure while alternative-access scarcity remains unknown."]
     },
     {
       "case_id": "cianjur-gasol-2022-11-27-adequate-service",
@@ -158,8 +140,23 @@
       "expected_command_context_present": false,
       "expected_resource_inventory_scope": "unknown",
       "expected_service_registry_scope": "partial",
+      "notes": ["False-positive control: represented health, clean-water and basic-needs conditions were explicitly reported as met."]
+    },
+    {
+      "case_id": "luwu-utara-flood-2020-07-19-capacity-public",
+      "packet_path": "examples/replay_disaster_luwu_utara_2020_07_19_capacity.json",
+      "evidence_level": "R1",
+      "required_problem_classes": ["shelter_observed_capacity_shortage"],
+      "forbidden_problem_classes": ["capability_inventory_incomplete", "shelter_capacity_gap", "reported_capacity_shortage_requires_verification"],
+      "forbidden_stages": ["route"],
+      "required_data_gap_substrings": ["No current command/authority context"],
+      "max_resource_reservations": 0,
+      "expected_command_context_present": false,
+      "expected_resource_inventory_scope": "unknown",
+      "expected_service_registry_scope": "unknown",
       "notes": [
-        "False-positive control: represented health, clean-water and basic-needs conditions were explicitly reported as met."
+        "Direct corroborated condition evidence can establish an insufficient shelter capacity state without pretending the wider resource inventory is complete.",
+        "The finding must not reserve or dispatch a resource from public reporting."
       ]
     }
   ]
