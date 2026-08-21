@@ -26,6 +26,7 @@ class ReplayCorpusCaseSpec(BaseModel):
     expected_command_context_present: bool | None = None
     expected_resource_inventory_scope: InventoryCoverage | None = None
     expected_service_registry_scope: InventoryCoverage | None = None
+    expected_structural_candidate: bool | None = None
     notes: list[str] = Field(default_factory=list)
 
 
@@ -41,6 +42,7 @@ class ReplayCorpusCaseResult(BaseModel):
     domain: str
     predicted_primary_stage: str | None
     primary_stage_match: bool | None
+    predicted_structural_candidate: bool
     finding_count: int
     problem_classes: list[str]
     stages: list[str]
@@ -80,6 +82,11 @@ def evaluate_corpus(spec: ReplayCorpusSpec, root: str | Path) -> ReplayCorpusRes
         finding_count = len(findings)
         problem_classes = [finding.problem_class for finding in findings]
         stages = [finding.stage for finding in findings]
+        structural_candidate = (
+            score.predicted_structural_candidate
+            if score is not None
+            else any(finding.structural_candidate for finding in findings)
+        )
         domain_result = run.assessment.domain_result
         reservations = domain_result.get("proposed_reservations", [])
         reservation_count = len(reservations) if isinstance(reservations, list) else 0
@@ -153,6 +160,15 @@ def evaluate_corpus(spec: ReplayCorpusSpec, root: str | Path) -> ReplayCorpusRes
                 f"expected {case_spec.expected_service_registry_scope!r}, got {service_scope!r}"
             )
 
+        if (
+            case_spec.expected_structural_candidate is not None
+            and structural_candidate is not case_spec.expected_structural_candidate
+        ):
+            violations.append(
+                "structural-candidate expectation mismatch: "
+                f"expected {case_spec.expected_structural_candidate}, got {structural_candidate}"
+            )
+
         results.append(
             ReplayCorpusCaseResult(
                 case_id=case_spec.case_id,
@@ -163,6 +179,7 @@ def evaluate_corpus(spec: ReplayCorpusSpec, root: str | Path) -> ReplayCorpusRes
                     stages[0] if stages else None
                 ),
                 primary_stage_match=score.primary_stage_match if score is not None else None,
+                predicted_structural_candidate=structural_candidate,
                 finding_count=finding_count,
                 problem_classes=problem_classes,
                 stages=stages,
