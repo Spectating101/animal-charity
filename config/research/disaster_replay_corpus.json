@@ -1,5 +1,5 @@
 {
-  "corpus_id": "disaster-public-r1-v5",
+  "corpus_id": "disaster-public-r1-v6",
   "cases": [
     {
       "case_id": "kubu-raya-karhutla-2026-08-07-public",
@@ -174,6 +174,24 @@
       "notes": [
         "Official condition evidence establishes the upstream access-to-fuel-to-power dependency, so the controller should target the broken delivery edge rather than invent an independent power-capacity shortage.",
         "Unknown alternative transport or power capability remains unknown; the replay must not reserve or dispatch from public reporting."
+      ]
+    },
+    {
+      "case_id": "nunukan-access-2026-06-02-structural-public",
+      "packet_path": "examples/replay_disaster_nunukan_2026_06_02_structural_access.json",
+      "evidence_level": "R1",
+      "required_problem_classes": ["confirmed_access_disruption", "capability_inventory_incomplete"],
+      "forbidden_problem_classes": ["access_capacity_gap", "access_disruption_without_verified_access_capability", "isolated_need_without_verified_access_capability"],
+      "forbidden_stages": ["capacity"],
+      "required_data_gap_substrings": ["No current command/authority context"],
+      "max_resource_reservations": 0,
+      "expected_command_context_present": false,
+      "expected_resource_inventory_scope": "unknown",
+      "expected_service_registry_scope": "unknown",
+      "expected_structural_candidate": true,
+      "notes": [
+        "The structural unit is the regional Nunukan access network, not a specific bridge or road segment.",
+        "Three pre-cutoff access/infrastructure disruption episodes support mitigation/preparedness review; the July 2026 Krayan isolation remains hidden future evidence and cannot create the structural flag."
       ]
     }
   ]
