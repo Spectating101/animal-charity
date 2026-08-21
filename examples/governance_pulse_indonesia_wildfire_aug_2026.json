@@ -1,9 +1,9 @@
 {
-  "pulse_id": "indonesia-wildfire-2026-08-public-v1",
+  "pulse_id": "indonesia-wildfire-2026-08-public-v2",
   "period_start": "2026-08-01T00:00:00+07:00",
   "period_end": "2026-08-21T23:59:59+07:00",
   "coverage_status": "partial",
-  "selection_protocol": "Public-source audit sample using BNPB operational reporting plus Reuters national/context reporting, selected to test adverse state, response activity and verified local outcome lanes for August 2026 wildfire management.",
+  "selection_protocol": "Public-source audit sample using BNPB operational reporting plus Reuters national/context reporting, selected to test current adverse state, lagged context, response activity and verified local outcome lanes for August 2026 wildfire management.",
   "known_gaps": [
     "Not an exhaustive census of all August wildfire incidents or all local BPBD reports.",
     "Public reporting does not provide a complete live resource inventory or standardized containment-time denominator.",
@@ -17,6 +17,8 @@
       "geography": "Indonesia",
       "scope_level": "national",
       "observed_at": "2026-08-18T12:00:00+07:00",
+      "effective_period_start": "2026-07-01T00:00:00+07:00",
+      "effective_period_end": "2026-07-31T23:59:59+07:00",
       "source_ref": "https://www.reuters.com/business/environment/indonesia-wildfires-damage-nearly-95000-hectares-land-july-alone-minister-says-2026-08-18/",
       "direction": "adverse",
       "level": "system",
@@ -30,7 +32,7 @@
       "metric_value": 95000,
       "metric_unit": "hectares",
       "notes": [
-        "This is a national-scale adverse condition signal, not a claim about the cause of any individual fire."
+        "This report was published in August but describes a July condition period, so it is lagged risk/context rather than proof of the current August state."
       ]
     },
     {
@@ -40,6 +42,8 @@
       "geography": "Riau, South Sumatra, Jambi, West/Central/South Kalimantan",
       "scope_level": "multi_region",
       "observed_at": "2026-08-10T19:25:00+07:00",
+      "effective_period_start": "2026-08-01T00:00:00+07:00",
+      "effective_period_end": "2026-08-09T23:59:59+07:00",
       "source_ref": "https://www.bnpb.go.id/berita/kepala-bnpb-hadiri-rakor-penanganan-karhutla-pemerintah-perkuat-operasi-darat-hadapi-puncak-risiko-agustusseptember",
       "direction": "adverse",
       "level": "system",
@@ -52,6 +56,25 @@
       "metric_name": "burned_area_priority_provinces",
       "metric_value": 48889.69,
       "metric_unit": "hectares"
+    },
+    {
+      "signal_id": "kalimantan-hotspots-rising-current",
+      "domain": "disaster_response",
+      "topic": "wildfire_management",
+      "geography": "Kalimantan",
+      "scope_level": "multi_region",
+      "observed_at": "2026-08-21T18:00:00+07:00",
+      "effective_period_start": "2026-08-20T00:00:00+07:00",
+      "effective_period_end": "2026-08-21T18:00:00+07:00",
+      "source_ref": "https://www.reuters.com/business/environment/indonesia-prioritises-kalimantan-region-wildfire-hotspots-rise-2026-08-21/",
+      "direction": "adverse",
+      "level": "system",
+      "significance": "major",
+      "verification_status": "corroborated",
+      "condition_class": "current_hotspot_increase",
+      "summary": "Reuters reported that Indonesia's disaster agency was prioritizing Kalimantan after a recent rise in wildfire hotspots, with environmental and health concerns.",
+      "direction_basis": "A recent hotspot increase indicates worsening active-fire pressure in the current August operating period.",
+      "significance_basis": "The national disaster agency elevated Kalimantan response priority because of the hotspot rise and associated environmental/health risks."
     },
     {
       "signal_id": "kubu-raya-ground-air-response",
