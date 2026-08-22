@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Literal
 
 from pydantic import BaseModel, Field, model_validator
@@ -40,11 +41,18 @@ class RefineryCoordinationProjection(BaseModel):
     landscape_id: str
     refinery_case_id: str
     refinery_schema_version: str
+    as_of: datetime | None = None
     claim_boundary: str
     source_refs: list[str] = Field(default_factory=list)
     projection_authority: RefineryProjectionAuthority
     initiatives: list[PublicGoodInitiative] = Field(default_factory=list)
     resources: list[ResourceProgram] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def assessment_time_is_valid(self) -> "RefineryCoordinationProjection":
+        if self.as_of is not None and self.as_of.tzinfo is None:
+            raise ValueError("Refinery coordination projection as_of must be timezone-aware")
+        return self
 
 
 class RefineryCoordinationBridgePacket(BaseModel):
@@ -74,6 +82,7 @@ def assess_refinery_coordination_bridge(
 ) -> RefineryCoordinationBridgeAssessment:
     landscape = CoordinationLandscape(
         landscape_id=packet.projection.landscape_id,
+        as_of=packet.projection.as_of,
         initiatives=packet.projection.initiatives + packet.declared_initiatives,
         resources=packet.projection.resources,
     )
