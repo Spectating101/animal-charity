@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from app.disaster_safety import assess_disaster_payload
+from app.disaster_access import assess_disaster_payload
 
 
 def main() -> int:
