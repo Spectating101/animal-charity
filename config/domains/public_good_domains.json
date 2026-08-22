@@ -1,5 +1,5 @@
 {
-  "version": "2026-08-20.v2",
+  "version": "2026-08-23.v3",
   "shared_loop": [
     "establish condition",
     "identify bad-state transition",
@@ -50,7 +50,27 @@
         "recurrent-risk mitigation"
       ],
       "success_boundary": "dispatch or delivery is not humanitarian outcome; stabilization, service restoration, recovery and resilience require verified downstream state"
+    },
+    "public_good_coordination": {
+      "adapter": "app.coordination_control",
+      "constitution_ref": "config/missions/public_good_coordination.json",
+      "unit_of_concern": "evidenced initiative needs plus evidenced funding, CSR, technical, logistical and partnership resources",
+      "desired_state": "defensible resource connections with explicit eligibility, availability and authority boundaries",
+      "hard_gates": [
+        "thematic fit is not eligibility",
+        "program existence is not current application availability",
+        "reported-only resource facts cannot support consequential routing",
+        "human authority for applications, commitments, procurement and partnerships"
+      ],
+      "structural_examples": [
+        "initiative-resource network",
+        "funding landscape",
+        "CSR collaboration map",
+        "technical partner network",
+        "research and monitoring support graph"
+      ],
+      "success_boundary": "candidate matching or application submission is not funding, partnership, implementation, or public-good outcome without downstream evidence"
     }
   },
-  "non_transfer_rule": "Only the evidence-transition-access/integrity-intervention-authority-outcome architecture is shared. Animal-specific welfare, ownership, capture, return, population-control and veterinary rules must never be applied to human beneficiaries. Human rights, entitlement, consent/autonomy, privacy, procurement, audit, due-process and political-accountability rules must remain inside human-domain constitutions. Disaster urgency does not suspend those rights, convert the control plane into incident command, or authorize ranking people by economic value, social status, identity, predicted productivity or aid deservingness."
+  "non_transfer_rule": "Only the evidence-transition-access/integrity-intervention-authority-outcome architecture is shared. Animal-specific welfare, ownership, capture, return, population-control and veterinary rules must never be applied to human beneficiaries. Human rights, entitlement, consent/autonomy, privacy, procurement, audit, due-process and political-accountability rules must remain inside human-domain constitutions. Disaster urgency does not suspend those rights, convert the control plane into incident command, or authorize ranking people by economic value, social status, identity, predicted productivity or aid deservingness. Coordination matches do not transfer domain authority: a funder-project match cannot establish intervention effectiveness, procurement authority, entitlement, scientific validity, safety, or permission to act."
 }
