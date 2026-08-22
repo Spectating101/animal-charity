@@ -1,0 +1,130 @@
+{
+  "incident_id": "aceh-middle-corridor-recovery-2025-2026",
+  "as_of": "2025-12-31T23:59:00+07:00",
+  "phase": "recovery",
+  "metadata": {
+    "evidence_level": "R1-envelope-with-synthetic-movement-probes",
+    "synthetic_probe_boundary": "The access envelope is source-backed public evidence. movement_requests are synthetic adversarial probes and are not claims that these vehicles actually attempted the route.",
+    "claim_boundary": "The source establishes temporary functional access with vehicle/load and traffic-control constraints. It does not establish unrestricted access for unlisted vehicle classes, permanent safety, or absence of alternative routes. Heavy-rain closure is a separate safety-trigger concept and is not inferred active here."
+  },
+  "interoperability": {
+    "bundle_id": "aceh-middle-corridor-access-envelope-public",
+    "as_of": "2025-12-31T23:59:00+07:00",
+    "resource_inventory_scope": "unknown",
+    "service_registry_scope": "unknown",
+    "records": []
+  },
+  "needs": [
+    {
+      "need_id": "aceh-middle-corridor-functional-access",
+      "location_ref": "Batas Aceh Tengah/Gayo Lues-Blangkejeren-Batas Gayo Lues/Aceh Tenggara",
+      "category": "access",
+      "priority": "urgent",
+      "status": "met",
+      "source_ref": "https://www.hutamakarya.com/en/hutama-karya-tangani-pemulihan-akses-kutacane-takengon-mobilitas-warga-berangsur-pulih",
+      "verification_status": "corroborated",
+      "observed_at": "2025-12-31T23:59:00+07:00",
+      "access_status": "open",
+      "notes": "Hutama Karya reported the represented middle-corridor segments functional while explicitly describing the status as temporary/controlled rather than unrestricted."
+    }
+  ],
+  "access_envelopes": [
+    {
+      "envelope_id": "aceh-middle-corridor-dec31-envelope",
+      "need_id": "aceh-middle-corridor-functional-access",
+      "source_ref": "https://www.hutamakarya.com/en/hutama-karya-tangani-pemulihan-akses-kutacane-takengon-mobilitas-warga-berangsur-pulih",
+      "verification_status": "corroborated",
+      "observed_at": "2025-12-31T23:59:00+07:00",
+      "traffic_control": "controlled",
+      "notes": "Source says status is temporarily functional; normal operation is two-way but some points use alternating/open-close traffic control. Two- and four-wheel vehicles may pass. Six-wheel vehicles are limited to 10 tons under supervision. Fuel trucks are excepted up to 5,000 liters. Heavy-rain temporary closure remains a separate safety gate.",
+      "rules": [
+        {
+          "rule_id": "motorcycle-public-rule",
+          "vehicle_class": "motorcycle",
+          "effect": "allow"
+        },
+        {
+          "rule_id": "four-wheel-public-rule",
+          "vehicle_class": "four_wheel",
+          "effect": "allow"
+        },
+        {
+          "rule_id": "six-wheel-10t-public-rule",
+          "vehicle_class": "six_wheel",
+          "effect": "conditional_allow",
+          "max_gross_weight_tons": 10,
+          "conditions": [
+            "six-wheel movement is subject to supervision",
+            "local alternating/open-close traffic control remains binding"
+          ]
+        },
+        {
+          "rule_id": "fuel-tanker-5000l-public-exception",
+          "vehicle_class": "fuel_tanker",
+          "effect": "conditional_allow",
+          "max_fuel_volume_liters": 5000,
+          "conditions": [
+            "fuel-truck exception is bounded to the source-stated maximum fuel volume",
+            "local traffic and safety controls remain binding"
+          ]
+        }
+      ]
+    }
+  ],
+  "movement_requests": [
+    {
+      "movement_id": "probe-motorcycle",
+      "need_id": "aceh-middle-corridor-functional-access",
+      "vehicle_class": "motorcycle",
+      "required_for_need": false,
+      "notes": "synthetic probe"
+    },
+    {
+      "movement_id": "probe-four-wheel",
+      "need_id": "aceh-middle-corridor-functional-access",
+      "vehicle_class": "four_wheel",
+      "required_for_need": false,
+      "notes": "synthetic probe"
+    },
+    {
+      "movement_id": "probe-six-wheel-9t",
+      "need_id": "aceh-middle-corridor-functional-access",
+      "vehicle_class": "six_wheel",
+      "gross_weight_tons": 9,
+      "required_for_need": false,
+      "notes": "synthetic probe below stated limit"
+    },
+    {
+      "movement_id": "probe-six-wheel-12t",
+      "need_id": "aceh-middle-corridor-functional-access",
+      "vehicle_class": "six_wheel",
+      "gross_weight_tons": 12,
+      "required_for_need": false,
+      "notes": "synthetic probe above stated limit"
+    },
+    {
+      "movement_id": "probe-fuel-5000l",
+      "need_id": "aceh-middle-corridor-functional-access",
+      "vehicle_class": "fuel_tanker",
+      "fuel_volume_liters": 5000,
+      "required_for_need": false,
+      "notes": "synthetic probe at stated exception limit"
+    },
+    {
+      "movement_id": "probe-fuel-6000l",
+      "need_id": "aceh-middle-corridor-functional-access",
+      "vehicle_class": "fuel_tanker",
+      "fuel_volume_liters": 6000,
+      "required_for_need": false,
+      "notes": "synthetic probe above stated exception limit"
+    },
+    {
+      "movement_id": "probe-eight-wheel-unlisted",
+      "need_id": "aceh-middle-corridor-functional-access",
+      "vehicle_class": "eight_wheel",
+      "gross_weight_tons": 8,
+      "required_for_need": false,
+      "notes": "synthetic probe intentionally outside source-stated vehicle classes"
+    }
+  ]
+}
