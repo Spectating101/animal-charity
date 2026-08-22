@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Literal
 
 from pydantic import BaseModel, Field, model_validator
@@ -49,6 +50,9 @@ class ResourceProgram(BaseModel):
     themes: list[str] = Field(default_factory=list)
     eligible_actor_types: list[str] = Field(default_factory=list)
     application_status: ApplicationStatus = "unknown"
+    application_status_observed_at: datetime | None = None
+    application_deadline: datetime | None = None
+    application_status_conflict: bool = False
     min_amount: float | None = Field(default=None, ge=0)
     max_amount: float | None = Field(default=None, gt=0)
     currency: str | None = None
@@ -57,25 +61,34 @@ class ResourceProgram(BaseModel):
     notes: str | None = None
 
     @model_validator(mode="after")
-    def amount_range_is_valid(self) -> "ResourceProgram":
+    def resource_contract_is_valid(self) -> "ResourceProgram":
         if self.min_amount is not None and self.max_amount is not None and self.min_amount > self.max_amount:
             raise ValueError("resource min_amount cannot exceed max_amount")
+        for name, value in (
+            ("application_status_observed_at", self.application_status_observed_at),
+            ("application_deadline", self.application_deadline),
+        ):
+            if value is not None and value.tzinfo is None:
+                raise ValueError(f"resource {name} must be timezone-aware")
         return self
 
 
 class CoordinationLandscape(BaseModel):
     landscape_id: str
+    as_of: datetime | None = None
     initiatives: list[PublicGoodInitiative] = Field(default_factory=list)
     resources: list[ResourceProgram] = Field(default_factory=list)
 
     @model_validator(mode="after")
-    def ids_are_unique(self) -> "CoordinationLandscape":
+    def landscape_contract_is_valid(self) -> "CoordinationLandscape":
         initiative_ids = [item.initiative_id for item in self.initiatives]
         resource_ids = [item.resource_id for item in self.resources]
         if len(initiative_ids) != len(set(initiative_ids)):
             raise ValueError("initiative_id values must be unique")
         if len(resource_ids) != len(set(resource_ids)):
             raise ValueError("resource_id values must be unique")
+        if self.as_of is not None and self.as_of.tzinfo is None:
+            raise ValueError("coordination landscape as_of must be timezone-aware")
         return self
 
 
@@ -125,7 +138,64 @@ def _overlap(left: list[str], right: list[str]) -> set[str]:
     return {item.casefold() for item in left}.intersection(item.casefold() for item in right)
 
 
-def _evaluate(initiative: PublicGoodInitiative, need: CoordinationNeed, resource: ResourceProgram) -> CoordinationMatch:
+def _evaluate_application_status(
+    resource: ResourceProgram,
+    as_of: datetime | None,
+    *,
+    matched: list[str],
+    unresolved: list[str],
+    blocking: list[str],
+    reasons: list[str],
+) -> None:
+    deadline_passed = (
+        as_of is not None
+        and resource.application_deadline is not None
+        and resource.application_deadline < as_of
+    )
+
+    if resource.application_status == "closed":
+        blocking.append("application_status")
+        reasons.append("The evidenced call/program access path is closed; thematic fit does not make it currently actionable.")
+    elif deadline_passed:
+        blocking.append("application_deadline")
+        reasons.append(
+            f"The evidenced application deadline ({resource.application_deadline.isoformat()}) is before the assessment time; an 'open' label cannot override an expired deadline."
+        )
+    elif resource.application_status == "open":
+        if resource.application_status_conflict:
+            unresolved.append("application_status_conflict")
+            reasons.append("The source contains conflicting application-status evidence; do not treat the opportunity as open until the conflict is resolved.")
+        elif as_of is not None and resource.application_status_observed_at is None:
+            unresolved.append("application_status_freshness")
+            reasons.append("An open-call claim lacks a timestamped status observation at this time-indexed assessment.")
+        elif (
+            as_of is not None
+            and resource.application_status_observed_at is not None
+            and resource.application_status_observed_at > as_of
+        ):
+            unresolved.append("application_status_hindsight")
+            reasons.append("The open-call status observation occurs after the assessment timestamp and cannot be used as contemporaneous evidence.")
+        else:
+            matched.append("application_status")
+    elif resource.application_status == "not_public":
+        unresolved.append("application_status")
+        reasons.append("The program exists, but the source does not establish a public application path.")
+    else:
+        unresolved.append("application_status")
+        reasons.append("Current application/access status is unknown.")
+
+    if resource.application_status_conflict and "application_status_conflict" not in unresolved:
+        unresolved.append("application_status_conflict")
+        reasons.append("The source contains conflicting application-status evidence that must be resolved before consequential routing.")
+
+
+def _evaluate(
+    initiative: PublicGoodInitiative,
+    need: CoordinationNeed,
+    resource: ResourceProgram,
+    *,
+    as_of: datetime | None = None,
+) -> CoordinationMatch:
     matched: list[str] = []
     unresolved: list[str] = []
     blocking: list[str] = []
@@ -183,17 +253,14 @@ def _evaluate(initiative: PublicGoodInitiative, need: CoordinationNeed, resource
             unresolved.append("amount")
             reasons.append("Resource amount range is not established.")
 
-    if resource.application_status == "closed":
-        blocking.append("application_status")
-        reasons.append("The evidenced call/program access path is closed; thematic fit does not make it currently actionable.")
-    elif resource.application_status == "open":
-        matched.append("application_status")
-    elif resource.application_status == "not_public":
-        unresolved.append("application_status")
-        reasons.append("The program exists, but the source does not establish a public application path.")
-    else:
-        unresolved.append("application_status")
-        reasons.append("Current application/access status is unknown.")
+    _evaluate_application_status(
+        resource,
+        as_of,
+        matched=matched,
+        unresolved=unresolved,
+        blocking=blocking,
+        reasons=reasons,
+    )
 
     if not _strong(initiative.verification_status):
         unresolved.append("initiative_verification")
@@ -230,7 +297,7 @@ def assess_coordination_landscape(landscape: CoordinationLandscape) -> Coordinat
     for initiative in landscape.initiatives:
         for need in initiative.needs:
             for resource in landscape.resources:
-                match = _evaluate(initiative, need, resource)
+                match = _evaluate(initiative, need, resource, as_of=landscape.as_of)
                 matches.append(match)
                 if match.status == "qualified_candidate":
                     findings.append(
@@ -259,7 +326,7 @@ def assess_coordination_landscape(landscape: CoordinationLandscape) -> Coordinat
                             problem_class="resource_match_requires_verification",
                             priority=need.priority,
                             recommended_action=(
-                                "Verify the unresolved eligibility, availability, amount, geography, or evidence dimensions before treating this as an actionable funding/resource opportunity."
+                                "Verify the unresolved eligibility, availability, deadline/freshness, amount, geography, or evidence dimensions before treating this as an actionable funding/resource opportunity."
                             ),
                             evidence_refs=match.evidence_refs,
                             rationale=match.reasons,
