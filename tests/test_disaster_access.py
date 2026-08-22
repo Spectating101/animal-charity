@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import json
 import unittest
 from datetime import datetime, timezone
+from pathlib import Path
 
 from pydantic import ValidationError
 
@@ -19,6 +21,7 @@ from app.interoperability import ExternalRecord, InteroperabilityBundle
 
 
 AS_OF = datetime(2026, 1, 1, 8, 0, tzinfo=timezone.utc)
+ROOT = Path(__file__).resolve().parents[1]
 
 
 class DisasterAccessEnvelopeTests(unittest.TestCase):
@@ -209,6 +212,26 @@ class DisasterAccessEnvelopeTests(unittest.TestCase):
         self.assertEqual(result.findings[0].problem_class, "operational_safety_constraint_triggered")
         self.assertFalse(any(f.stage == "route" for f in result.findings))
         self.assertEqual(result.proposed_reservations, [])
+
+    def test_source_backed_aceh_envelope_is_not_flat_open(self):
+        payload = json.loads(
+            (ROOT / "examples" / "disaster_aceh_access_envelope_2025_12_31.json").read_text(encoding="utf-8")
+        )
+        result = assess_disaster_payload(payload)
+        statuses = {item.movement_id: item.status for item in result.movement_admissibility}
+
+        self.assertEqual(statuses["probe-motorcycle"], "conditionally_admissible")
+        self.assertEqual(statuses["probe-four-wheel"], "conditionally_admissible")
+        self.assertEqual(statuses["probe-six-wheel-9t"], "conditionally_admissible")
+        self.assertEqual(statuses["probe-six-wheel-12t"], "inadmissible")
+        self.assertEqual(statuses["probe-fuel-5000l"], "conditionally_admissible")
+        self.assertEqual(statuses["probe-fuel-6000l"], "inadmissible")
+        self.assertEqual(statuses["probe-eight-wheel-unlisted"], "requires_verification")
+
+        classes = [finding.problem_class for finding in result.findings]
+        self.assertIn("conditional_movement_admissibility", classes)
+        self.assertIn("movement_not_admissible_under_access_envelope", classes)
+        self.assertIn("movement_specific_access_requires_verification", classes)
 
     def test_duplicate_vehicle_class_rules_are_rejected(self):
         with self.assertRaises(ValidationError):
