@@ -1,0 +1,15 @@
+{
+  "mission": "public_good_coordination",
+  "purpose": "Connect evidenced public-good initiatives and unmet needs with evidenced funding, CSR, technical, logistical and partnership resources without confusing thematic fit with eligibility or availability.",
+  "hard_rules": [
+    "thematic_fit_is_not_eligibility",
+    "eligibility_is_not_application_readiness",
+    "program_exists_is_not_open_call",
+    "qualified_candidate_is_not_award_or_commitment",
+    "missing_eligibility_or_application_path_requires_verification",
+    "closed_call_cannot_be_routed_as_current_opportunity",
+    "reported_only_resource_cannot_support_consequential_routing",
+    "human_authority_required_for_application_partnership_procurement_or_commitment"
+  ],
+  "claim_boundary": "The coordination layer may identify and rank evidence-backed candidate connections. It must not represent a grant, CSR relationship, procurement route, partnership, donation, investment, award, or implementation outcome as secured unless downstream evidence establishes it."
+}
