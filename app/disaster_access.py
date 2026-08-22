@@ -158,20 +158,18 @@ def _evaluate_movement(
     movement: DisasterMovementRequest,
 ) -> MovementAdmissibility:
     need = next(need for need in snapshot.needs if need.need_id == movement.need_id)
-    safety_blocked = any(
-        finding.need_id == need.need_id
-        and finding.problem_class == "operational_safety_constraint_triggered"
-        for finding in assessment.findings
-    )
+    safety_findings = [finding for finding in assessment.findings if finding.need_id == need.need_id]
+    safety_classes = {finding.problem_class for finding in safety_findings}
+    safety_refs = _dedupe([ref for finding in safety_findings for ref in finding.evidence_refs])
 
-    if safety_blocked:
+    if "operational_safety_constraint_triggered" in safety_classes:
         return MovementAdmissibility(
             movement_id=movement.movement_id,
             need_id=movement.need_id,
             vehicle_class=movement.vehicle_class,
             status="inadmissible",
             envelope_id=envelope.envelope_id if envelope else None,
-            evidence_refs=_dedupe([need.source_ref, envelope.source_ref if envelope else ""]),
+            evidence_refs=_dedupe([need.source_ref, envelope.source_ref if envelope else ""] + safety_refs),
             reasons=["An active verified safety gate already suspends operational use for this need."],
         )
 
@@ -182,9 +180,28 @@ def _evaluate_movement(
             vehicle_class=movement.vehicle_class,
             status="inadmissible",
             envelope_id=envelope.envelope_id if envelope else None,
-            evidence_refs=_dedupe([need.source_ref, envelope.source_ref if envelope else ""]),
+            evidence_refs=_dedupe([need.source_ref, envelope.source_ref if envelope else ""] + safety_refs),
             reasons=["The current need observation explicitly marks access as isolated."],
         )
+
+    unresolved_safety = safety_classes.intersection(
+        {"safety_trigger_state_requires_monitoring", "reported_safety_constraint_requires_verification"}
+    )
+    if unresolved_safety:
+        return MovementAdmissibility(
+            movement_id=movement.movement_id,
+            need_id=movement.need_id,
+            vehicle_class=movement.vehicle_class,
+            status="requires_verification",
+            envelope_id=envelope.envelope_id if envelope else None,
+            evidence_refs=_dedupe([need.source_ref, envelope.source_ref if envelope else ""] + safety_refs),
+            reasons=[
+                "Movement-specific use cannot be treated as admissible while a material safety trigger/rule remains unresolved.",
+                "The generic route may remain a candidate, but execution requires current safety verification.",
+            ],
+        )
+
+    conditional_safety = "conditional_operational_safety_constraint" in safety_classes
 
     if envelope is None:
         return MovementAdmissibility(
@@ -192,11 +209,11 @@ def _evaluate_movement(
             need_id=movement.need_id,
             vehicle_class=movement.vehicle_class,
             status="requires_verification",
-            evidence_refs=[need.source_ref],
+            evidence_refs=_dedupe([need.source_ref] + safety_refs),
             reasons=["No movement-specific access envelope is supplied for the represented route/need."],
         )
 
-    evidence_refs = _dedupe([need.source_ref, envelope.source_ref])
+    evidence_refs = _dedupe([need.source_ref, envelope.source_ref] + safety_refs)
     if not _fresh(envelope, snapshot.as_of):
         return MovementAdmissibility(
             movement_id=movement.movement_id,
@@ -284,6 +301,16 @@ def _evaluate_movement(
     if status == "admissible" and envelope.traffic_control == "unknown":
         status = "requires_verification"
         reasons.append("Current traffic-control state is unknown; movement-specific use requires verification.")
+
+    if status == "admissible" and conditional_safety:
+        status = "conditionally_admissible"
+        reasons.append(
+            "A verified safety rule exists with its trigger currently inactive; movement remains conditional on that trigger staying inactive."
+        )
+    elif status == "conditionally_admissible" and conditional_safety:
+        reasons.append(
+            "The access rule is conditional and a verified safety trigger must also remain inactive."
+        )
 
     reasons.extend(rule.conditions)
     return MovementAdmissibility(
