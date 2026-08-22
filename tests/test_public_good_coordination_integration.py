@@ -37,7 +37,7 @@ class PublicGoodCoordinationIntegrationTests(unittest.TestCase):
         classes = [finding.problem_class for finding in result.normalized_findings]
         self.assertIn("resource_match_requires_verification", classes)
         self.assertNotIn("qualified_resource_match_candidate", classes)
-        self.assertIn("does not transfer domain authority", result.non_transfer_rule.lower())
+        self.assertIn("coordination matches do not transfer domain authority", result.non_transfer_rule.lower())
 
 
 if __name__ == "__main__":
