@@ -221,11 +221,11 @@ def assess_public_good_case(case: PublicGoodCase) -> PublicGoodAssessment:
         data_gaps = list(domain_result.data_gaps)
         safe_conclusion = domain_result.safe_conclusion
     elif case.domain == PublicGoodDomain.disaster_response:
-        # Safety constraints are applied after dependency resolution and the
-        # stable disaster router. This lets a verified active safety rule
-        # invalidate an otherwise valid route without conflating safety with
-        # resource scarcity.
-        from app.disaster_safety import assess_disaster_payload
+        # Access-envelope reasoning sits above dependency resolution and the
+        # safety overlay. A route can therefore remain generically open while
+        # a specific vehicle/load is inadmissible, and an active safety gate
+        # still outranks vehicle compatibility.
+        from app.disaster_access import assess_disaster_payload
 
         domain_result = assess_disaster_payload(case.payload)
         normalized = _normalize_disaster(domain_result)
