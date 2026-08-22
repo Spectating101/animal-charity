@@ -1,0 +1,43 @@
+{
+  "landscape_id": "gfcr-stale-open-conflict-2026-08-23",
+  "as_of": "2026-08-23T03:15:00+08:00",
+  "initiatives": [
+    {
+      "initiative_id": "synthetic-vietnam-coral-ngo-probe",
+      "name": "Synthetic Viet Nam coral NGO probe",
+      "actor_type": "ngo",
+      "geographies": ["Viet Nam"],
+      "themes": ["coral_conservation"],
+      "needs": [
+        {
+          "need_id": "coral-program-funding",
+          "kind": "funding",
+          "priority": "urgent",
+          "notes": "Synthetic need used only to falsify stale opportunity status; not a historical funding applicant."
+        }
+      ],
+      "source_ref": "synthetic:vietnam-coral-ngo-probe",
+      "verification_status": "verified",
+      "evidence_mode": "synthetic_probe"
+    }
+  ],
+  "resources": [
+    {
+      "resource_id": "gfcr-round-ii-stale-page",
+      "name": "GFCR Open Call: Expressions of Interest for Round II",
+      "provider": "Global Fund for Coral Reefs",
+      "resource_kind": "grant",
+      "support_kinds": ["funding"],
+      "geographies": ["Viet Nam"],
+      "themes": ["coral_conservation"],
+      "eligible_actor_types": ["ngo"],
+      "application_status": "open",
+      "application_status_observed_at": "2026-08-23T03:15:00+08:00",
+      "application_deadline": "2021-11-05T23:59:59+00:00",
+      "application_status_conflict": true,
+      "source_ref": "https://globalfundcoralreefs.org/reef-plus/opportunities/gfcr-open-call-expressions-of-interest-for-round-ii/",
+      "verification_status": "verified",
+      "notes": "The currently served page contains 'now open' language, but the same page states Submission Deadline 5 November 2021 and Status Expired. The open label is therefore not actionable current evidence."
+    }
+  ]
+}
