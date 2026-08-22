@@ -9,6 +9,7 @@ from typing import Any, Literal
 from pydantic import BaseModel, Field, model_validator
 
 from app.animal_welfare_control import AreaControlAssessment, WelfareLandscape, assess_area
+from app.coordination_control import CoordinationAssessment, CoordinationLandscape, assess_coordination_landscape
 from app.mbg_case_study import MBGCaseAssessment, MBGCaseSnapshot, assess_mbg_case
 
 
@@ -24,6 +25,7 @@ class PublicGoodDomain(str, Enum):
     animal_welfare = "animal_welfare"
     mbg_public_nutrition = "mbg_public_nutrition"
     disaster_response = "disaster_response"
+    public_good_coordination = "public_good_coordination"
 
 
 class EvidenceManifestEntry(BaseModel):
@@ -188,6 +190,27 @@ def _normalize_disaster(result: Any) -> list[NormalizedFinding]:
     ]
 
 
+def _normalize_coordination(result: CoordinationAssessment) -> list[NormalizedFinding]:
+    return [
+        NormalizedFinding(
+            stage=finding.stage,
+            problem_class=finding.problem_class,
+            priority=finding.priority,
+            recommended_action=finding.recommended_action,
+            evidence_refs=finding.evidence_refs,
+            human_authority_required=finding.human_authority_required,
+            structural_candidate=finding.structural_candidate,
+            domain_detail={
+                "initiative_id": finding.initiative_id,
+                "need_id": finding.need_id,
+                "resource_id": finding.resource_id,
+                "rationale": finding.rationale,
+            },
+        )
+        for finding in result.findings
+    ]
+
+
 def _manifest_summary(case: PublicGoodCase, normalized: list[NormalizedFinding]) -> EvidenceManifestSummary:
     cited = sorted({ref for finding in normalized for ref in finding.evidence_refs if ref})
     if not case.evidence_manifest:
@@ -229,6 +252,12 @@ def assess_public_good_case(case: PublicGoodCase) -> PublicGoodAssessment:
 
         domain_result = assess_disaster_payload(case.payload)
         normalized = _normalize_disaster(domain_result)
+        data_gaps = list(domain_result.data_gaps)
+        safe_conclusion = domain_result.safe_conclusion
+    elif case.domain == PublicGoodDomain.public_good_coordination:
+        payload = CoordinationLandscape.model_validate(case.payload)
+        domain_result = assess_coordination_landscape(payload)
+        normalized = _normalize_coordination(domain_result)
         data_gaps = list(domain_result.data_gaps)
         safe_conclusion = domain_result.safe_conclusion
     else:  # defensive; enum validation should prevent this path.
