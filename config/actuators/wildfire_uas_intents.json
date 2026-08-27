@@ -1,0 +1,54 @@
+{
+  "version": "2026-08-21.v0",
+  "actuator_family": "wildfire_uas",
+  "purpose": "Define bounded wildfire UAS capability intents that may be proposed by the control plane but require external incident-command and aviation/operator authorization before execution.",
+  "intent_types": {
+    "wildfire.observe_hotspot": {
+      "capability_class": "aerial_observation",
+      "allowed_goal": "Obtain current visual/thermal condition evidence for a suspected or active fire area.",
+      "execution_authority": "authorized incident command and UAS operator",
+      "outcome_required": "timestamped observation evidence with source/provenance and uncertainty"
+    },
+    "wildfire.map_perimeter": {
+      "capability_class": "aerial_mapping",
+      "allowed_goal": "Improve current fire-perimeter or inaccessible-area situational awareness.",
+      "execution_authority": "authorized incident command and UAS operator",
+      "outcome_required": "timestamped mapped observation accepted as current operational evidence by competent authority"
+    },
+    "wildfire.verify_access_edge": {
+      "capability_class": "aerial_reconnaissance",
+      "allowed_goal": "Verify whether a ground-access edge is blocked, unsafe or passable without inferring engineering clearance.",
+      "execution_authority": "authorized incident command and UAS operator",
+      "outcome_required": "timestamped access observation; engineering/road clearance remains human-only"
+    },
+    "wildfire.request_suppression_support": {
+      "capability_class": "uas_suppression_support",
+      "allowed_goal": "Request evaluation of an appropriate authorized UAS suppression-support capability for a verified unmet fire-suppression need.",
+      "execution_authority": "authorized fire incident command and qualified UAS operator",
+      "outcome_required": "verified change in fire/suppression state; mission acceptance or payload release alone is not success"
+    }
+  },
+  "hard_blocks": [
+    "no current incident-command authority context",
+    "airspace or operator authorization not verified",
+    "platform availability or capability not verified through live operations",
+    "crewed-aircraft or emergency-operation deconfliction unresolved",
+    "site-specific aviation or fire-safety review not completed",
+    "requested mission would require prohibited autonomous ignition/incendiary/hazardous-payload decision"
+  ],
+  "controller_may_emit": [
+    "proposed action intent",
+    "reason and evidence references",
+    "required capability class",
+    "priority and expiry",
+    "required authorization gates",
+    "requested outcome evidence"
+  ],
+  "controller_must_not_emit": [
+    "flight path or navigation command",
+    "altitude speed heading or drop-point command",
+    "launch land arm or payload-release command",
+    "autonomous fire-suppression tactic",
+    "incendiary or ignition payload instruction"
+  ]
+}

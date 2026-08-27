@@ -1,0 +1,7 @@
+{
+  "incident_command_authority": false,
+  "airspace_operator_authorization": false,
+  "live_platform_verification": false,
+  "aviation_deconfliction": false,
+  "site_safety_review": false
+}
