@@ -1,0 +1,96 @@
+{
+  "replay_id": "r1-luwu-utara-flood-2020-07-19-capacity-public",
+  "decision_cutoff": "2020-07-19T07:49:00+07:00",
+  "require_evidence_timestamps": true,
+  "metadata": {
+    "evidence_level": "R1_retrospective_public_replay",
+    "real_case": true,
+    "location": "North Luwu, South Sulawesi, Indonesia",
+    "failure_mode": "directly observed capacity insufficiency without exhaustive inventory"
+  },
+  "case": {
+    "case_id": "luwu-utara-flood-2020-07-19-capacity-public-cutoff",
+    "domain": "disaster_response",
+    "metadata": {
+      "source_ref": "https://bnpb.go.id/berita/Pasokan%20Air%20Bersih%20Jadi%20Kebutuhan%20Utama%20Pengungsi%20Bencana%20Luwu%20Utara"
+    },
+    "evidence_manifest": [
+      {
+        "source_ref": "https://bnpb.go.id/berita/Pasokan%20Air%20Bersih%20Jadi%20Kebutuhan%20Utama%20Pengungsi%20Bencana%20Luwu%20Utara",
+        "source_kind": "official",
+        "verification_status": "corroborated",
+        "sensitivity": "public",
+        "observed_at": "2020-07-19T07:49:00+07:00",
+        "notes": "Official BNPB public report quoting the North Luwu BPBD secretary on current evacuation-site needs. It is condition evidence, not an exhaustive live resource inventory."
+      }
+    ],
+    "payload": {
+      "incident_id": "real-luwu-utara-flash-flood-2020-07",
+      "as_of": "2020-07-19T07:49:00+07:00",
+      "phase": "response",
+      "metadata": {
+        "real_case": "true",
+        "public_replay": "true",
+        "claim_boundary": "A local emergency authority directly stated that evacuation tents were still needed and buildings were being used to anticipate tent shortage. This establishes an observed shelter-capacity deficit without claiming that every possible shelter resource is absent."
+      },
+      "interoperability": {
+        "bundle_id": "real-luwu-utara-public-interop-2020-07-19",
+        "as_of": "2020-07-19T07:49:00+07:00",
+        "resource_inventory_scope": "unknown",
+        "service_registry_scope": "unknown",
+        "metadata": {
+          "source_scope": "single BNPB official field-needs report",
+          "not_operational_inventory": true
+        },
+        "records": [
+          {
+            "record_id": "bnpb-luwu-utara-flood-context-jul19",
+            "system_id": "bnpb_public_reporting",
+            "integration_role": "evidence_source",
+            "kind": "hazard_observation",
+            "source_ref": "https://bnpb.go.id/berita/Pasokan%20Air%20Bersih%20Jadi%20Kebutuhan%20Utama%20Pengungsi%20Bencana%20Luwu%20Utara",
+            "source_kind": "official",
+            "observed_at": "2020-07-19T07:49:00+07:00",
+            "verification_status": "corroborated",
+            "sensitivity": "public",
+            "jurisdiction": "North Luwu, South Sulawesi, Indonesia",
+            "attributes": {
+              "hazard_type": "flash_flood",
+              "location_ref": "North Luwu evacuation areas, Indonesia",
+              "severity": "major"
+            }
+          }
+        ]
+      },
+      "needs": [
+        {
+          "need_id": "luwu-utara-evacuation-shelter-jul19",
+          "location_ref": "North Luwu evacuation sites, South Sulawesi, Indonesia",
+          "category": "shelter",
+          "priority": "urgent",
+          "status": "unmet",
+          "source_ref": "https://bnpb.go.id/berita/Pasokan%20Air%20Bersih%20Jadi%20Kebutuhan%20Utama%20Pengungsi%20Bencana%20Luwu%20Utara",
+          "verification_status": "corroborated",
+          "observed_at": "2020-07-19T07:49:00+07:00",
+          "access_status": "open",
+          "capacity_status": "insufficient",
+          "required_capabilities": ["emergency_shelter"],
+          "notes": "North Luwu BPBD said evacuation tents were still needed and affected residents were using buildings to anticipate a tent shortage."
+        }
+      ],
+      "recurrence_signals": []
+    }
+  },
+  "reference": {
+    "expected_primary_stages": ["capacity"],
+    "historical_action": "Emergency shelter and basic-needs support continued while more than fourteen thousand people remained displaced.",
+    "historical_outcome_summary": "BNPB's 22 July update still recorded 14,483 displaced people and continuing emergency operations. The replay tests recognition of the contemporaneously declared shelter-capacity deficit, not whether a particular later tent delivery caused the eventual outcome.",
+    "reference_refs": [
+      "https://bnpb.go.id/berita/-update-38-md-dan-10-lainnya-hilang-saat-banjir-bandang-terjang-luwu-utara"
+    ],
+    "notes": [
+      "Later BNPB evidence is hidden from the decision payload.",
+      "The capacity finding is supported by direct condition evidence from the local emergency authority; it must not be derived from missing inventory entries."
+    ]
+  }
+}

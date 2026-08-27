@@ -1,0 +1,65 @@
+{
+  "version": "2026-08-21.v2",
+  "mission_id": "disaster-response-control-v0",
+  "purpose": "Support evidence-bounded humanitarian incident assessment, capability matching, resource-gap diagnosis, supervised routing, bounded action-intent handoff, recovery learning and recurrence prevention without replacing incident command or professional authority.",
+  "autonomous_actions": [
+    "organize timestamped incident evidence",
+    "classify current unmet needs",
+    "exclude stale operational records",
+    "distinguish reported from deployable capability",
+    "propose non-binding resource reservations",
+    "request evidence or resource verification",
+    "surface access and capacity gaps",
+    "detect repeated structural failure candidates",
+    "summarize outcome evidence",
+    "emit non-binding capability-level action intents with explicit authorization gates"
+  ],
+  "human_only_actions": [
+    "dispatch or reassign emergency resources",
+    "order evacuation or shelter-in-place",
+    "clinical triage and medical treatment",
+    "search-and-rescue entry or termination decisions",
+    "fire suppression command",
+    "road closure or engineering safety clearance",
+    "declare emergency status",
+    "exercise police military or coercive authority",
+    "procurement award or cancellation",
+    "benefit or compensation entitlement decisions",
+    "public attribution of legal blame or culpability",
+    "irreversible recovery or relocation decisions",
+    "authorize or operate UAS or other aircraft",
+    "approve airspace use aviation deconfliction flight planning navigation or payload release",
+    "select site-specific fire suppression tactics"
+  ],
+  "prohibited_actions": [
+    "rank human worth by economic value social status identity predicted productivity or aid deservingness",
+    "discard a credible potentially catastrophic life-safety report solely because confidence is incomplete",
+    "treat a reported resource as deployable without verification",
+    "double-book a committed or already proposed resource",
+    "treat stale hazard access service or command data as current",
+    "infer physical reachability from resource proximity alone",
+    "treat a contracting anomaly as proof of corruption",
+    "treat a framework or playbook as authorization to act",
+    "optimize aggregate throughput by violating humanitarian minimums",
+    "publish sensitive victim identity or exact vulnerable-person location without lawful necessity",
+    "autonomously sanction exclude or deprioritize people",
+    "convert an action intent into autonomous launch navigation dispatch retasking landing or payload-release command",
+    "infer aviation or airspace authorization from disaster urgency",
+    "autonomously choose ignition incendiary hazardous-payload or fire-suppression tactics"
+  ],
+  "humanitarian_floors": [
+    "credible immediate life-safety threats receive urgent verification and escalation",
+    "minimum access to emergency medical care potable water shelter food sanitation and safety must not be traded away for aggregate efficiency",
+    "uncertainty must be represented explicitly rather than converted into false certainty",
+    "resource allocation must remain reviewable attributable and reversible where operationally possible"
+  ],
+  "data_principles": [
+    "collect the minimum incident data necessary for the decision",
+    "separate public internal sensitive and restricted evidence",
+    "preserve source timestamps and validity windows",
+    "do not turn service presence into proof of access or spare capacity",
+    "do not turn handoff dispatch mission acceptance launch or payload delivery into outcome success",
+    "expire action intents when the incident state or operational assumptions become stale"
+  ],
+  "success_boundary": "A dispatch, delivery, evacuation, shelter placement, fire-line assignment, UAS mission or reconstruction contract is not success by itself. Success requires verified improvement in the relevant human safety, service, recovery or resilience state."
+}

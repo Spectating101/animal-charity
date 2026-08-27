@@ -1,0 +1,42 @@
+{
+  "area_id": "taoyuan-public-structural-baseline",
+  "area_name": "Taoyuan City — public structural baseline",
+  "horizon_days": 90,
+  "metadata": {
+    "evidence_status": "PUBLIC CAPABILITY BASELINE ONLY",
+    "assessed_date": "2026-08-19",
+    "safe_conclusion": "Current public sources establish welfare infrastructure and programmes, but do not establish repeated local unmet-need events sufficient to justify a new food-bank hub.",
+    "sources": [
+      "https://animal.tycg.gov.tw/",
+      "https://animal.moa.gov.tw/Frontend/PublicShelter/Detail/PS00000011",
+      "https://www.apatw.org/node?dog-age=All",
+      "https://data.gov.tw/dataset/85903"
+    ]
+  },
+  "existing_services": [
+    {
+      "service_id": "svc-xinwu-public-shelter",
+      "name": "Taoyuan Animal Protection Education Park",
+      "kind": "public_animal_welfare",
+      "lat": 25.0084,
+      "lon": 121.0279,
+      "source_ref": "https://animal.tycg.gov.tw/",
+      "verified": true,
+      "may_host_extension": false,
+      "service_radius_km": 6
+    },
+    {
+      "service_id": "svc-nanchang",
+      "name": "Nanchang Animal Protection Education Park",
+      "kind": "public_animal_welfare",
+      "lat": 24.9948,
+      "lon": 121.2989,
+      "source_ref": "https://animal.tycg.gov.tw/",
+      "verified": true,
+      "may_host_extension": false,
+      "service_radius_km": 6
+    }
+  ],
+  "candidate_sites": [],
+  "need_events": []
+}

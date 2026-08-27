@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Animal Feed Relief Network</title>
+<style>
+:root{font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:#17211b;background:#f3f7f2}body{margin:0}.wrap{max-width:1060px;margin:auto;padding:48px 22px 80px}.eyebrow{letter-spacing:.12em;text-transform:uppercase;font-size:12px;font-weight:800}.hero{font-size:clamp(38px,7vw,76px);line-height:.96;max-width:900px;margin:14px 0 18px}.lede{font-size:20px;line-height:1.55;max-width:780px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:32px}.card{background:white;border:1px solid #d7e1d7;border-radius:18px;padding:20px;box-shadow:0 8px 25px rgba(20,50,25,.04)}.num{font-size:34px;font-weight:800}.label{opacity:.65}.panel{margin-top:20px;padding:22px;border-radius:18px;background:#17211b;color:#f3f7f2}.cols{display:grid;grid-template-columns:1fr 1fr;gap:22px}@media(max-width:700px){.cols{grid-template-columns:1fr}}code{background:#e6eee5;padding:2px 5px;border-radius:5px}.status{display:inline-block;padding:7px 11px;border-radius:999px;background:#d9f2df;font-weight:700}.muted{opacity:.7}</style>
+</head>
+<body><main class="wrap">
+<div class="eyebrow">Public-welfare infrastructure · bounded autonomous agent</div>
+<h1 class="hero">Turn verified feed risk into accountable intervention.</h1>
+<p class="lede">AFRN detects projected dog/cat feed gaps, searches only rule-eligible supply, proposes a match and keeps unresolved needs visible. Humans retain authority over eligibility, diet safety, dispatch, incidents and case closure.</p>
+<p><span class="status" id="health">checking ledger…</span></p>
+<section class="grid" id="metrics"></section>
+<section class="panel"><div class="cols"><div><h2>The agent may</h2><p>Observe · forecast · open a need case · propose an eligible match · escalate an unresolved gap.</p></div><div><h2>The agent may not</h2><p>Approve a recipient · approve a diet · dispatch feed · close an incident · declare a case resolved without evidence.</p></div></div></section>
+<section class="card" style="margin-top:20px"><h2>v0 launch scope</h2><p>Verified dog/cat organizations, sealed commercial complete feed, append-only audit history, human-reviewed proposals, and one goal: <strong>prove at least one preventable stockout can be resolved safely and traceably.</strong></p><p class="muted">This is coordination software, not veterinary advice or a legal authorization system. Swagger API: <code>/docs</code></p></section>
+</main>
+<script>
+async function load(){const [h,s]=await Promise.all([fetch('/health').then(r=>r.json()),fetch('/v1/summary').then(r=>r.json())]);document.getElementById('health').textContent=h.ok?`ledger verified · ${h.ledger_events} events`:'ledger verification failed';const m=[['Open cases',s.open_cases],['Resolved cases',s.resolved_cases],['Animal-days verified',s.verified_animal_days_supported],['Pending proposals',s.pending_proposals]];document.getElementById('metrics').innerHTML=m.map(([l,v])=>`<div class="card"><div class="num">${v}</div><div class="label">${l}</div></div>`).join('')}load().catch(()=>document.getElementById('health').textContent='API unavailable')
+</script></body></html>

@@ -1,0 +1,9 @@
+[project]
+name = "animal-feed-relief-network"
+version = "0.1.0"
+description = "Validation-first coordination for safe, traceable animal-feed relief"
+requires-python = ">=3.11"
+dependencies = ["fastapi[standard-no-fastapi-cloud-cli]>=0.116,<1"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

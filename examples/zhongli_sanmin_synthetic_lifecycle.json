@@ -1,0 +1,52 @@
+{
+  "area_id": "tw-taoyuan-zhongli-sanmin",
+  "area_name": "Zhongli Sanmin Li / 中壢區三民里",
+  "policy_context": {
+    "area_id": "tw-taoyuan-zhongli-sanmin",
+    "area_name": "Zhongli Sanmin Li / 中壢區三民里",
+    "jurisdiction": "Taiwan / Taoyuan City",
+    "priority_level": 1,
+    "policy_flags": ["2026_MOA_roaming_dog_priority_management_area", "female_source_control_policy_priority"],
+    "source_refs": ["https://animal.moa.gov.tw/public/upload/News/260316110439227006GR81L.pdf"],
+    "notes": ["All animal-level observations in this fixture are synthetic and do not describe real animals or residents."]
+  },
+  "service_capabilities": ["municipal_animal_protection", "public_shelter_and_adoption"],
+  "metadata": {"fixture_type": "synthetic_control_plane_gauntlet", "as_of": "2026-08-19"},
+  "observations": [
+    {"observation_id":"obs_lost_state","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-lost","species":"dog","signal":"welfare_state","value":"lost","source_ref":"synthetic://lost/state","source_tier":"synthetic","synthetic":true},
+    {"observation_id":"obs_lost_owner","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-lost","species":"dog","signal":"ownership_known","value":true,"source_ref":"synthetic://lost/chip","source_tier":"synthetic","synthetic":true},
+    {"observation_id":"obs_lost_contact","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-lost","species":"dog","signal":"owner_contactable","value":true,"source_ref":"synthetic://lost/contact","source_tier":"synthetic","synthetic":true},
+
+    {"observation_id":"obs_owner_state","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-owner-crisis","species":"dog","signal":"welfare_state","value":"owned_at_risk","source_ref":"synthetic://owner/state","source_tier":"synthetic","synthetic":true},
+    {"observation_id":"obs_owner_risk","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-owner-crisis","species":"dog","signal":"owner_retention_risk","value":true,"source_ref":"synthetic://owner/risk","source_tier":"synthetic","synthetic":true},
+    {"observation_id":"obs_owner_crisis","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-owner-crisis","species":"dog","signal":"owner_crisis_type","value":"medical_cost","source_ref":"synthetic://owner/crisis","source_tier":"synthetic","synthetic":true},
+
+    {"observation_id":"obs_r1_state","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-r1","species":"dog","signal":"welfare_state","value":"unowned_free_roaming","source_ref":"synthetic://r1/state","source_tier":"synthetic","synthetic":true},
+    {"observation_id":"obs_r1_repro","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-r1","species":"dog","signal":"reproductively_active","value":true,"source_ref":"synthetic://r1/repro","source_tier":"synthetic","synthetic":true},
+    {"observation_id":"obs_r1_ster","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-r1","species":"dog","signal":"sterilized","value":false,"source_ref":"synthetic://r1/ster","source_tier":"synthetic","synthetic":true},
+
+    {"observation_id":"obs_r2_state","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-r2","species":"dog","signal":"welfare_state","value":"community_cared","source_ref":"synthetic://r2/state","source_tier":"synthetic","synthetic":true},
+    {"observation_id":"obs_r2_repro","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-r2","species":"dog","signal":"reproductively_active","value":true,"source_ref":"synthetic://r2/repro","source_tier":"synthetic","synthetic":true},
+    {"observation_id":"obs_r2_care","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-r2","species":"dog","signal":"responsible_community_caretaker","value":true,"source_ref":"synthetic://r2/caretaker","source_tier":"synthetic","synthetic":true},
+
+    {"observation_id":"obs_r3_state","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-r3","species":"dog","signal":"welfare_state","value":"unowned_free_roaming","source_ref":"synthetic://r3/state","source_tier":"synthetic","synthetic":true},
+    {"observation_id":"obs_r3_repro","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-r3","species":"dog","signal":"reproductively_active","value":true,"source_ref":"synthetic://r3/repro","source_tier":"synthetic","synthetic":true},
+    {"observation_id":"obs_r3_ecology","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-r3","species":"dog","signal":"ecology_sensitive_location","value":true,"source_ref":"synthetic://r3/ecology","source_tier":"synthetic","synthetic":true},
+
+    {"observation_id":"obs_foster_state","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-foster","species":"dog","signal":"welfare_state","value":"unowned_free_roaming","source_ref":"synthetic://foster/state","source_tier":"synthetic","synthetic":true},
+    {"observation_id":"obs_foster_adopt","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-foster","species":"dog","signal":"adoption_suitable","value":true,"source_ref":"synthetic://foster/adopt","source_tier":"synthetic","synthetic":true},
+    {"observation_id":"obs_foster_available","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-foster","species":"dog","signal":"foster_available","value":true,"source_ref":"synthetic://foster/capacity","source_tier":"synthetic","synthetic":true},
+    {"observation_id":"obs_foster_med","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-foster","species":"dog","signal":"medical_stable","value":true,"source_ref":"synthetic://foster/medical","source_tier":"synthetic","synthetic":true},
+
+    {"observation_id":"obs_special_state","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-specialist","species":"dog","signal":"welfare_state","value":"foster","source_ref":"synthetic://specialist/state","source_tier":"synthetic","synthetic":true},
+    {"observation_id":"obs_special_med","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-specialist","species":"dog","signal":"medical_stable","value":true,"source_ref":"synthetic://specialist/medical","source_tier":"synthetic","synthetic":true},
+    {"observation_id":"obs_special_social","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-specialist","species":"dog","signal":"human_social","value":true,"source_ref":"synthetic://specialist/social","source_tier":"synthetic","synthetic":true},
+    {"observation_id":"obs_special_fear","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-specialist","species":"dog","signal":"low_fear_in_public","value":true,"source_ref":"synthetic://specialist/fear","source_tier":"synthetic","synthetic":true},
+    {"observation_id":"obs_special_react","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-specialist","species":"dog","signal":"low_reactivity","value":true,"source_ref":"synthetic://specialist/react","source_tier":"synthetic","synthetic":true},
+    {"observation_id":"obs_special_train","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-specialist","species":"dog","signal":"enjoys_training","value":true,"source_ref":"synthetic://specialist/training","source_tier":"synthetic","synthetic":true},
+
+    {"observation_id":"obs_emerg_state","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-emergency","species":"dog","signal":"welfare_state","value":"unowned_free_roaming","source_ref":"synthetic://emergency/state","source_tier":"synthetic","synthetic":true},
+    {"observation_id":"obs_emerg_injury","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-emergency","species":"dog","signal":"injured","value":true,"source_ref":"synthetic://emergency/injury","source_tier":"synthetic","synthetic":true},
+    {"observation_id":"obs_emerg_train","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-emergency","species":"dog","signal":"enjoys_training","value":true,"source_ref":"synthetic://emergency/training","source_tier":"synthetic","synthetic":true}
+  ]
+}

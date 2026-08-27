@@ -1,0 +1,594 @@
+from __future__ import annotations
+
+from datetime import datetime, timezone
+from enum import Enum
+from typing import Literal
+
+from pydantic import BaseModel, Field, model_validator
+
+from app.interoperability import (
+    ControlPlaneInteropPacket,
+    DeployableResource,
+    InteroperabilityBundle,
+    ServicePresenceSignal,
+    build_control_plane_packet,
+)
+
+
+def utcnow() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+class DisasterPhase(str, Enum):
+    preparedness = "preparedness"
+    response = "response"
+    recovery = "recovery"
+    mitigation = "mitigation"
+
+
+class DisasterNeedCategory(str, Enum):
+    life_safety = "life_safety"
+    medical = "medical"
+    potable_water = "potable_water"
+    shelter = "shelter"
+    food = "food"
+    access = "access"
+    communications = "communications"
+    power = "power"
+    fire_suppression = "fire_suppression"
+    sanitation = "sanitation"
+    other = "other"
+
+
+class DisasterNeed(BaseModel):
+    need_id: str
+    location_ref: str
+    category: DisasterNeedCategory
+    priority: Literal["watch", "urgent", "critical"]
+    status: Literal["unmet", "partially_met", "met", "unknown"] = "unknown"
+    source_ref: str
+    verification_status: Literal["reported", "corroborated", "verified"] = "reported"
+    observed_at: datetime
+    valid_until: datetime | None = None
+    people_affected: int | None = Field(default=None, ge=0)
+    access_status: Literal["open", "constrained", "isolated", "unknown"] = "unknown"
+    capacity_status: Literal["adequate", "constrained", "insufficient", "unknown"] = "unknown"
+    required_capabilities: list[str] = Field(default_factory=list)
+    notes: str | None = None
+
+    @model_validator(mode="after")
+    def timestamps_are_operationally_valid(self) -> "DisasterNeed":
+        if self.observed_at.tzinfo is None:
+            raise ValueError("need observed_at must be timezone-aware")
+        if self.valid_until is not None:
+            if self.valid_until.tzinfo is None:
+                raise ValueError("need valid_until must be timezone-aware")
+            if self.valid_until < self.observed_at:
+                raise ValueError("need valid_until cannot precede observed_at")
+        return self
+
+
+class RecurrenceSignal(BaseModel):
+    signal_id: str
+    location_ref: str
+    problem_class: str
+    event_count: int = Field(ge=1)
+    span_days: int = Field(ge=0)
+    source_refs: list[str] = Field(default_factory=list)
+
+
+class DisasterSnapshot(BaseModel):
+    incident_id: str
+    as_of: datetime
+    phase: DisasterPhase
+    interoperability: InteroperabilityBundle
+    needs: list[DisasterNeed] = Field(default_factory=list)
+    recurrence_signals: list[RecurrenceSignal] = Field(default_factory=list)
+    metadata: dict[str, str] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def snapshot_is_coherent(self) -> "DisasterSnapshot":
+        if self.as_of.tzinfo is None:
+            raise ValueError("snapshot as_of must be timezone-aware")
+        if self.interoperability.as_of != self.as_of:
+            raise ValueError("interoperability.as_of must equal disaster snapshot as_of")
+        ids = [need.need_id for need in self.needs]
+        if len(ids) != len(set(ids)):
+            raise ValueError("disaster need_id values must be unique")
+        return self
+
+
+class DisasterFinding(BaseModel):
+    need_id: str | None = None
+    location_ref: str | None = None
+    stage: Literal["safety", "stabilize", "route", "capacity", "access", "outcome", "evidence"]
+    problem_class: str
+    priority: Literal["watch", "urgent", "critical"]
+    recommended_action: str
+    evidence_refs: list[str] = Field(default_factory=list)
+    resource_refs: list[str] = Field(default_factory=list)
+    human_authority_required: bool = True
+    structural_candidate: bool = False
+    rationale: list[str] = Field(default_factory=list)
+
+
+class ResourceReservation(BaseModel):
+    resource_record_id: str
+    need_id: str
+    purpose: str
+    status: Literal["proposed"] = "proposed"
+
+
+class DisasterAssessment(BaseModel):
+    incident_id: str
+    assessed_at: datetime = Field(default_factory=utcnow)
+    phase: DisasterPhase
+    command_context_present: bool
+    findings: list[DisasterFinding] = Field(default_factory=list)
+    proposed_reservations: list[ResourceReservation] = Field(default_factory=list)
+    unresolved_need_ids: list[str] = Field(default_factory=list)
+    stale_need_ids: list[str] = Field(default_factory=list)
+    data_gaps: list[str] = Field(default_factory=list)
+    interoperability: ControlPlaneInteropPacket
+    safe_conclusion: str
+
+
+_DEFAULT_CAPABILITIES: dict[DisasterNeedCategory, set[str]] = {
+    DisasterNeedCategory.life_safety: {
+        "search_and_rescue",
+        "urban_search_and_rescue",
+        "urban_search_and_rescue_team",
+        "collapsed_structure_search",
+        "technical_rescue",
+        "rescue",
+    },
+    DisasterNeedCategory.medical: {"emergency_medical", "medevac", "medical_stabilization"},
+    DisasterNeedCategory.potable_water: {"potable_water_delivery", "water_purification"},
+    DisasterNeedCategory.shelter: {"emergency_shelter", "shelter_management"},
+    DisasterNeedCategory.food: {"food_distribution", "emergency_feeding"},
+    DisasterNeedCategory.access: {"road_clearance", "engineering", "air_access", "offroad_access"},
+    DisasterNeedCategory.communications: {"emergency_communications", "satellite_communications"},
+    DisasterNeedCategory.power: {"emergency_power", "generator"},
+    DisasterNeedCategory.fire_suppression: {"fire_suppression", "peat_fire_suppression", "water_bombing"},
+    DisasterNeedCategory.sanitation: {"sanitation", "wash"},
+    DisasterNeedCategory.other: set(),
+}
+
+_SERVICE_TYPES: dict[DisasterNeedCategory, set[str]] = {
+    DisasterNeedCategory.medical: {"emergency_hospital", "hospital", "clinic", "smoke_exposure_clinic", "field_hospital"},
+    DisasterNeedCategory.potable_water: {"potable_water_point", "water_distribution", "water_treatment"},
+    DisasterNeedCategory.shelter: {"emergency_shelter", "evacuation_centre", "temporary_shelter"},
+    DisasterNeedCategory.food: {"food_distribution", "community_kitchen", "emergency_feeding"},
+    DisasterNeedCategory.sanitation: {"sanitation", "wash_service", "hygiene_service"},
+    DisasterNeedCategory.communications: {"emergency_communications", "communications_hub"},
+    DisasterNeedCategory.power: {"emergency_power", "charging_hub"},
+}
+
+_ACCESS_CAPABILITIES = {"air_access", "air_delivery", "offroad_access", "helicopter_transport"}
+_PRIORITY_ORDER = {"critical": 0, "urgent": 1, "watch": 2}
+_SURVIVAL_ORDER = {
+    DisasterNeedCategory.life_safety: 0,
+    DisasterNeedCategory.medical: 1,
+    DisasterNeedCategory.fire_suppression: 2,
+    DisasterNeedCategory.potable_water: 3,
+    DisasterNeedCategory.shelter: 4,
+    DisasterNeedCategory.food: 5,
+    DisasterNeedCategory.sanitation: 6,
+    DisasterNeedCategory.access: 7,
+    DisasterNeedCategory.communications: 8,
+    DisasterNeedCategory.power: 9,
+    DisasterNeedCategory.other: 10,
+}
+
+
+def _need_fresh(need: DisasterNeed, as_of: datetime) -> bool:
+    return need.valid_until is None or need.valid_until >= as_of
+
+
+def _capabilities(resource: DeployableResource) -> set[str]:
+    values = {value.lower() for value in resource.capabilities}
+    values.add(resource.resource_type.lower())
+    return values
+
+
+def _required(need: DisasterNeed) -> set[str]:
+    if need.required_capabilities:
+        return {value.lower() for value in need.required_capabilities}
+    return _DEFAULT_CAPABILITIES[need.category]
+
+
+def _resource_matches(resource: DeployableResource, need: DisasterNeed) -> bool:
+    available = _capabilities(resource)
+    required = _required(need)
+    if required and not available.intersection(required):
+        return False
+    if need.access_status == "isolated" and not available.intersection(_ACCESS_CAPABILITIES):
+        return False
+    return True
+
+
+def _service_matches(service: ServicePresenceSignal, need: DisasterNeed) -> bool:
+    service_types = _SERVICE_TYPES.get(need.category, set())
+    if not service_types or service.service_type.lower() not in service_types:
+        return False
+    if service.location_ref != need.location_ref:
+        return False
+    if service.access_status != "open":
+        return False
+    return service.capacity_status in {"spare", "normal"}
+
+
+def _inventory_complete_for_need(packet: ControlPlaneInteropPacket, need: DisasterNeed) -> bool:
+    if packet.resource_inventory_scope != "complete_for_scope":
+        return False
+    if _SERVICE_TYPES.get(need.category) and packet.service_registry_scope != "complete_for_scope":
+        return False
+    return True
+
+
+def _access_disruption_established(need: DisasterNeed) -> bool:
+    return need.category == DisasterNeedCategory.access or need.access_status in {"constrained", "isolated"}
+
+
+def _observed_capacity_shortage(need: DisasterNeed) -> bool:
+    return need.capacity_status == "insufficient" and need.verification_status in {"corroborated", "verified"}
+
+
+def _structural_candidate(snapshot: DisasterSnapshot, need: DisasterNeed) -> bool:
+    if snapshot.phase not in {DisasterPhase.recovery, DisasterPhase.mitigation, DisasterPhase.preparedness}:
+        return False
+    return any(
+        signal.location_ref == need.location_ref
+        and signal.problem_class in {need.category.value, "access", "service_failure", "hazard_recurrence"}
+        and signal.event_count >= 3
+        and signal.span_days >= 14
+        for signal in snapshot.recurrence_signals
+    )
+
+
+def _evidence_refs(need: DisasterNeed) -> list[str]:
+    return [need.source_ref]
+
+
+def _append_access_condition(
+    findings: list[DisasterFinding],
+    need: DisasterNeed,
+    *,
+    structural: bool,
+    capability_absence_established: bool,
+) -> None:
+    if capability_absence_established:
+        problem_class = (
+            "isolated_need_without_verified_access_capability"
+            if need.access_status == "isolated"
+            else "access_disruption_without_verified_access_capability"
+        )
+        rationale = (
+            "The access disruption is established and the supplied inventory is complete enough for this scope, "
+            "with no verified compatible access capability available."
+        )
+    else:
+        problem_class = "confirmed_access_disruption"
+        rationale = (
+            "The physical/service access disruption is established by condition evidence, but the supplied capability inventory "
+            "is not complete enough to conclude that no access resource exists."
+        )
+
+    findings.append(
+        DisasterFinding(
+            need_id=need.need_id,
+            location_ref=need.location_ref,
+            stage="access",
+            problem_class=problem_class,
+            priority=need.priority,
+            recommended_action=(
+                "Treat the access edge as currently broken and route verification/restoration through authorized incident command. "
+                "Use a verified live air/off-road/engineering route if available; do not infer resource scarcity from incomplete inventory."
+            ),
+            evidence_refs=_evidence_refs(need),
+            structural_candidate=structural,
+            rationale=[rationale],
+        )
+    )
+
+
+def assess_disaster(snapshot: DisasterSnapshot) -> DisasterAssessment:
+    packet = build_control_plane_packet(snapshot.interoperability)
+    command_present = bool(packet.command_contexts)
+    findings: list[DisasterFinding] = []
+    reservations: list[ResourceReservation] = []
+    unresolved: list[str] = []
+    stale_needs: list[str] = []
+    data_gaps: list[str] = []
+    used_resources: set[str] = set()
+
+    needs = sorted(
+        snapshot.needs,
+        key=lambda need: (_PRIORITY_ORDER[need.priority], _SURVIVAL_ORDER[need.category], need.need_id),
+    )
+
+    for need in needs:
+        if need.status == "met":
+            continue
+        if not _need_fresh(need, snapshot.as_of):
+            stale_needs.append(need.need_id)
+            unresolved.append(need.need_id)
+            findings.append(
+                DisasterFinding(
+                    need_id=need.need_id,
+                    location_ref=need.location_ref,
+                    stage="evidence",
+                    problem_class="stale_need_state",
+                    priority=need.priority,
+                    recommended_action="Obtain a fresh condition observation before treating this need as current operational state.",
+                    evidence_refs=_evidence_refs(need),
+                    rationale=["The need observation expired before the assessment as_of time."],
+                )
+            )
+            continue
+
+        unresolved.append(need.need_id)
+        structural = _structural_candidate(snapshot, need)
+
+        if need.priority == "critical" and need.verification_status == "reported":
+            findings.append(
+                DisasterFinding(
+                    need_id=need.need_id,
+                    location_ref=need.location_ref,
+                    stage="safety",
+                    problem_class="critical_need_requires_verification_and_escalation",
+                    priority="critical",
+                    recommended_action=(
+                        "Escalate for rapid verification through authorized incident command; do not discard a potentially catastrophic "
+                        "life-safety report merely because it is not yet corroborated."
+                    ),
+                    evidence_refs=_evidence_refs(need),
+                    structural_candidate=False,
+                    rationale=["Critical uncertainty is itself operationally relevant; verification should run in parallel with escalation."],
+                )
+            )
+
+        if need.status == "unknown":
+            findings.append(
+                DisasterFinding(
+                    need_id=need.need_id,
+                    location_ref=need.location_ref,
+                    stage="evidence",
+                    problem_class="need_status_not_established",
+                    priority=need.priority,
+                    recommended_action=(
+                        "Verify whether the reported condition is currently unmet before diagnosing access/capacity or reserving a resource."
+                    ),
+                    evidence_refs=_evidence_refs(need),
+                    structural_candidate=False,
+                    rationale=[
+                        "A hazard, complaint or service report can justify investigation without establishing that a specific relief need remains unmet."
+                    ],
+                )
+            )
+            continue
+
+        existing_services = [service for service in packet.services if _service_matches(service, need)]
+        if existing_services and need.access_status != "isolated":
+            service = existing_services[0]
+            findings.append(
+                DisasterFinding(
+                    need_id=need.need_id,
+                    location_ref=need.location_ref,
+                    stage="route",
+                    problem_class=f"{need.category.value}_existing_service_route",
+                    priority=need.priority,
+                    recommended_action=(
+                        f"Use the existing reachable {service.service_type} first and verify downstream receipt/outcome before requesting new capacity."
+                    ),
+                    evidence_refs=_evidence_refs(need) + [service.source_ref],
+                    resource_refs=[service.record_id],
+                    structural_candidate=structural,
+                    rationale=["A fresh open service with spare/normal capacity exists at the need location."],
+                )
+            )
+            continue
+
+        deployable = [
+            resource
+            for resource in packet.deployable_resources
+            if resource.record_id not in used_resources and _resource_matches(resource, need)
+        ]
+        candidates = [resource for resource in packet.resource_candidates_requiring_verification if _resource_matches(resource, need)]
+        access_disrupted = _access_disruption_established(need)
+
+        if deployable:
+            resource = deployable[0]
+            used_resources.add(resource.record_id)
+            reservations.append(
+                ResourceReservation(
+                    resource_record_id=resource.record_id,
+                    need_id=need.need_id,
+                    purpose=need.category.value,
+                )
+            )
+            findings.append(
+                DisasterFinding(
+                    need_id=need.need_id,
+                    location_ref=need.location_ref,
+                    stage="route",
+                    problem_class=f"{need.category.value}_resource_route",
+                    priority=need.priority,
+                    recommended_action=(
+                        f"Route verified available {resource.resource_type} through the authorized incident-command/resource-request process; "
+                        "this assessment proposes a reservation but does not dispatch the resource."
+                    ),
+                    evidence_refs=_evidence_refs(need) + [resource.source_ref],
+                    resource_refs=[resource.record_id],
+                    structural_candidate=structural,
+                    rationale=[
+                        "The resource is fresh, sufficiently verified, marked available, supplied by a live operations source, capability-compatible and not already proposed elsewhere in this assessment."
+                    ],
+                )
+            )
+            continue
+
+        if candidates:
+            if access_disrupted:
+                _append_access_condition(
+                    findings,
+                    need,
+                    structural=structural,
+                    capability_absence_established=False,
+                )
+            findings.append(
+                DisasterFinding(
+                    need_id=need.need_id,
+                    location_ref=need.location_ref,
+                    stage="evidence",
+                    problem_class="reported_resource_requires_verification",
+                    priority=need.priority,
+                    recommended_action=(
+                        "Verify the reportedly available matching resource in the live operational system before routing; keep the unmet need active meanwhile."
+                    ),
+                    evidence_refs=_evidence_refs(need) + [resource.source_ref for resource in candidates],
+                    resource_refs=[resource.record_id for resource in candidates],
+                    structural_candidate=structural,
+                    rationale=["A registry or public report can establish a candidate capability without establishing live deployability."],
+                )
+            )
+            continue
+
+        inventory_complete = _inventory_complete_for_need(packet, need)
+        if access_disrupted:
+            _append_access_condition(
+                findings,
+                need,
+                structural=structural,
+                capability_absence_established=inventory_complete,
+            )
+            if not inventory_complete:
+                findings.append(
+                    DisasterFinding(
+                        need_id=need.need_id,
+                        location_ref=need.location_ref,
+                        stage="evidence",
+                        problem_class="capability_inventory_incomplete",
+                        priority=need.priority,
+                        recommended_action=(
+                            "Obtain a complete-enough current access-capability inventory before concluding that no air/off-road/engineering option exists."
+                        ),
+                        evidence_refs=_evidence_refs(need),
+                        structural_candidate=False,
+                        rationale=[
+                            "The access failure is established, but absence from a partial or unknown capability inventory is not proof of resource scarcity."
+                        ],
+                    )
+                )
+            continue
+
+        if need.capacity_status == "insufficient":
+            if _observed_capacity_shortage(need):
+                findings.append(
+                    DisasterFinding(
+                        need_id=need.need_id,
+                        location_ref=need.location_ref,
+                        stage="capacity",
+                        problem_class=f"{need.category.value}_observed_capacity_shortage",
+                        priority=need.priority,
+                        recommended_action=(
+                            "Treat the capacity deficit as established condition evidence and route the smallest safe temporary or mutual-aid response through authorized coordination. "
+                            "Continue reconciling the wider inventory; this finding does not imply that all relevant capability is absent."
+                        ),
+                        evidence_refs=_evidence_refs(need),
+                        structural_candidate=structural,
+                        rationale=[
+                            "Current corroborated/verified condition evidence explicitly records capacity as insufficient, so the shortage does not depend on inferring absence from an incomplete inventory."
+                        ],
+                    )
+                )
+            else:
+                findings.append(
+                    DisasterFinding(
+                        need_id=need.need_id,
+                        location_ref=need.location_ref,
+                        stage="evidence",
+                        problem_class="reported_capacity_shortage_requires_verification",
+                        priority=need.priority,
+                        recommended_action=(
+                            "Verify the reported capacity insufficiency through an authorized operational source before treating it as an established shortage."
+                        ),
+                        evidence_refs=_evidence_refs(need),
+                        structural_candidate=False,
+                        rationale=[
+                            "A reported shortage is condition evidence worth escalating, but it is not yet strong enough for a consequential scarcity finding."
+                        ],
+                    )
+                )
+            continue
+
+        if not inventory_complete:
+            findings.append(
+                DisasterFinding(
+                    need_id=need.need_id,
+                    location_ref=need.location_ref,
+                    stage="evidence",
+                    problem_class="capability_inventory_incomplete",
+                    priority=need.priority,
+                    recommended_action=(
+                        "Obtain a complete-enough current resource/service inventory for this operational scope before declaring a capacity shortage."
+                    ),
+                    evidence_refs=_evidence_refs(need),
+                    structural_candidate=False,
+                    rationale=[
+                        "Absence from a partial or unknown inventory is missing evidence, not proof that relevant capability does not exist."
+                    ],
+                )
+            )
+            continue
+
+        findings.append(
+            DisasterFinding(
+                need_id=need.need_id,
+                location_ref=need.location_ref,
+                stage="capacity",
+                problem_class=f"{need.category.value}_capacity_gap",
+                priority=need.priority,
+                recommended_action=(
+                    "Request matching capability through mutual-aid/resource coordination or establish the smallest safe temporary capacity; "
+                    "do not infer that a permanent facility is justified from this incident alone."
+                ),
+                evidence_refs=_evidence_refs(need),
+                structural_candidate=structural,
+                rationale=[
+                    "The supplied resource/service inventory is declared complete enough for this scope and contains no fresh reachable existing service or verified uncommitted compatible resource."
+                ],
+            )
+        )
+
+    if not snapshot.needs:
+        data_gaps.append("No current disaster needs were supplied; hazard presence alone does not establish a specific relief requirement.")
+    if not command_present:
+        data_gaps.append(
+            "No current command/authority context is supplied. Analysis may identify gaps, but no consequential routing recommendation is authorized for execution."
+        )
+    if packet.stale_record_ids:
+        data_gaps.append(
+            "Some interoperability records are stale and were excluded from current operational state: "
+            + ", ".join(packet.stale_record_ids[:10])
+        )
+
+    safe_conclusion = (
+        "This disaster assessment is decision support, not autonomous incident command. Humanitarian minimums and credible immediate life-safety "
+        "needs take precedence over efficiency optimization. A proposed reservation is not a dispatch order; competent incident command, emergency, "
+        "medical, engineering and other authorities retain consequential decisions. People must never be deprioritized by economic value, social status, "
+        "identity, predicted productivity or aid-deservingness."
+    )
+
+    return DisasterAssessment(
+        incident_id=snapshot.incident_id,
+        phase=snapshot.phase,
+        command_context_present=command_present,
+        findings=findings,
+        proposed_reservations=reservations,
+        unresolved_need_ids=unresolved,
+        stale_need_ids=stale_needs,
+        data_gaps=data_gaps,
+        interoperability=packet,
+        safe_conclusion=safe_conclusion,
+    )

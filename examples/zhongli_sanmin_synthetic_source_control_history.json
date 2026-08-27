@@ -1,0 +1,29 @@
+{
+  "area_id": "tw-taoyuan-zhongli-sanmin",
+  "area_name": "Zhongli Sanmin Li / 中壢區三民里",
+  "horizon_days": 90,
+  "metadata": {
+    "fixture_type": "synthetic_longitudinal_structural_gauntlet",
+    "warning": "All transition-failure events and host availability are fictional; the official Sanmin designation is not animal-level evidence."
+  },
+  "events": [
+    {"event_id":"sc1","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-a","intervention_class":"source_control","occurred_at":"2026-06-01T08:00:00+08:00","lat":24.9854,"lon":121.2005,"source_ref":"synthetic://sc/1","confidence":0.9,"synthetic":true},
+    {"event_id":"sc2","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-b","intervention_class":"source_control","occurred_at":"2026-06-10T08:00:00+08:00","lat":24.9861,"lon":121.2012,"source_ref":"synthetic://sc/2","confidence":0.9,"synthetic":true},
+    {"event_id":"sc3","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-c","intervention_class":"source_control","occurred_at":"2026-06-19T08:00:00+08:00","lat":24.9849,"lon":121.1999,"source_ref":"synthetic://sc/3","confidence":0.9,"synthetic":true},
+    {"event_id":"sc4","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-a","intervention_class":"source_control","occurred_at":"2026-06-28T08:00:00+08:00","lat":24.9856,"lon":121.2007,"source_ref":"synthetic://sc/4","confidence":0.85,"synthetic":true},
+    {"event_id":"sc5","area_id":"tw-taoyuan-zhongli-sanmin","subject_ref":"synthetic-dog-b","intervention_class":"source_control","occurred_at":"2026-07-07T08:00:00+08:00","lat":24.9860,"lon":121.2010,"source_ref":"synthetic://sc/5","confidence":0.85,"synthetic":true}
+  ],
+  "existing_services": [],
+  "candidate_hosts": [
+    {
+      "host_id": "synthetic-sanmin-community-host",
+      "name": "Synthetic Sanmin Community Host",
+      "lat": 24.9855,
+      "lon": 121.2006,
+      "supported_interventions": ["source_control"],
+      "available": true,
+      "availability_evidence_ref": "synthetic://host/offer",
+      "source_ref": "synthetic://host"
+    }
+  ]
+}

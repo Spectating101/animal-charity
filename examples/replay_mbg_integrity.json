@@ -1,0 +1,156 @@
+{
+  "replay_id": "replay-mbg-integrity-001",
+  "decision_cutoff": "2026-06-15T17:00:00+07:00",
+  "case": {
+    "case_id": "historical-style-mbg-integrity-001",
+    "domain": "mbg_public_nutrition",
+    "payload": {
+      "programme_id": "indonesia-mbg-case-study",
+      "area_id": "synthetic-replay-sppg-001",
+      "area_name": "Synthetic Replay MBG Catchment",
+      "observations": [
+        {
+          "observation_id": "m-safety",
+          "signal": "food_safety_ok",
+          "value": true,
+          "evidence_class": "condition",
+          "source_ref": "synthetic:safety-record",
+          "observed_at": "2026-06-15T08:00:00+07:00",
+          "synthetic": true
+        },
+        {
+          "observation_id": "m-target",
+          "signal": "verified_target_beneficiaries",
+          "value": 3000,
+          "evidence_class": "condition",
+          "source_ref": "synthetic:recipient-register",
+          "observed_at": "2026-06-15T08:30:00+07:00",
+          "synthetic": true
+        },
+        {
+          "observation_id": "m-capacity",
+          "signal": "verified_service_capacity_meals_per_day",
+          "value": 3000,
+          "evidence_class": "condition",
+          "source_ref": "synthetic:capacity-audit",
+          "observed_at": "2026-06-15T09:00:00+07:00",
+          "synthetic": true
+        },
+        {
+          "observation_id": "m-actual",
+          "signal": "verified_actual_recipients_per_day",
+          "value": 2600,
+          "evidence_class": "condition",
+          "source_ref": "synthetic:recipient-receipt",
+          "observed_at": "2026-06-15T14:00:00+07:00",
+          "synthetic": true
+        },
+        {
+          "observation_id": "m-transport",
+          "signal": "transport_reliable",
+          "value": true,
+          "evidence_class": "condition",
+          "source_ref": "synthetic:route-log",
+          "observed_at": "2026-06-15T14:10:00+07:00",
+          "synthetic": true
+        },
+        {
+          "observation_id": "m-data",
+          "signal": "beneficiary_data_quality_verified",
+          "value": true,
+          "evidence_class": "condition",
+          "source_ref": "synthetic:data-reconciliation",
+          "observed_at": "2026-06-15T14:20:00+07:00",
+          "synthetic": true
+        },
+        {
+          "observation_id": "m-outcome",
+          "signal": "nutritional_outcome_measured",
+          "value": false,
+          "evidence_class": "condition",
+          "source_ref": "synthetic:outcome-register",
+          "observed_at": "2026-06-15T14:30:00+07:00",
+          "synthetic": true
+        }
+      ],
+      "integrity": {
+        "programme_id": "indonesia-mbg-case-study",
+        "area_id": "synthetic-replay-sppg-001",
+        "observations": [
+          {
+            "observation_id": "procured-chicken",
+            "stage": "procurement",
+            "metric": "chicken_mass",
+            "value": 300,
+            "unit": "kg",
+            "source_ref": "synthetic:invoice",
+            "verification_status": "verified",
+            "observed_at": "2026-06-15T11:00:00+07:00",
+            "synthetic": true
+          },
+          {
+            "observation_id": "received-chicken",
+            "stage": "physical_input",
+            "metric": "chicken_mass",
+            "value": 225,
+            "unit": "kg",
+            "source_ref": "synthetic:goods-receipt",
+            "verification_status": "verified",
+            "observed_at": "2026-06-15T11:30:00+07:00",
+            "synthetic": true
+          },
+          {
+            "observation_id": "claimed-meals",
+            "stage": "service_output",
+            "metric": "meals",
+            "value": 3000,
+            "unit": "meal",
+            "source_ref": "synthetic:kitchen-output",
+            "verification_status": "verified",
+            "observed_at": "2026-06-15T13:30:00+07:00",
+            "synthetic": true
+          },
+          {
+            "observation_id": "received-meals",
+            "stage": "beneficiary_receipt",
+            "metric": "meals",
+            "value": 2600,
+            "unit": "meal",
+            "source_ref": "synthetic:recipient-receipt",
+            "verification_status": "verified",
+            "observed_at": "2026-06-15T14:00:00+07:00",
+            "synthetic": true
+          }
+        ],
+        "checks": [
+          {
+            "check_id": "ingredients-reconcile",
+            "expected_observation_id": "procured-chicken",
+            "observed_observation_id": "received-chicken",
+            "tolerance_pct": 0.05,
+            "critical": true,
+            "innocent_explanations_to_check": ["rejected delivery", "measurement method", "authorized rerouting"]
+          },
+          {
+            "check_id": "meals-reconcile",
+            "expected_observation_id": "claimed-meals",
+            "observed_observation_id": "received-meals",
+            "tolerance_pct": 0.05,
+            "critical": true,
+            "innocent_explanations_to_check": ["attendance", "documented waste", "authorized redistribution"]
+          }
+        ]
+      }
+    },
+    "metadata": {
+      "purpose": "Synthetic R1-style packet testing integrity-before-scarcity without hindsight evidence."
+    }
+  },
+  "reference": {
+    "expected_primary_stages": ["integrity"],
+    "historical_action": "Reconcile procurement, physical receipt and beneficiary-receipt records before approving expansion.",
+    "historical_outcome_summary": "Synthetic reference: discrepancy required review; capacity expansion was not the first corrective action.",
+    "reference_refs": ["synthetic:hidden-audit-note"]
+  },
+  "require_evidence_timestamps": true
+}

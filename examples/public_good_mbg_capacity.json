@@ -1,0 +1,37 @@
+{
+  "case_id": "synthetic-mbg-capacity-001",
+  "domain": "mbg_public_nutrition",
+  "payload": {
+    "programme_id": "indonesia-mbg-case-study",
+    "area_id": "synthetic-sppg-capacity-router",
+    "area_name": "Synthetic MBG Capacity Router Case",
+    "observations": [
+      {"observation_id":"target","signal":"verified_target_beneficiaries","value":3500,"evidence_class":"condition","source_ref":"synthetic:target","synthetic":true},
+      {"observation_id":"capacity","signal":"verified_service_capacity_meals_per_day","value":3000,"evidence_class":"condition","source_ref":"synthetic:capacity","synthetic":true},
+      {"observation_id":"actual","signal":"verified_actual_recipients_per_day","value":2985,"evidence_class":"condition","source_ref":"synthetic:receipt","synthetic":true},
+      {"observation_id":"transport","signal":"transport_reliable","value":true,"evidence_class":"condition","source_ref":"synthetic:route","synthetic":true},
+      {"observation_id":"data","signal":"beneficiary_data_quality_verified","value":true,"evidence_class":"condition","source_ref":"synthetic:data","synthetic":true},
+      {"observation_id":"safety","signal":"food_safety_ok","value":true,"evidence_class":"condition","source_ref":"synthetic:safety","synthetic":true},
+      {"observation_id":"outcome","signal":"nutritional_outcome_measured","value":false,"evidence_class":"condition","source_ref":"synthetic:outcome","synthetic":true}
+    ],
+    "integrity": {
+      "programme_id": "indonesia-mbg-case-study",
+      "area_id": "synthetic-sppg-capacity-router",
+      "observations": [
+        {"observation_id":"planned","stage":"procurement","metric":"meal_equivalent","value":3000,"unit":"meal","source_ref":"synthetic:plan","verification_status":"verified","synthetic":true},
+        {"observation_id":"received-input","stage":"physical_input","metric":"meal_equivalent","value":2995,"unit":"meal","source_ref":"synthetic:input","verification_status":"verified","synthetic":true},
+        {"observation_id":"output","stage":"service_output","metric":"meal_count","value":3000,"unit":"meal","source_ref":"synthetic:output","verification_status":"verified","synthetic":true},
+        {"observation_id":"receipt","stage":"beneficiary_receipt","metric":"meal_count","value":2985,"unit":"meal","source_ref":"synthetic:receipt","verification_status":"verified","synthetic":true}
+      ],
+      "checks": [
+        {"check_id":"input-check","expected_observation_id":"planned","observed_observation_id":"received-input","tolerance_pct":0.02,"critical":true},
+        {"check_id":"receipt-check","expected_observation_id":"output","observed_observation_id":"receipt","tolerance_pct":0.02,"critical":true}
+      ]
+    },
+    "recurrence_count": 4,
+    "recurrence_span_days": 21
+  },
+  "metadata": {
+    "purpose": "Contrast with the integrity case: once the resource chain reconciles, genuine excess demand is allowed to become a structural capacity candidate."
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "area_id": "taoyuan-structural-demo",
+  "area_name": "Taoyuan City — synthetic Yangmei-area recurring welfare-gap demo",
+  "horizon_days": 90,
+  "metadata": {
+    "evidence_status": "SYNTHETIC NEED EVENTS / REAL-AREA CAPABILITY SHAPE",
+    "warning": "This fixture does not claim that Yangmei, Xinwu or any named real organization currently has an unmet welfare need. It exists only to test structural initiative planning.",
+    "scenario": "Repeated feed-access failures occur in a compact cluster; existing public welfare nodes are outside the assumed service radius; a hypothetical local host has explicitly offered space for an 8-week pilot."
+  },
+  "existing_services": [
+    {
+      "service_id": "svc-xinwu-public-shelter",
+      "name": "Taoyuan Animal Protection Education Park",
+      "kind": "public_animal_welfare",
+      "lat": 25.0084,
+      "lon": 121.0279,
+      "source_ref": "https://animal.tycg.gov.tw/",
+      "verified": true,
+      "may_host_extension": false,
+      "service_radius_km": 6
+    },
+    {
+      "service_id": "svc-nanchang",
+      "name": "Nanchang Animal Protection Education Park",
+      "kind": "public_animal_welfare",
+      "lat": 24.9948,
+      "lon": 121.2989,
+      "source_ref": "https://animal.tycg.gov.tw/",
+      "verified": true,
+      "may_host_extension": false,
+      "service_radius_km": 6
+    }
+  ],
+  "candidate_sites": [
+    {
+      "site_id": "synthetic-yangmei-host-a",
+      "name": "Synthetic Yangmei Community Host A",
+      "lat": 24.9128,
+      "lon": 121.1452,
+      "source_ref": "synthetic://host-offer-a",
+      "host_type": "community_partner",
+      "available": true,
+      "availability_evidence_ref": "synthetic://signed-host-offer-a",
+      "fixed_setup_cost_twd": 4000,
+      "weekly_operating_cost_twd": 1200,
+      "weekly_capacity_kg": 250
+    },
+    {
+      "site_id": "synthetic-east-host-b",
+      "name": "Synthetic East Taoyuan Host B",
+      "lat": 24.955,
+      "lon": 121.245,
+      "source_ref": "synthetic://host-b",
+      "host_type": "candidate_partner",
+      "available": false,
+      "fixed_setup_cost_twd": 3000,
+      "weekly_operating_cost_twd": 1000,
+      "weekly_capacity_kg": 300
+    }
+  ],
+  "need_events": [
+    {
+      "event_id": "need-001",
+      "subject_ref": "synthetic-rescue-a",
+      "problem_type": "nutrition_risk",
+      "bottleneck": "last_mile_logistics",
+      "occurred_at": "2026-06-20T09:00:00+08:00",
+      "lat": 24.907,
+      "lon": 121.139,
+      "severity": "urgent",
+      "estimated_gap_kg": 55,
+      "source_ref": "synthetic://case-001",
+      "confidence": 0.95,
+      "synthetic": true
+    },
+    {
+      "event_id": "need-002",
+      "subject_ref": "synthetic-rescue-b",
+      "problem_type": "nutrition_risk",
+      "bottleneck": "service_access_gap",
+      "occurred_at": "2026-06-30T14:00:00+08:00",
+      "lat": 24.918,
+      "lon": 121.151,
+      "severity": "urgent",
+      "estimated_gap_kg": 40,
+      "source_ref": "synthetic://case-002",
+      "confidence": 0.9,
+      "synthetic": true
+    },
+    {
+      "event_id": "need-003",
+      "subject_ref": "synthetic-rescue-c",
+      "problem_type": "nutrition_risk",
+      "bottleneck": "coordination",
+      "occurred_at": "2026-07-09T11:00:00+08:00",
+      "lat": 24.914,
+      "lon": 121.143,
+      "severity": "critical",
+      "estimated_gap_kg": 70,
+      "source_ref": "synthetic://case-003",
+      "confidence": 0.98,
+      "synthetic": true
+    },
+    {
+      "event_id": "need-004",
+      "subject_ref": "synthetic-rescue-a",
+      "problem_type": "nutrition_risk",
+      "bottleneck": "last_mile_logistics",
+      "occurred_at": "2026-07-19T10:00:00+08:00",
+      "lat": 24.908,
+      "lon": 121.14,
+      "severity": "urgent",
+      "estimated_gap_kg": 50,
+      "source_ref": "synthetic://case-004",
+      "confidence": 0.95,
+      "synthetic": true
+    },
+    {
+      "event_id": "need-005",
+      "subject_ref": "synthetic-rescue-b",
+      "problem_type": "nutrition_risk",
+      "bottleneck": "service_access_gap",
+      "occurred_at": "2026-07-29T15:00:00+08:00",
+      "lat": 24.919,
+      "lon": 121.152,
+      "severity": "urgent",
+      "estimated_gap_kg": 45,
+      "source_ref": "synthetic://case-005",
+      "confidence": 0.9,
+      "synthetic": true
+    },
+    {
+      "event_id": "need-006",
+      "subject_ref": "synthetic-rescue-c",
+      "problem_type": "nutrition_risk",
+      "bottleneck": "coordination",
+      "occurred_at": "2026-08-08T12:00:00+08:00",
+      "lat": 24.913,
+      "lon": 121.144,
+      "severity": "urgent",
+      "estimated_gap_kg": 60,
+      "source_ref": "synthetic://case-006",
+      "confidence": 0.98,
+      "synthetic": true
+    }
+  ]
+}

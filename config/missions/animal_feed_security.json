@@ -1,0 +1,9 @@
+{
+  "mission_id": "animal-feed-security-v0",
+  "version": "2026-08-18.v0",
+  "purpose": "Reduce preventable unresolved feed gaps for verified dogs and cats already under human care.",
+  "autonomous_actions": ["observe", "forecast", "open_case", "update_case", "propose_match", "escalate"],
+  "human_only_actions": ["approve_recipient", "approve_diet", "approve_match", "dispatch", "resolve_case", "close_incident"],
+  "prohibited_actions": ["autonomous_aid_denial", "diet_formulation", "legal_interpretation", "exotic_wildlife_matching", "public_release_of_private_identity"],
+  "stop_conditions": ["serious_food_safety_incident", "audit_integrity_failure", "rulepack_professional_approval_withdrawn", "systematic_inventory_unreliability"]
+}

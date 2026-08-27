@@ -1,0 +1,134 @@
+{
+  "case_id": "synthetic-mbg-integrity-001",
+  "domain": "mbg_public_nutrition",
+  "payload": {
+    "programme_id": "indonesia-mbg-case-study",
+    "area_id": "synthetic-sppg-catchment-001",
+    "area_name": "Synthetic MBG Catchment",
+    "observations": [
+      {
+        "observation_id": "m-safety",
+        "signal": "food_safety_ok",
+        "value": true,
+        "evidence_class": "condition",
+        "source_ref": "synthetic:safety-record",
+        "synthetic": true
+      },
+      {
+        "observation_id": "m-target",
+        "signal": "verified_target_beneficiaries",
+        "value": 3000,
+        "evidence_class": "condition",
+        "source_ref": "synthetic:recipient-register",
+        "synthetic": true
+      },
+      {
+        "observation_id": "m-capacity",
+        "signal": "verified_service_capacity_meals_per_day",
+        "value": 3000,
+        "evidence_class": "condition",
+        "source_ref": "synthetic:capacity-audit",
+        "synthetic": true
+      },
+      {
+        "observation_id": "m-actual",
+        "signal": "verified_actual_recipients_per_day",
+        "value": 2600,
+        "evidence_class": "condition",
+        "source_ref": "synthetic:recipient-receipt",
+        "synthetic": true
+      },
+      {
+        "observation_id": "m-transport",
+        "signal": "transport_reliable",
+        "value": true,
+        "evidence_class": "condition",
+        "source_ref": "synthetic:route-log",
+        "synthetic": true
+      },
+      {
+        "observation_id": "m-data",
+        "signal": "beneficiary_data_quality_verified",
+        "value": true,
+        "evidence_class": "condition",
+        "source_ref": "synthetic:data-reconciliation",
+        "synthetic": true
+      },
+      {
+        "observation_id": "m-outcome",
+        "signal": "nutritional_outcome_measured",
+        "value": false,
+        "evidence_class": "condition",
+        "source_ref": "synthetic:outcome-register",
+        "synthetic": true
+      }
+    ],
+    "integrity": {
+      "programme_id": "indonesia-mbg-case-study",
+      "area_id": "synthetic-sppg-catchment-001",
+      "observations": [
+        {
+          "observation_id": "procured-chicken",
+          "stage": "procurement",
+          "metric": "chicken_mass",
+          "value": 300,
+          "unit": "kg",
+          "source_ref": "synthetic:invoice",
+          "verification_status": "verified",
+          "synthetic": true
+        },
+        {
+          "observation_id": "received-chicken",
+          "stage": "physical_input",
+          "metric": "chicken_mass",
+          "value": 225,
+          "unit": "kg",
+          "source_ref": "synthetic:goods-receipt",
+          "verification_status": "verified",
+          "synthetic": true
+        },
+        {
+          "observation_id": "claimed-meals",
+          "stage": "service_output",
+          "metric": "meals",
+          "value": 3000,
+          "unit": "meal",
+          "source_ref": "synthetic:kitchen-output",
+          "verification_status": "verified",
+          "synthetic": true
+        },
+        {
+          "observation_id": "received-meals",
+          "stage": "beneficiary_receipt",
+          "metric": "meals",
+          "value": 2600,
+          "unit": "meal",
+          "source_ref": "synthetic:recipient-receipt",
+          "verification_status": "verified",
+          "synthetic": true
+        }
+      ],
+      "checks": [
+        {
+          "check_id": "ingredients-reconcile",
+          "expected_observation_id": "procured-chicken",
+          "observed_observation_id": "received-chicken",
+          "tolerance_pct": 0.05,
+          "critical": true,
+          "innocent_explanations_to_check": ["rejected delivery", "measurement method", "authorized rerouting"]
+        },
+        {
+          "check_id": "meals-reconcile",
+          "expected_observation_id": "claimed-meals",
+          "observed_observation_id": "received-meals",
+          "tolerance_pct": 0.05,
+          "critical": true,
+          "innocent_explanations_to_check": ["attendance", "documented waste", "authorized redistribution"]
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "purpose": "Demonstrate that the shared router preserves MBG-specific integrity-before-scarcity logic and human audit authority."
+  }
+}

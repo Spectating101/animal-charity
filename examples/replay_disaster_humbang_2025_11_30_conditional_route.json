@@ -1,0 +1,108 @@
+{
+  "replay_id": "r1-humbang-2025-11-30-conditional-route-public",
+  "decision_cutoff": "2025-11-30T16:50:00+07:00",
+  "require_evidence_timestamps": true,
+  "metadata": {
+    "evidence_level": "R1_retrospective_public_replay",
+    "real_case": true,
+    "location": "Humbang Hasundutan, North Sumatra, Indonesia",
+    "note": "The official BNPB field report establishes that the Pulo Godang-Pakkat-Barus route was currently open after clearing but would be temporarily closed again if rain returned for safety. The replay tests conditional operational validity, not weather prediction."
+  },
+  "case": {
+    "case_id": "humbang-2025-11-30-conditional-route-public-cutoff",
+    "domain": "disaster_response",
+    "metadata": {
+      "source_ref": "https://www.bnpb.go.id/berita/penanganan-darurat-bencana-hidrometeorologi-humbang-hasundutan-berjalan-semakin-baik-dan-terpadu"
+    },
+    "evidence_manifest": [
+      {
+        "source_ref": "https://www.bnpb.go.id/berita/penanganan-darurat-bencana-hidrometeorologi-humbang-hasundutan-berjalan-semakin-baik-dan-terpadu",
+        "source_kind": "official",
+        "verification_status": "corroborated",
+        "sensitivity": "public",
+        "observed_at": "2025-11-30T16:50:00+07:00",
+        "notes": "BNPB reported the route open/passable after landslide clearing, officers controlling traffic, and a rule to close the route temporarily if rain returned for safety."
+      }
+    ],
+    "payload": {
+      "incident_id": "real-humbang-hydrometeorology-2025-11",
+      "as_of": "2025-11-30T16:50:00+07:00",
+      "phase": "response",
+      "metadata": {
+        "real_case": "true",
+        "public_replay": "true",
+        "claim_boundary": "This packet establishes a conditional route-safety rule. It does not predict rainfall, establish continuous future closure, or imply that alternative routes/resources are absent."
+      },
+      "interoperability": {
+        "bundle_id": "real-humbang-public-interop-2025-11-30",
+        "as_of": "2025-11-30T16:50:00+07:00",
+        "resource_inventory_scope": "unknown",
+        "service_registry_scope": "unknown",
+        "metadata": {
+          "source_scope": "single BNPB official field update",
+          "not_operational_inventory": true
+        },
+        "records": [
+          {
+            "record_id": "bnpb-humbang-hydromet-nov30",
+            "system_id": "bnpb_public_reporting",
+            "integration_role": "evidence_source",
+            "kind": "hazard_observation",
+            "source_ref": "https://www.bnpb.go.id/berita/penanganan-darurat-bencana-hidrometeorologi-humbang-hasundutan-berjalan-semakin-baik-dan-terpadu",
+            "source_kind": "official",
+            "observed_at": "2025-11-30T16:50:00+07:00",
+            "verification_status": "corroborated",
+            "sensitivity": "public",
+            "jurisdiction": "Humbang Hasundutan, North Sumatra, Indonesia",
+            "attributes": {
+              "hazard_type": "flood_and_landslide_response",
+              "location_ref": "Pulo Godang-Pakkat-Barus route, North Sumatra, Indonesia",
+              "severity": "major_hydrometeorological_response"
+            }
+          }
+        ]
+      },
+      "needs": [
+        {
+          "need_id": "humbang-pulo-godang-pakkat-barus-route-nov30",
+          "location_ref": "Pulo Godang-Pakkat-Barus route, North Sumatra, Indonesia",
+          "category": "access",
+          "priority": "urgent",
+          "status": "met",
+          "source_ref": "https://www.bnpb.go.id/berita/penanganan-darurat-bencana-hidrometeorologi-humbang-hasundutan-berjalan-semakin-baik-dan-terpadu",
+          "verification_status": "corroborated",
+          "observed_at": "2025-11-30T16:50:00+07:00",
+          "access_status": "open",
+          "capacity_status": "unknown",
+          "notes": "BNPB reported this route had started to reopen and could be passed by vehicles after landslide material was cleared."
+        }
+      ],
+      "safety_constraints": [
+        {
+          "constraint_id": "humbang-route-rain-safety-rule-nov30",
+          "need_id": "humbang-pulo-godang-pakkat-barus-route-nov30",
+          "trigger": "rainfall_returns_on_recently_cleared_landslide_route",
+          "trigger_status": "inactive",
+          "effect": "suspend_use",
+          "source_ref": "https://www.bnpb.go.id/berita/penanganan-darurat-bencana-hidrometeorologi-humbang-hasundutan-berjalan-semakin-baik-dan-terpadu",
+          "verification_status": "corroborated",
+          "observed_at": "2025-11-30T16:50:00+07:00",
+          "notes": "The same official report says officers remained on site to control traffic and the route would be closed temporarily if rain returned for safety. The inactive trigger represents the report's current open state; it is not an independent weather measurement."
+        }
+      ],
+      "recurrence_signals": []
+    }
+  },
+  "reference": {
+    "expected_primary_stages": ["safety"],
+    "historical_action": "By 7 January 2026, BNPB reported national and provincial roads in Humbang Hasundutan as recovered/passable, while some district-road reconstruction and new access work remained underway.",
+    "historical_outcome_summary": "The later transport update shows route status continued evolving through recovery. It does not establish whether the rain-trigger closure rule was activated on a particular day or prove that the replay rule caused a better outcome.",
+    "reference_refs": [
+      "https://www.bnpb.go.id/berita/kondisi-jalur-transportasi-terdampak-wilayah-sumut"
+    ],
+    "notes": [
+      "The January 2026 transport update is hidden from the decision payload.",
+      "The replay must preserve current route usability while representing its verified rain-triggered safety invalidation rule."
+    ]
+  }
+}

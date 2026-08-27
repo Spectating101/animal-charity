@@ -1,0 +1,118 @@
+{
+  "replay_id": "r1-cianjur-gasol-2022-11-27-adequate-service",
+  "decision_cutoff": "2022-11-27T00:45:00+07:00",
+  "require_evidence_timestamps": true,
+  "metadata": {
+    "evidence_level": "R1_retrospective_public_replay",
+    "real_case": true,
+    "location": "Gasol, Cugenang, Cianjur, West Java, Indonesia",
+    "failure_mode": "false-positive intervention control"
+  },
+  "case": {
+    "case_id": "cianjur-gasol-2022-11-27-adequate-service-cutoff",
+    "domain": "disaster_response",
+    "metadata": {
+      "source_ref": "https://bnpb.go.id/berita/pelayanan-kesehatan-warga-terdampak-gempa-m5-6-desa-gasol-berjalan-baik"
+    },
+    "evidence_manifest": [
+      {
+        "source_ref": "https://bnpb.go.id/berita/pelayanan-kesehatan-warga-terdampak-gempa-m5-6-desa-gasol-berjalan-baik",
+        "source_kind": "official",
+        "verification_status": "verified",
+        "sensitivity": "public",
+        "observed_at": "2022-11-27T00:45:00+07:00",
+        "notes": "BNPB field report describing responsive health service, adequately accommodated clean water and generally sufficient basic needs at the Gasol shelter."
+      }
+    ],
+    "payload": {
+      "incident_id": "real-cianjur-earthquake-2022-11",
+      "as_of": "2022-11-27T00:45:00+07:00",
+      "phase": "response",
+      "metadata": {
+        "real_case": "true",
+        "public_replay": "true",
+        "claim_boundary": "This packet deliberately represents needs that the contemporaneous field report says were met; severe disaster context alone must not manufacture a new intervention."
+      },
+      "interoperability": {
+        "bundle_id": "real-cianjur-gasol-public-interop-2022-11-27",
+        "as_of": "2022-11-27T00:45:00+07:00",
+        "resource_inventory_scope": "unknown",
+        "service_registry_scope": "partial",
+        "metadata": {
+          "source_scope": "single BNPB field report",
+          "not_operational_inventory": true
+        },
+        "records": [
+          {
+            "record_id": "bnpb-cianjur-gasol-context-nov27",
+            "system_id": "bnpb_public_reporting",
+            "integration_role": "evidence_source",
+            "kind": "hazard_observation",
+            "source_ref": "https://bnpb.go.id/berita/pelayanan-kesehatan-warga-terdampak-gempa-m5-6-desa-gasol-berjalan-baik",
+            "source_kind": "official",
+            "observed_at": "2022-11-27T00:45:00+07:00",
+            "verification_status": "verified",
+            "sensitivity": "public",
+            "jurisdiction": "Cianjur, West Java, Indonesia",
+            "attributes": {
+              "hazard_type": "earthquake_response_context",
+              "location_ref": "Gasol, Cugenang, Cianjur, Indonesia",
+              "severity": "major_disaster_context"
+            }
+          }
+        ]
+      },
+      "needs": [
+        {
+          "need_id": "gasol-health-service-nov27",
+          "location_ref": "Gasol evacuation shelter, Cianjur, Indonesia",
+          "category": "medical",
+          "priority": "urgent",
+          "status": "met",
+          "source_ref": "https://bnpb.go.id/berita/pelayanan-kesehatan-warga-terdampak-gempa-m5-6-desa-gasol-berjalan-baik",
+          "verification_status": "verified",
+          "observed_at": "2022-11-27T00:45:00+07:00",
+          "access_status": "open",
+          "notes": "BNPB reported health workers responded promptly and provided ongoing checks/care."
+        },
+        {
+          "need_id": "gasol-clean-water-nov27",
+          "location_ref": "Gasol evacuation shelter, Cianjur, Indonesia",
+          "category": "potable_water",
+          "priority": "urgent",
+          "status": "met",
+          "source_ref": "https://bnpb.go.id/berita/pelayanan-kesehatan-warga-terdampak-gempa-m5-6-desa-gasol-berjalan-baik",
+          "verification_status": "verified",
+          "observed_at": "2022-11-27T00:45:00+07:00",
+          "access_status": "open",
+          "notes": "The field report said clean-water needs were accommodated with two water tanks serving survivors."
+        },
+        {
+          "need_id": "gasol-basic-needs-nov27",
+          "location_ref": "Gasol evacuation shelter, Cianjur, Indonesia",
+          "category": "food",
+          "priority": "urgent",
+          "status": "met",
+          "source_ref": "https://bnpb.go.id/berita/pelayanan-kesehatan-warga-terdampak-gempa-m5-6-desa-gasol-berjalan-baik",
+          "verification_status": "verified",
+          "observed_at": "2022-11-27T00:45:00+07:00",
+          "access_status": "open",
+          "notes": "A survivor reported basic needs were sufficiently met and a public kitchen was available; separate needs for mattresses/blankets are not represented as food scarcity."
+        }
+      ],
+      "recurrence_signals": []
+    }
+  },
+  "reference": {
+    "expected_primary_stages": [],
+    "historical_action": "The shelter continued receiving routine support within the wider Cianjur emergency response.",
+    "historical_outcome_summary": "This case is a false-positive control: the contemporaneous field evidence itself says the represented health, clean-water and basic-needs conditions were met. The correct behavior is not to invent an additional intervention from disaster severity alone.",
+    "reference_refs": [
+      "https://perpustakaan.bnpb.go.id/inlislite/uploaded_files/temporary/DigitalCollection/ODUzNTBhYWM4ZGEyMDcyMWNiNThmYTU1ZjE0ZTM0ZGJmNDUwMzVjMQ%3D%3D.pdf"
+    ],
+    "notes": [
+      "The annual BNPB disaster record is later context only.",
+      "The corpus contract, not primary-stage matching, enforces zero findings and zero reservations."
+    ]
+  }
+}

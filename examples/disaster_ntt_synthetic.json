@@ -1,0 +1,185 @@
+{
+  "incident_id": "synthetic-quake-incident-001",
+  "as_of": "2026-08-20T07:00:00Z",
+  "phase": "response",
+  "metadata": {
+    "synthetic": "true",
+    "purpose": "Exercise life-safety verification, resource reservation, no-double-booking, isolation and genuine capability gaps without asserting facts about a real NTT incident."
+  },
+  "interoperability": {
+    "bundle_id": "synthetic-ntt-earthquake-interop-001",
+    "as_of": "2026-08-20T07:00:00Z",
+    "resource_inventory_scope": "complete_for_scope",
+    "service_registry_scope": "complete_for_scope",
+    "records": [
+      {
+        "record_id": "quake-alert-a",
+        "system_id": "gdacs",
+        "integration_role": "evidence_source",
+        "kind": "hazard_observation",
+        "source_ref": "synthetic:gdacs:quake-a",
+        "source_kind": "official",
+        "observed_at": "2026-08-20T05:00:00Z",
+        "valid_until": "2026-08-20T11:00:00Z",
+        "verification_status": "corroborated",
+        "sensitivity": "public",
+        "attributes": {
+          "hazard_type": "earthquake_aftershock_sequence",
+          "location_ref": "synthetic-island-zone-a",
+          "severity": "high"
+        }
+      },
+      {
+        "record_id": "sar-team-a",
+        "system_id": "synthetic-emergency-operations",
+        "integration_role": "operations_platform",
+        "kind": "capability_resource",
+        "source_ref": "synthetic:eoc:sar-team-a",
+        "source_kind": "operator",
+        "observed_at": "2026-08-20T05:20:00Z",
+        "valid_until": "2026-08-20T09:20:00Z",
+        "verification_status": "verified",
+        "sensitivity": "internal",
+        "attributes": {
+          "resource_type": "urban_search_and_rescue_team",
+          "capabilities": ["collapsed_structure_search", "technical_rescue"],
+          "quantity": 1,
+          "unit": "team",
+          "location_ref": "synthetic-staging-area-a",
+          "availability": "available",
+          "deployment_state": "staged"
+        }
+      },
+      {
+        "record_id": "water-truck-a",
+        "system_id": "synthetic-emergency-operations",
+        "integration_role": "operations_platform",
+        "kind": "capability_resource",
+        "source_ref": "synthetic:eoc:water-truck-a",
+        "source_kind": "operator",
+        "observed_at": "2026-08-20T05:30:00Z",
+        "valid_until": "2026-08-20T12:30:00Z",
+        "verification_status": "verified",
+        "sensitivity": "internal",
+        "attributes": {
+          "resource_type": "potable_water_tanker",
+          "capabilities": ["potable_water_delivery"],
+          "quantity": 1,
+          "unit": "vehicle",
+          "location_ref": "synthetic-logistics-base-a",
+          "availability": "committed",
+          "deployment_state": "en_route"
+        }
+      },
+      {
+        "record_id": "hospital-a",
+        "system_id": "ocha_3w",
+        "integration_role": "capability_registry",
+        "kind": "service_presence",
+        "source_ref": "synthetic:3w:hospital-a",
+        "source_kind": "partner",
+        "observed_at": "2026-08-20T05:40:00Z",
+        "valid_until": "2026-08-20T09:40:00Z",
+        "verification_status": "corroborated",
+        "sensitivity": "internal",
+        "attributes": {
+          "organization_ref": "synthetic-hospital-network",
+          "service_type": "emergency_hospital",
+          "location_ref": "synthetic-district-centre-a",
+          "access_status": "open",
+          "capacity_status": "constrained"
+        }
+      },
+      {
+        "record_id": "incident-command-quake-a",
+        "system_id": "who_pheoc",
+        "integration_role": "authority_framework",
+        "kind": "command_context",
+        "source_ref": "synthetic:eoc:quake-command-a",
+        "source_kind": "official",
+        "observed_at": "2026-08-20T05:10:00Z",
+        "valid_until": "2026-08-20T17:10:00Z",
+        "verification_status": "verified",
+        "sensitivity": "internal",
+        "attributes": {
+          "incident_id": "synthetic-quake-incident-001",
+          "authority_ref": "synthetic-authorized-emergency-centre",
+          "operational_period": "2026-08-20T05:00Z/17:00Z",
+          "objectives": ["life safety", "maintain emergency health access", "restore critical lifelines"],
+          "constraints": ["aftershock risk", "road access uncertain"]
+        }
+      },
+      {
+        "record_id": "stale-road-report",
+        "system_id": "synthetic-local-reporting",
+        "integration_role": "evidence_source",
+        "kind": "outcome_observation",
+        "source_ref": "synthetic:report:road-status-old",
+        "source_kind": "public",
+        "observed_at": "2026-08-19T19:00:00Z",
+        "valid_until": "2026-08-19T22:00:00Z",
+        "verification_status": "reported",
+        "sensitivity": "public",
+        "attributes": {
+          "outcome_type": "road_access",
+          "location_ref": "synthetic-road-a",
+          "state": "open"
+        }
+      }
+    ]
+  },
+  "needs": [
+    {
+      "need_id": "trapped-a",
+      "location_ref": "synthetic-village-a",
+      "category": "life_safety",
+      "priority": "critical",
+      "status": "unmet",
+      "source_ref": "synthetic:field-report:trapped-a",
+      "verification_status": "reported",
+      "observed_at": "2026-08-20T06:45:00Z",
+      "valid_until": "2026-08-20T07:45:00Z",
+      "people_affected": 12,
+      "access_status": "open"
+    },
+    {
+      "need_id": "trapped-b",
+      "location_ref": "synthetic-village-b",
+      "category": "life_safety",
+      "priority": "critical",
+      "status": "unmet",
+      "source_ref": "synthetic:field-report:trapped-b",
+      "verification_status": "corroborated",
+      "observed_at": "2026-08-20T06:40:00Z",
+      "valid_until": "2026-08-20T07:40:00Z",
+      "people_affected": 5,
+      "access_status": "open"
+    },
+    {
+      "need_id": "water-a",
+      "location_ref": "synthetic-shelter-a",
+      "category": "potable_water",
+      "priority": "urgent",
+      "status": "unmet",
+      "source_ref": "synthetic:field-report:water-a",
+      "verification_status": "verified",
+      "observed_at": "2026-08-20T06:30:00Z",
+      "valid_until": "2026-08-20T09:30:00Z",
+      "people_affected": 900,
+      "access_status": "open"
+    },
+    {
+      "need_id": "isolated-medical-a",
+      "location_ref": "synthetic-village-isolated-a",
+      "category": "medical",
+      "priority": "critical",
+      "status": "unmet",
+      "source_ref": "synthetic:field-report:medical-a",
+      "verification_status": "corroborated",
+      "observed_at": "2026-08-20T06:35:00Z",
+      "valid_until": "2026-08-20T07:35:00Z",
+      "people_affected": 18,
+      "access_status": "isolated"
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "replay_id": "replay-animal-owner-retention-001",
+  "decision_cutoff": "2026-07-10T12:00:00+08:00",
+  "case": {
+    "case_id": "historical-style-animal-owner-retention-001",
+    "domain": "animal_welfare",
+    "payload": {
+      "area_id": "synthetic-area-replay-a",
+      "area_name": "Synthetic Replay Area",
+      "observations": [
+        {
+          "observation_id": "r-state",
+          "area_id": "synthetic-area-replay-a",
+          "subject_ref": "dog-household-replay-001",
+          "species": "dog",
+          "signal": "welfare_state",
+          "value": "owned_at_risk",
+          "source_ref": "synthetic:owner-interview",
+          "source_tier": "synthetic",
+          "observed_at": "2026-07-10T09:00:00+08:00",
+          "synthetic": true
+        },
+        {
+          "observation_id": "r-risk",
+          "area_id": "synthetic-area-replay-a",
+          "subject_ref": "dog-household-replay-001",
+          "species": "dog",
+          "signal": "owner_retention_risk",
+          "value": true,
+          "source_ref": "synthetic:owner-interview",
+          "source_tier": "synthetic",
+          "observed_at": "2026-07-10T09:00:00+08:00",
+          "synthetic": true
+        },
+        {
+          "observation_id": "r-crisis",
+          "area_id": "synthetic-area-replay-a",
+          "subject_ref": "dog-household-replay-001",
+          "species": "dog",
+          "signal": "owner_crisis_type",
+          "value": "medical_cost",
+          "source_ref": "synthetic:case-note",
+          "source_tier": "synthetic",
+          "observed_at": "2026-07-10T10:30:00+08:00",
+          "synthetic": true
+        }
+      ]
+    },
+    "metadata": {
+      "purpose": "Synthetic R1-style packet. The reference is ignored until explicit scoring."
+    }
+  },
+  "reference": {
+    "expected_primary_stages": ["prevent"],
+    "historical_action": "Targeted temporary veterinary-cost support while preserving the home placement.",
+    "historical_outcome_summary": "Synthetic reference: owner retained the animal after the temporary gap was resolved.",
+    "reference_refs": ["synthetic:hidden-review-note"]
+  },
+  "require_evidence_timestamps": true
+}

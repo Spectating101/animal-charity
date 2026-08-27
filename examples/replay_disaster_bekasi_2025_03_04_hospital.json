@@ -1,0 +1,95 @@
+{
+  "replay_id": "r1-bekasi-flood-hospital-2025-03-04-public",
+  "decision_cutoff": "2025-03-04T12:56:00Z",
+  "require_evidence_timestamps": true,
+  "metadata": {
+    "evidence_level": "R1_retrospective_public_replay",
+    "real_case": true,
+    "location": "Bekasi, Greater Jakarta, Indonesia",
+    "failure_mode": "critical service cascade under flood and power outage"
+  },
+  "case": {
+    "case_id": "bekasi-flood-hospital-2025-03-04-public-cutoff",
+    "domain": "disaster_response",
+    "metadata": {
+      "source_ref": "https://www.reuters.com/business/environment/floods-indonesias-capital-displace-thousands-2025-03-04/"
+    },
+    "evidence_manifest": [
+      {
+        "source_ref": "https://www.reuters.com/business/environment/floods-indonesias-capital-displace-thousands-2025-03-04/",
+        "source_kind": "public",
+        "verification_status": "reported",
+        "sensitivity": "public",
+        "observed_at": "2025-03-04T12:56:00Z",
+        "notes": "Reuters report documenting flooded hospital wards, patient evacuation and power outages; not a complete health-system resource inventory."
+      }
+    ],
+    "payload": {
+      "incident_id": "real-greater-jakarta-floods-2025-03",
+      "as_of": "2025-03-04T12:56:00Z",
+      "phase": "response",
+      "metadata": {
+        "real_case": "true",
+        "public_replay": "true",
+        "claim_boundary": "The report establishes disrupted hospital operations and patient movement, not complete alternative-bed, power or transport capacity."
+      },
+      "interoperability": {
+        "bundle_id": "real-bekasi-public-interop-2025-03-04",
+        "as_of": "2025-03-04T12:56:00Z",
+        "resource_inventory_scope": "unknown",
+        "service_registry_scope": "partial",
+        "metadata": {
+          "source_scope": "Reuters public report",
+          "not_operational_inventory": true
+        },
+        "records": [
+          {
+            "record_id": "reuters-bekasi-flood-hazard-mar4",
+            "system_id": "reuters_public_reporting",
+            "integration_role": "evidence_source",
+            "kind": "hazard_observation",
+            "source_ref": "https://www.reuters.com/business/environment/floods-indonesias-capital-displace-thousands-2025-03-04/",
+            "source_kind": "public",
+            "observed_at": "2025-03-04T12:56:00Z",
+            "verification_status": "reported",
+            "sensitivity": "public",
+            "jurisdiction": "Bekasi, Indonesia",
+            "attributes": {
+              "hazard_type": "urban_flood",
+              "location_ref": "Bekasi, Greater Jakarta, Indonesia",
+              "severity": "major"
+            }
+          }
+        ]
+      },
+      "needs": [
+        {
+          "need_id": "bekasi-hospital-continuity-mar4",
+          "location_ref": "flood-affected hospital in Bekasi, Indonesia",
+          "category": "medical",
+          "priority": "critical",
+          "status": "partially_met",
+          "source_ref": "https://www.reuters.com/business/environment/floods-indonesias-capital-displace-thousands-2025-03-04/",
+          "verification_status": "reported",
+          "observed_at": "2025-03-04T12:56:00Z",
+          "access_status": "constrained",
+          "required_capabilities": ["medical_stabilization", "evacuation_transport", "emergency_power"],
+          "notes": "Floodwater entered hospital wards, patients were moved to other buildings and parts of the hospital lost power."
+        }
+      ],
+      "recurrence_signals": []
+    }
+  },
+  "reference": {
+    "expected_primary_stages": ["safety"],
+    "historical_action": "Health authorities continued service-continuity efforts while multiple health facilities remained operationally disrupted.",
+    "historical_outcome_summary": "Indonesia's Health Ministry later reported continued health-service efforts and disruptions across several hospitals and community health centres. This confirms a service-continuity problem without proving which spare beds, generators or transport assets were available at the cutoff.",
+    "reference_refs": [
+      "https://www.kemkes.go.id/id/kemenkes-pastikan-layanan-kesehatan-tetap-berjalan-bagi-korban-banjir"
+    ],
+    "notes": [
+      "Later health-ministry evidence is hidden from the decision payload.",
+      "Critical patient-service disruption should trigger safety escalation without inventing capacity scarcity."
+    ]
+  }
+}

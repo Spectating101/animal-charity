@@ -1,0 +1,35 @@
+{
+  "area_id": "tw-taoyuan-zhongli-sanmin",
+  "area_name": "Zhongli Sanmin Li / 中壢區三民里",
+  "observations": [],
+  "policy_context": {
+    "area_id": "tw-taoyuan-zhongli-sanmin",
+    "area_name": "Zhongli Sanmin Li / 中壢區三民里",
+    "jurisdiction": "Taiwan / Taoyuan City",
+    "priority_level": 1,
+    "policy_flags": [
+      "2026_MOA_roaming_dog_priority_management_area",
+      "public_safety_risk_type",
+      "community_management_eligible_context",
+      "female_source_control_policy_priority"
+    ],
+    "source_refs": [
+      "https://animal.moa.gov.tw/Frontend/News/Detail/N0000000002234",
+      "https://animal.moa.gov.tw/public/upload/News/260316110439227006GR81L.pdf"
+    ],
+    "notes": [
+      "Policy context establishes area-level management priority only.",
+      "It does not establish the presence, ownership, condition, behaviour, reproductive state, or culpability of any individual animal or person."
+    ]
+  },
+  "service_capabilities": [
+    "municipal_animal_protection",
+    "public_shelter_and_adoption",
+    "community_management_programme_context"
+  ],
+  "metadata": {
+    "fixture_type": "real_public_policy_context_only",
+    "as_of": "2026-08-19",
+    "expected": "no animal-level intervention without animal-level condition evidence"
+  }
+}

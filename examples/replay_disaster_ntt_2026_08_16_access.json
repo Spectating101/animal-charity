@@ -1,0 +1,95 @@
+{
+  "replay_id": "r1-ntt-earthquake-2026-08-16-access-public",
+  "decision_cutoff": "2026-08-16T10:33:35+07:00",
+  "require_evidence_timestamps": true,
+  "metadata": {
+    "evidence_level": "R1_retrospective_public_replay",
+    "real_case": true,
+    "location": "East Nusa Tenggara, Indonesia",
+    "note": "Reuters publication time is used as the conservative public decision cutoff. The packet tests direct access-condition diagnosis separately from access-capability scarcity."
+  },
+  "case": {
+    "case_id": "ntt-earthquake-2026-08-16-access-public-cutoff",
+    "domain": "disaster_response",
+    "metadata": {
+      "source_ref": "https://www.reuters.com/business/environment/thousands-evacuate-after-indonesia-quake-kills-51-cuts-roads-2026-08-16/"
+    },
+    "evidence_manifest": [
+      {
+        "source_ref": "https://www.reuters.com/business/environment/thousands-evacuate-after-indonesia-quake-kills-51-cuts-roads-2026-08-16/",
+        "source_kind": "public",
+        "verification_status": "corroborated",
+        "sensitivity": "public",
+        "observed_at": "2026-08-16T10:33:35+07:00",
+        "notes": "Reuters public report citing Indonesian disaster, rescue and government authorities. It is condition evidence, not a complete operational resource registry."
+      }
+    ],
+    "payload": {
+      "incident_id": "real-ntt-earthquake-2026-08-15",
+      "as_of": "2026-08-16T10:33:35+07:00",
+      "phase": "response",
+      "metadata": {
+        "real_case": "true",
+        "public_replay": "true",
+        "claim_boundary": "Public reporting establishes blocked-road/landslide access disruption and rescue impediment, but not an exhaustive current engineering/air/off-road capability inventory."
+      },
+      "interoperability": {
+        "bundle_id": "real-ntt-public-interop-2026-08-16-access",
+        "as_of": "2026-08-16T10:33:35+07:00",
+        "resource_inventory_scope": "unknown",
+        "service_registry_scope": "unknown",
+        "metadata": {
+          "source_scope": "single Reuters public report",
+          "not_operational_inventory": true
+        },
+        "records": [
+          {
+            "record_id": "reuters-ntt-earthquake-active-response-aug16",
+            "system_id": "reuters_public_reporting",
+            "integration_role": "evidence_source",
+            "kind": "hazard_observation",
+            "source_ref": "https://www.reuters.com/business/environment/thousands-evacuate-after-indonesia-quake-kills-51-cuts-roads-2026-08-16/",
+            "source_kind": "public",
+            "observed_at": "2026-08-16T10:33:35+07:00",
+            "verification_status": "corroborated",
+            "sensitivity": "public",
+            "jurisdiction": "East Nusa Tenggara, Indonesia",
+            "attributes": {
+              "hazard_type": "major_earthquake_aftershock_response",
+              "location_ref": "East Nusa Tenggara, Indonesia",
+              "severity": "major"
+            }
+          }
+        ]
+      },
+      "needs": [
+        {
+          "need_id": "ntt-road-landslide-access-disruption-aug16",
+          "location_ref": "affected road network in East Nusa Tenggara, Indonesia",
+          "category": "access",
+          "priority": "critical",
+          "status": "unmet",
+          "source_ref": "https://www.reuters.com/business/environment/thousands-evacuate-after-indonesia-quake-kills-51-cuts-roads-2026-08-16/",
+          "verification_status": "corroborated",
+          "observed_at": "2026-08-16T10:33:35+07:00",
+          "access_status": "constrained",
+          "required_capabilities": ["road_clearance", "engineering", "air_access", "offroad_access"],
+          "notes": "Reuters reported blocked roads and landslides and said landslides/aftershocks were impeding rescue. This establishes an access disruption but does not establish that no suitable access-restoration resource exists."
+        }
+      ],
+      "recurrence_signals": []
+    }
+  },
+  "reference": {
+    "expected_primary_stages": ["access"],
+    "historical_action": "Later reporting said authorities readied planes to deliver food and tents and rescue officials planned helicopter aerial monitoring while road blockages and landslides remained part of the response picture.",
+    "historical_outcome_summary": "The later report shows that alternative aerial capability was part of the evolving response, supporting the distinction between a known access failure and an unproven absence of access resources. It does not establish a counterfactual outcome from the control plane.",
+    "reference_refs": [
+      "https://www.reuters.com/business/environment/search-indonesia-quake-victims-underway-independence-day-2026-08-17/"
+    ],
+    "notes": [
+      "The later Reuters report is hidden from the decision payload.",
+      "This replay must diagnose the observed access edge while refusing to promote an unknown public resource inventory into access-capability scarcity."
+    ]
+  }
+}

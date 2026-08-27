@@ -1,0 +1,124 @@
+{
+  "version": "2026-08-20.v1",
+  "principle": "Compose with mature public-sector and humanitarian systems. Do not reimplement sensing, command authority, service registries, procurement standards, execution platforms or public memory merely to keep them inside this repository.",
+  "control_plane_owns": [
+    "evidence-bounded diagnosis",
+    "broken-edge classification",
+    "capability and access reasoning",
+    "integrity-before-scarcity gating",
+    "smallest-feasible-intervention planning",
+    "recurrence and structural-candidate reasoning",
+    "explicit human-authority handoff",
+    "outcome-oriented reassessment"
+  ],
+  "control_plane_does_not_own": [
+    "hazard sensing",
+    "incident command authority",
+    "statutory entitlement decisions",
+    "public procurement systems of record",
+    "national identity systems",
+    "payment rails",
+    "dispatch execution",
+    "clinical or engineering professional judgment",
+    "public journalism and longitudinal accountability memory"
+  ],
+  "systems": {
+    "nims": {
+      "name": "FEMA National Incident Management System",
+      "role": "authority_framework",
+      "adoption_mode": "map",
+      "use_for": ["resource typing", "incident resource vocabulary", "mutual-aid reasoning", "command and coordination boundaries"],
+      "do_not_treat_as": "live resource inventory or authority granted to this software",
+      "reference": "https://www.fema.gov/emergency-managers/nims"
+    },
+    "who_pheoc": {
+      "name": "WHO Public Health Emergency Operations Centre framework",
+      "role": "authority_framework",
+      "adoption_mode": "map",
+      "use_for": ["EOC information/resource coordination", "unity-of-effort doctrine", "operational authority boundaries"],
+      "do_not_treat_as": "a generic authorization for automated emergency decisions",
+      "reference": "https://www.who.int/publications/i/item/framework-for-a-public-health-emergency-operations-centre"
+    },
+    "ocha_3w": {
+      "name": "OCHA Who does What Where (3W)",
+      "role": "capability_registry",
+      "adoption_mode": "ingest",
+      "use_for": ["organization presence", "activity/service presence", "geographic capability map", "gap/overlap analysis"],
+      "do_not_treat_as": "proof that a listed service is currently accessible or has spare capacity",
+      "reference": "https://knowledge.base.unocha.org/wiki/spaces/imtoolbox/pages/214499412"
+    },
+    "open_referral_hsds": {
+      "name": "Open Referral Human Services Data Specification",
+      "role": "capability_registry",
+      "adoption_mode": "ingest",
+      "use_for": ["human-service directories", "providers", "service locations", "access information"],
+      "do_not_treat_as": "beneficiary entitlement or proof of successful access",
+      "reference": "https://docs.openreferral.org/"
+    },
+    "ocds": {
+      "name": "Open Contracting Data Standard",
+      "role": "integrity_standard",
+      "adoption_mode": "ingest",
+      "use_for": ["contracting process identifiers", "tender/award/contract/implementation chain", "payments and milestones", "change history"],
+      "do_not_treat_as": "a corruption verdict engine",
+      "reference": "https://standard.open-contracting.org/latest/en/"
+    },
+    "nasa_firms": {
+      "name": "NASA FIRMS",
+      "role": "evidence_source",
+      "adoption_mode": "ingest",
+      "use_for": ["active-fire observations", "near-real-time fire evidence", "historical fire replay"],
+      "do_not_treat_as": "proof of ignition cause, landholder culpability or response authorization",
+      "reference": "https://firms.modaps.eosdis.nasa.gov/"
+    },
+    "gdacs": {
+      "name": "Global Disaster Alert and Coordination System",
+      "role": "evidence_source",
+      "adoption_mode": "ingest",
+      "use_for": ["multi-hazard alerts", "event awareness", "international coordination context"],
+      "do_not_treat_as": "local incident command or a substitute for national authoritative data",
+      "reference": "https://www.gdacs.org/"
+    },
+    "copernicus_ems": {
+      "name": "Copernicus Emergency Management Service",
+      "role": "evidence_source",
+      "adoption_mode": "ingest",
+      "use_for": ["rapid mapping", "damage/exposure mapping", "geospatial response evidence"],
+      "do_not_treat_as": "ground-truth confirmation of every local condition",
+      "reference": "https://mapping.emergency.copernicus.eu/"
+    },
+    "sahana_eden": {
+      "name": "Sahana Eden",
+      "role": "operations_platform",
+      "adoption_mode": "compose",
+      "use_for": ["organizations", "facilities", "inventory", "logistics", "requests", "beneficiary/assistance operations"],
+      "do_not_treat_as": "the control-plane diagnosis layer",
+      "reference": "https://sahanafoundation.org/"
+    },
+    "openspp": {
+      "name": "OpenSPP",
+      "role": "operations_platform",
+      "adoption_mode": "compose",
+      "use_for": ["social registries", "programme operations", "social-protection delivery", "disaster-response programme administration"],
+      "do_not_treat_as": "automated deservingness or cross-program diagnosis",
+      "reference": "https://openspp.org/"
+    },
+    "govstack": {
+      "name": "GovStack",
+      "role": "operations_platform",
+      "adoption_mode": "compose",
+      "use_for": ["reusable government building blocks", "interoperability", "identity/workflow/payment integration boundaries"],
+      "do_not_treat_as": "the public-good reasoning layer",
+      "reference": "https://www.govstack.global/"
+    },
+    "nocturnal": {
+      "name": "Nocturnal Public Memory",
+      "role": "memory_archive",
+      "adoption_mode": "export_and_reference",
+      "use_for": ["source-linked longitudinal matters", "promises and later outcomes", "corrections", "public accountability history"],
+      "do_not_treat_as": "an operational command system, guilt engine or intervention optimizer",
+      "reference": "repo:Spectating101/nocturnal-oversight"
+    }
+  },
+  "humanitarian_data_rule": "Sensitive humanitarian or beneficiary data should be minimized, purpose-limited and governed by an explicit information-sharing/data-responsibility policy; interoperability is not permission to centralize all available data."
+}

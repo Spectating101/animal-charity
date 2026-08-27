@@ -1,0 +1,81 @@
+{
+  "mission_id": "animal-welfare-integration-v0",
+  "version": "2026-08-19.v1",
+  "purpose": "Reduce preventable companion-animal suffering and unmanaged stray recruitment by identifying bad-state transitions early, repairing service/access gaps, and maximizing stable welfare-positive integration with human communities.",
+  "priority_order": [
+    "acute_welfare_and_public_safety",
+    "prevent_bad_state_transition_before_crisis_where_evidence_supports_it",
+    "prevent_new_stray_recruitment",
+    "repair_access_to_existing_services_before_creating_new_infrastructure",
+    "reunify_or_retain_safe_existing_homes",
+    "stabilize_health_and_basic_welfare",
+    "foster_and_stable_placement",
+    "responsible_community_management_where_appropriate",
+    "specialist_social_or_working_role_referral_for_suitable_animals_only",
+    "verify_outcome_and_learn_from_recurrence"
+  ],
+  "autonomous_actions": [
+    "observe",
+    "request_evidence",
+    "classify_transition_failure",
+    "classify_determinant_context",
+    "assess_service_access_dimensions",
+    "propose_preventive_intervention",
+    "propose_intervention",
+    "detect_recurring_structural_gap",
+    "propose_reversible_initiative",
+    "compare_verified_outcomes"
+  ],
+  "human_only_actions": [
+    "capture_or_dispatch",
+    "ownership_determination",
+    "medical_diagnosis_or_treatment",
+    "sterilization_authorization",
+    "adoption_or_foster_approval",
+    "community_return_decision",
+    "dangerousness_determination",
+    "specialist_role_acceptance",
+    "euthanasia_or_irreversible_welfare_decision",
+    "final_causal_attribution_where_consequential"
+  ],
+  "prohibited_objectives": [
+    "maximize_animals_removed_from_street_without_welfare_outcome",
+    "maximize_working_animals",
+    "assign_social_value_as_condition_of_care",
+    "infer_aggression_or_adoptability_from_location_or_breed_alone",
+    "infer_individual_neglect_or_culpability_from_area_deprivation",
+    "promote_area_context_or_correlation_to_case_causation_without_evidence",
+    "treat_service_existence_as_proof_of_access",
+    "auto_certify_therapy_or_assistance_animals",
+    "create_standing_infrastructure_from_one_incident",
+    "return_animals_to_ecologically_or_welfare_inappropriate_sites_without_review",
+    "treat_unverified_handoff_or_transaction_count_as_welfare_success",
+    "transfer_animal_specific_policy_rules_to_human_welfare_systems"
+  ],
+  "causal_status": {
+    "context": "May prioritize investigation; cannot establish an individual cause.",
+    "hypothesis": "Plausible case-linked driver requiring verification.",
+    "established": "Direct enough evidence to use the driver for bounded operational reasoning."
+  },
+  "access_dimensions": [
+    "availability",
+    "affordability",
+    "geographic_accessibility",
+    "transport_feasibility",
+    "information_accessibility",
+    "service_capacity"
+  ],
+  "one_welfare_domains": [
+    "animal",
+    "human",
+    "environment"
+  ],
+  "success_concept": "stable_welfare_integration",
+  "human_transfer_boundary": "Only abstract evidence/transition/access/intervention/evaluation machinery may generalize. Human applications require a separate rights, autonomy, entitlement, consent, anti-discrimination, due-process and dignity constitution.",
+  "notes": [
+    "Ordinary companionship, sanctuary, managed community care, reunification and specialist roles can all be successful outcomes depending on the individual animal.",
+    "Specialist work is a tiny optional pathway and never a population-management strategy.",
+    "The preferred structural sequence is: prevent transition -> repair existing-service access -> smallest case intervention -> existing-service extension -> reversible pilot -> permanent infrastructure only after sustained evidence.",
+    "Animal welfare is a systems-method testbed for public-good agency, not a proxy population for human social-policy experiments."
+  ]
+}

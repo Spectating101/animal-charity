@@ -1,0 +1,133 @@
+{
+  "programme_id": "indonesia-mbg-case-study",
+  "area_id": "synthetic-sppg-capacity-a",
+  "area_name": "Synthetic MBG SPPG — verified capacity-gap demo",
+  "observations": [
+    {
+      "observation_id": "target",
+      "signal": "verified_target_beneficiaries",
+      "value": 3500,
+      "evidence_class": "condition",
+      "source_ref": "synthetic:verified-target",
+      "synthetic": true
+    },
+    {
+      "observation_id": "capacity",
+      "signal": "verified_service_capacity_meals_per_day",
+      "value": 3000,
+      "evidence_class": "condition",
+      "source_ref": "synthetic:capacity-check",
+      "synthetic": true
+    },
+    {
+      "observation_id": "actual",
+      "signal": "verified_actual_recipients_per_day",
+      "value": 2985,
+      "evidence_class": "condition",
+      "source_ref": "synthetic:recipient-observation",
+      "synthetic": true
+    },
+    {
+      "observation_id": "transport",
+      "signal": "transport_reliable",
+      "value": true,
+      "evidence_class": "condition",
+      "source_ref": "synthetic:route-check",
+      "synthetic": true
+    },
+    {
+      "observation_id": "data-quality",
+      "signal": "beneficiary_data_quality_verified",
+      "value": true,
+      "evidence_class": "condition",
+      "source_ref": "synthetic:beneficiary-reconciliation",
+      "synthetic": true
+    },
+    {
+      "observation_id": "safety",
+      "signal": "food_safety_ok",
+      "value": true,
+      "evidence_class": "condition",
+      "source_ref": "synthetic:food-safety-check",
+      "synthetic": true
+    },
+    {
+      "observation_id": "outcome",
+      "signal": "nutritional_outcome_measured",
+      "value": false,
+      "evidence_class": "condition",
+      "source_ref": "synthetic:outcome-status",
+      "synthetic": true
+    }
+  ],
+  "integrity": {
+    "programme_id": "indonesia-mbg-case-study",
+    "area_id": "synthetic-sppg-capacity-a",
+    "observations": [
+      {
+        "observation_id": "planned-input",
+        "stage": "procurement",
+        "metric": "meal_equivalent_input",
+        "value": 3000,
+        "unit": "meal_equivalents",
+        "source_ref": "synthetic:procurement-plan",
+        "verification_status": "verified",
+        "synthetic": true
+      },
+      {
+        "observation_id": "received-input",
+        "stage": "physical_input",
+        "metric": "meal_equivalent_input",
+        "value": 2995,
+        "unit": "meal_equivalents",
+        "source_ref": "synthetic:goods-receipt",
+        "verification_status": "verified",
+        "synthetic": true
+      },
+      {
+        "observation_id": "claimed-meals",
+        "stage": "service_output",
+        "metric": "meal_count",
+        "value": 3000,
+        "unit": "meals",
+        "source_ref": "synthetic:daily-service-report",
+        "verification_status": "verified",
+        "synthetic": true
+      },
+      {
+        "observation_id": "received-meals",
+        "stage": "beneficiary_receipt",
+        "metric": "meal_count",
+        "value": 2985,
+        "unit": "meals",
+        "source_ref": "synthetic:recipient-pic-count",
+        "verification_status": "verified",
+        "synthetic": true
+      }
+    ],
+    "checks": [
+      {
+        "check_id": "procurement-to-physical",
+        "expected_observation_id": "planned-input",
+        "observed_observation_id": "received-input",
+        "tolerance_pct": 0.02,
+        "critical": true
+      },
+      {
+        "check_id": "service-to-recipient",
+        "expected_observation_id": "claimed-meals",
+        "observed_observation_id": "received-meals",
+        "tolerance_pct": 0.02,
+        "critical": true
+      }
+    ],
+    "metadata": {
+      "warning": "Entire scenario is synthetic and intentionally reconciles within tolerance."
+    }
+  },
+  "recurrence_count": 4,
+  "recurrence_span_days": 21,
+  "metadata": {
+    "warning": "Synthetic capacity stress test. Expected behavior is genuine capacity-gap classification only after integrity checks reconcile."
+  }
+}

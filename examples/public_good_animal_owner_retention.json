@@ -1,0 +1,46 @@
+{
+  "case_id": "synthetic-animal-owner-retention-001",
+  "domain": "animal_welfare",
+  "payload": {
+    "area_id": "synthetic-area-a",
+    "area_name": "Synthetic Animal Welfare Area",
+    "observations": [
+      {
+        "observation_id": "a-state",
+        "area_id": "synthetic-area-a",
+        "subject_ref": "dog-household-001",
+        "species": "dog",
+        "signal": "welfare_state",
+        "value": "owned_at_risk",
+        "source_ref": "synthetic:owner-interview",
+        "source_tier": "synthetic",
+        "synthetic": true
+      },
+      {
+        "observation_id": "a-risk",
+        "area_id": "synthetic-area-a",
+        "subject_ref": "dog-household-001",
+        "species": "dog",
+        "signal": "owner_retention_risk",
+        "value": true,
+        "source_ref": "synthetic:owner-interview",
+        "source_tier": "synthetic",
+        "synthetic": true
+      },
+      {
+        "observation_id": "a-crisis",
+        "area_id": "synthetic-area-a",
+        "subject_ref": "dog-household-001",
+        "species": "dog",
+        "signal": "owner_crisis_type",
+        "value": "medical_cost",
+        "source_ref": "synthetic:verified-case-note",
+        "source_tier": "synthetic",
+        "synthetic": true
+      }
+    ]
+  },
+  "metadata": {
+    "purpose": "Demonstrate that the shared router preserves animal-specific owner-retention logic instead of inventing a generic food/resource intervention."
+  }
+}

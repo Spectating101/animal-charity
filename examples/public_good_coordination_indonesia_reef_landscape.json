@@ -1,0 +1,144 @@
+{
+  "case_id": "indonesia-reef-coordination-density-2026",
+  "domain": "public_good_coordination",
+  "payload": {
+    "landscape_id": "indonesia-reef-coordination-2026",
+    "initiatives": [
+      {
+        "initiative_id": "telkom-bisa-biru-buru-2026",
+        "name": "Telkom Bisa Biru - Buru Island coral restoration",
+        "actor_type": "corporate",
+        "geographies": ["Buru Island", "Maluku", "Indonesia"],
+        "themes": ["coral_restoration", "marine_conservation", "coastal_community"],
+        "needs": [],
+        "source_ref": "https://www.telkom.co.id/sites/news-resources/en_US/news/telkom-restores-coral-reefs-in-buru-island-through-bisa-biru-program-to-safeguard-malukus-coastal-ecosystem-3837",
+        "verification_status": "verified",
+        "evidence_mode": "observed",
+        "notes": "Observed initiative: 50 substrates and 2,500 coral fragments were reported for the June 2026 Buru Island activity. No external funding need is inferred."
+      },
+      {
+        "initiative_id": "bri-grow-green-coral-reef-2026",
+        "name": "BRI Grow & Green Coral Reef",
+        "actor_type": "corporate",
+        "geographies": ["Indonesia"],
+        "themes": ["coral_restoration", "marine_conservation", "coastal_community"],
+        "needs": [],
+        "source_ref": "https://bri.co.id/web/guest/id/article-detail/1501",
+        "verification_status": "verified",
+        "evidence_mode": "observed",
+        "notes": "Observed CSR restoration program using MARSS/reef-star methods. The cited publication demonstrates activity, not an open external application pathway."
+      },
+      {
+        "initiative_id": "synthetic-lesser-sunda-community-reef-probe",
+        "name": "Synthetic Lesser Sunda community reef initiative probe",
+        "actor_type": "community_group",
+        "geographies": ["Lesser Sunda", "Indonesia"],
+        "themes": ["coral_restoration", "community_conservation"],
+        "needs": [
+          {
+            "need_id": "reef-restoration-funding",
+            "kind": "funding",
+            "priority": "urgent",
+            "notes": "Synthetic need used only to falsify matching behavior; it is not a claim about a historical organization."
+          }
+        ],
+        "source_ref": "synthetic:lesser-sunda-community-reef-probe",
+        "verification_status": "verified",
+        "evidence_mode": "synthetic_probe"
+      },
+      {
+        "initiative_id": "synthetic-savu-reef-positive-business-probe",
+        "name": "Synthetic Savu Sea reef-positive business probe",
+        "actor_type": "business",
+        "geographies": ["Savu Sea", "Indonesia"],
+        "themes": ["coral_conservation", "blue_economy"],
+        "needs": [
+          {
+            "need_id": "reef-positive-financing",
+            "kind": "funding",
+            "priority": "watch",
+            "notes": "Synthetic need used only to test whether an active financing program is confused with an open application call."
+          }
+        ],
+        "source_ref": "synthetic:savu-reef-positive-business-probe",
+        "verification_status": "verified",
+        "evidence_mode": "synthetic_probe"
+      }
+    ],
+    "resources": [
+      {
+        "resource_id": "tfcca-cycle-1-2026",
+        "name": "TFCCA Indonesia coral reef conservation grants - Cycle 1",
+        "provider": "Indonesia-United States TFCCA program",
+        "resource_kind": "grant",
+        "support_kinds": ["funding"],
+        "geographies": ["Bird's Head", "Lesser Sunda", "Banda"],
+        "themes": ["coral_conservation", "coral_restoration", "community_conservation"],
+        "eligible_actor_types": ["ngo", "community_group", "other"],
+        "application_status": "closed",
+        "source_ref": "https://www.ykan.or.id/en/publications/articles/press-release/local-initiatives-are-implementing-coral-reef-conservation-grants/",
+        "verification_status": "verified",
+        "notes": "Cycle 1 had already completed competitive selection: 323 proposals were submitted and 58 were selected. It is evidence of a real funding channel, but not a current open call."
+      },
+      {
+        "resource_id": "koralestari-gfcr-finance",
+        "name": "Koralestari / Global Fund for Coral Reefs financing pathway",
+        "provider": "YKAN / Global Fund for Coral Reefs",
+        "resource_kind": "impact_investment",
+        "support_kinds": ["funding", "partnership"],
+        "geographies": ["Savu Sea", "Berau", "Lingga"],
+        "themes": ["coral_conservation", "coral_restoration", "blue_economy"],
+        "eligible_actor_types": ["business", "social_enterprise"],
+        "application_status": "unknown",
+        "source_ref": "https://www.ykan.or.id/en/program/oceans-program/blue-economy/koralestari/",
+        "verification_status": "verified",
+        "notes": "The program states that it provides financial support for reef-positive businesses, but the cited public page does not establish a current open application mechanism or deadline."
+      }
+    ]
+  },
+  "evidence_manifest": [
+    {
+      "source_ref": "https://www.telkom.co.id/sites/news-resources/en_US/news/telkom-restores-coral-reefs-in-buru-island-through-bisa-biru-program-to-safeguard-malukus-coastal-ecosystem-3837",
+      "source_kind": "official",
+      "verification_status": "verified",
+      "sensitivity": "public",
+      "observed_at": "2026-07-13T00:00:00+07:00"
+    },
+    {
+      "source_ref": "https://bri.co.id/web/guest/id/article-detail/1501",
+      "source_kind": "official",
+      "verification_status": "verified",
+      "sensitivity": "public",
+      "observed_at": "2026-04-17T03:50:00+07:00"
+    },
+    {
+      "source_ref": "https://www.ykan.or.id/en/publications/articles/press-release/local-initiatives-are-implementing-coral-reef-conservation-grants/",
+      "source_kind": "official",
+      "verification_status": "verified",
+      "sensitivity": "public",
+      "notes": "Program implementation announcement states 323 proposals and 58 selected recipients for the first TFCCA cycle."
+    },
+    {
+      "source_ref": "https://www.ykan.or.id/en/program/oceans-program/blue-economy/koralestari/",
+      "source_kind": "official",
+      "verification_status": "verified",
+      "sensitivity": "public"
+    },
+    {
+      "source_ref": "synthetic:lesser-sunda-community-reef-probe",
+      "source_kind": "synthetic",
+      "verification_status": "verified",
+      "sensitivity": "internal"
+    },
+    {
+      "source_ref": "synthetic:savu-reef-positive-business-probe",
+      "source_kind": "synthetic",
+      "verification_status": "verified",
+      "sensitivity": "internal"
+    }
+  ],
+  "metadata": {
+    "claim_boundary": "Observed initiatives and resource-program facts are source-backed. Synthetic initiatives exist only to test matching behavior. No synthetic probe is a claim that a real organization sought or received funding.",
+    "purpose": "Demonstrate density: existing initiative mapping plus resource/funding mapping can share the public-good evidence and control architecture without treating every program as an open opportunity."
+  }
+}
